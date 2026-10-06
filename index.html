@@ -13,8 +13,6 @@
       --primary-dark: #047857;
       --bg: #f0fdf4;
       --card-bg: #ffffff;
-      --text: #064e3b;
-      --text-muted: #475569;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,7 +35,7 @@
       display: flex; align-items: center; justify-content: center;
       font-weight: bold; font-size: 20px; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
     }
-    .user-name { font-weight: 700; font-size: 17px; color: #0f172a; }
+    .user-name { font-weight: 700; font-size: 16px; color: #0f172a; }
     .user-status { font-size: 12px; color: #166534; font-weight: 500; }
 
     /* Green Balance Card */
@@ -91,7 +89,6 @@
       border-radius: 16px; font-size: 16px; font-weight: 700;
       box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35); cursor: pointer; text-align: center; z-index: 100;
     }
-    .btn-main:active { background: #047857; }
 
     /* Modal Form UI */
     .modal-overlay {
@@ -119,9 +116,9 @@
   <!-- Header -->
   <div class="header">
     <div class="user-info">
-      <div class="avatar" id="u-avatar">B</div>
+      <div class="avatar" id="u-avatar">U</div>
       <div>
-        <div class="user-name" id="u-name">Bemor</div>
+        <div class="user-name" id="u-name">Assalomu alaykum!</div>
         <div class="user-status" id="u-status">Tashkent • Telegram User</div>
       </div>
     </div>
@@ -131,7 +128,7 @@
   <!-- Balance Card -->
   <div class="balance-card">
     <div class="balance-sub"><i class="fa-solid fa-wallet"></i> Bonus Balansingiz</div>
-    <div class="balance-val" id="u-balance">15 000 UZS</div>
+    <div class="balance-val" id="u-balance">0 UZS</div>
     <div class="balance-sub">Qabullardan 10% keshbek yig'iladi</div>
   </div>
 
@@ -146,7 +143,9 @@
 
   <!-- Doctors List -->
   <div class="section-title">Mavjud Shifokorlar</div>
-  <div id="doctors-container"></div>
+  <div id="doctors-container">
+    <p style="color: #64748b; font-size: 14px;">Shifokorlar yuklanmoqda...</p>
+  </div>
 
   <button class="btn-main" onclick="openBookingModal()"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
 
@@ -183,34 +182,49 @@
     const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
     const tg = window.Telegram ? window.Telegram.WebApp : null;
-    let doctorsList = [
-      { id: "1", full_name: "Dr. Alisher Ahmedov", specialty: "Kardiolog", clinic_name: "Akfa Medline", consultation_fee: 150000, cashback_percentage: 10, rating: "4.9", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
-      { id: "2", full_name: "Dr. Malika Zokirova", specialty: "Nevrolog", clinic_name: "Shifo Med", consultation_fee: 120000, cashback_percentage: 15, rating: "5.0", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" }
-    ];
+    let doctorsList = [];
 
-    function loadTelegramUserInfo() {
+    function setupUser() {
       if (tg) {
         tg.ready();
         tg.expand();
-        const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-        if (user) {
-          const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-          document.getElementById('u-name').innerText = fullName;
-          document.getElementById('u-avatar').innerText = user.first_name.charAt(0);
+        const u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+        if (u) {
+          const name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
+          document.getElementById('u-name').innerText = `Assalomu alaykum, ${name}!`;
+          document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
+        } else {
+          document.getElementById('u-name').innerText = "Assalomu alaykum, Ulukhbek Kamilovich!";
+          document.getElementById('u-avatar').innerText = "U";
         }
       }
     }
 
-    function renderDoctors(docs) {
+    async function loadDoctorsFromSupabase() {
       const container = document.getElementById('doctors-container');
       const select = document.getElementById('doctorSelect');
+
+      if (!supabase) {
+        container.innerHTML = '<p style="color: #64748b;">Supabase bilan ulanmadi.</p>';
+        return;
+      }
+
+      const { data: doctors, error } = await supabase.from('doctors').select('*');
+
+      if (error || !doctors || doctors.length === 0) {
+        container.innerHTML = '<p style="color: #64748b; font-size: 14px;">Hozircha bazada shifokorlar yo\'q. Shifokorlar ro\'yxatdan o\'tgach ko\'rinadi.</p>';
+        select.innerHTML = '<option value="">Shifokor topilmadi</option>';
+        return;
+      }
+
+      doctorsList = doctors;
       container.innerHTML = '';
       select.innerHTML = '';
 
-      docs.forEach(doc => {
+      doctors.forEach(doc => {
         container.innerHTML += `
           <div class="doc-card" onclick="openBookingModal('${doc.id}')">
-            <img src="${doc.img || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150'}" class="doc-img">
+            <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" class="doc-img">
             <div class="doc-details">
               <div style="display: flex; justify-content: space-between;">
                 <span class="doc-name">${doc.full_name}</span>
@@ -223,20 +237,6 @@
 
         select.innerHTML += `<option value="${doc.id}">${doc.full_name} (${doc.specialty})</option>`;
       });
-    }
-
-    async function syncWithSupabase() {
-      if (supabase) {
-        try {
-          const { data: dbDoctors } = await supabase.from('doctors').select('*');
-          if (dbDoctors && dbDoctors.length > 0) {
-            doctorsList = dbDoctors;
-            renderDoctors(doctorsList);
-          }
-        } catch(e) {
-          console.log("Database connection fallback active");
-        }
-      }
     }
 
     function openBookingModal(doctorId = null) {
@@ -274,9 +274,8 @@
       if (tg) tg.showAlert(successMsg); else alert(successMsg);
     }
 
-    loadTelegramUserInfo();
-    renderDoctors(doctorsList);
-    syncWithSupabase();
+    setupUser();
+    loadDoctorsFromSupabase();
   </script>
 </body>
 </html>
