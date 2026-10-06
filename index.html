@@ -2,138 +2,183 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shifo AI - Aqlli Tabib</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Shifo AI - Ultra Health Mini App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --primary: #059669;
-      --bg: #f0fdf4;
-      --card-bg: #ffffff;
+      --bg-dark: #09130e;
+      --card-bg: rgba(20, 35, 27, 0.7);
+      --card-border: rgba(34, 197, 94, 0.2);
+      --primary-green: #10b981;
+      --neon-green: #22c55e;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      color: #0f172a;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
       padding: 16px;
-      padding-bottom: 95px;
+      padding-bottom: 110px;
+      overflow-x: hidden;
     }
 
     /* Language Selection Screen Overlay */
     .lang-screen {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: #047857; z-index: 2000;
+      background: #06110a; z-index: 3000;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 24px; color: white; text-align: center;
+      padding: 24px; text-align: center;
     }
     .lang-logo {
-      width: 80px; height: 80px; background: white; color: #059669;
-      border-radius: 24px; display: flex; align-items: center; justify-content: center;
-      font-size: 38px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 86px; height: 86px; background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 26px; display: flex; align-items: center; justify-content: center;
+      font-size: 42px; color: white; margin-bottom: 20px; box-shadow: 0 0 35px rgba(16, 185, 129, 0.4);
     }
-    .lang-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
-    .lang-sub { font-size: 14px; opacity: 0.85; margin-bottom: 30px; }
+    .lang-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .lang-sub { font-size: 14px; color: var(--text-sub); margin-bottom: 32px; }
     .lang-btn {
-      width: 100%; max-width: 300px; background: white; color: #064e3b;
-      border: none; padding: 16px; border-radius: 16px; font-size: 16px;
-      font-weight: 700; margin-bottom: 12px; cursor: pointer;
-      display: flex; align-items: center; justify-content: space-between;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%; max-width: 320px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1); color: var(--text-main);
+      padding: 18px; border-radius: 20px; font-size: 16px; font-weight: 700;
+      margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      backdrop-filter: blur(10px); transition: all 0.2s ease;
     }
-    .lang-btn:active { transform: scale(0.98); background: #dcfce7; }
+    .lang-btn:active { transform: scale(0.97); background: rgba(34, 197, 94, 0.2); border-color: var(--neon-green); }
 
     /* Main App Container */
     .app-content { display: none; }
 
-    /* Header */
-    .header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
-    }
+    /* Header Profile */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .user-info { display: flex; align-items: center; gap: 12px; }
-    .avatar-img {
-      width: 46px; height: 46px; border-radius: 50%; object-fit: cover;
-      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
-    }
+    .avatar-img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-green); }
     .avatar-fallback {
-      width: 46px; height: 46px; border-radius: 50%;
+      width: 48px; height: 48px; border-radius: 50%;
       background: linear-gradient(135deg, #10b981, #047857); color: white;
       display: flex; align-items: center; justify-content: center;
-      font-weight: bold; font-size: 20px; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
+      font-weight: bold; font-size: 20px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
     }
-    .user-name { font-weight: 700; font-size: 16px; color: #0f172a; }
+    .user-name { font-weight: 800; font-size: 17px; letter-spacing: -0.3px; }
 
-    .header-actions { display: flex; gap: 14px; align-items: center; }
-
-    /* Balance Card */
-    .balance-card {
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
-      color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px;
-      box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
-    }
-    .balance-val { font-size: 32px; font-weight: 800; margin: 6px 0; }
-    .balance-sub { font-size: 13px; opacity: 0.9; }
-
-    /* AI Banner */
-    .ai-banner {
-      background: #dcfce7; border: 1px solid #86efac; border-radius: 16px;
-      padding: 14px; display: flex; align-items: center; gap: 12px;
-      margin-bottom: 20px; cursor: pointer;
-    }
-    .ai-icon {
-      width: 44px; height: 44px; background: #059669; color: white;
-      border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px;
+    /* Header Actions */
+    .icon-btn {
+      width: 42px; height: 42px; border-radius: 14px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center;
+      color: var(--primary-green); font-size: 18px; cursor: pointer;
     }
 
-    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #064e3b; }
+    /* Hero Promo Card (Bento Style) */
+    .hero-card {
+      background: linear-gradient(135deg, #059669 0%, #064e3b 100%);
+      border-radius: 24px; padding: 22px; margin-bottom: 20px;
+      position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+    .hero-badge {
+      display: inline-block; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+      padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .hero-val { font-size: 34px; font-weight: 900; margin-bottom: 4px; }
+    .hero-sub { font-size: 13px; opacity: 0.85; }
 
-    /* Doctor Card */
+    /* Bento Grid Features Section */
+    .bento-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;
+    }
+    .bento-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 20px; padding: 16px; position: relative; backdrop-filter: blur(12px);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .bento-card:active { transform: scale(0.97); }
+    .bento-card.full-width { grid-column: span 2; }
+    .bento-tag {
+      position: absolute; top: 12px; right: 12px;
+      background: linear-gradient(135deg, #ec4899, #ef4444); color: white;
+      font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 8px;
+    }
+    .bento-icon {
+      width: 40px; height: 40px; border-radius: 12px; background: rgba(34, 197, 94, 0.15);
+      color: var(--neon-green); display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 12px;
+    }
+    .bento-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+    .bento-desc { font-size: 12px; color: var(--text-sub); }
+
+    /* Doctors Section */
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .section-title { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+
     .doc-card {
-      background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; gap: 14px; align-items: center;
-      cursor: pointer; border: 1px solid #e2e8f0;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 20px; padding: 16px; margin-bottom: 12px;
+      display: flex; gap: 14px; align-items: center; backdrop-filter: blur(12px);
+      cursor: pointer;
     }
-    .doc-img { width: 62px; height: 62px; border-radius: 14px; object-fit: cover; background: #e2e8f0; }
+    .doc-img { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; }
     .doc-details { flex: 1; }
-    .doc-name { font-weight: 700; font-size: 16px; color: #0f172a; }
-    .doc-spec { font-size: 13px; color: #475569; margin: 2px 0; }
-    .doc-meta { font-size: 12px; color: #059669; font-weight: 700; }
+    .doc-name { font-weight: 700; font-size: 16px; }
+    .doc-spec { font-size: 13px; color: var(--text-sub); margin: 3px 0; }
+    .doc-meta { font-size: 12px; color: var(--neon-green); font-weight: 700; }
     .rating-badge {
-      background: #fef9c3; color: #a16207; padding: 2px 8px; border-radius: 8px; font-size: 12px; font-weight: 700;
+      background: rgba(234, 179, 8, 0.15); color: #facc15;
+      padding: 3px 8px; border-radius: 8px; font-size: 12px; font-weight: 800;
     }
 
-    .btn-main {
-      position: fixed; bottom: 16px; left: 16px; right: 16px;
-      background: #059669; color: white; border: none; padding: 16px;
-      border-radius: 16px; font-size: 16px; font-weight: 700;
-      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35); cursor: pointer; text-align: center; z-index: 100;
+    /* Floating Navigation Bar (Skrinshotdagi kabi) */
+    .floating-nav {
+      position: fixed; bottom: 20px; left: 16px; right: 16px;
+      background: rgba(15, 28, 21, 0.85); backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 30px;
+      padding: 8px 16px; display: flex; justify-content: space-between; align-items: center;
+      z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      color: var(--text-sub); font-size: 11px; font-weight: 600; text-decoration: none;
+      padding: 6px 12px; border-radius: 16px; cursor: pointer;
+    }
+    .nav-item.active { color: var(--neon-green); background: rgba(34, 197, 94, 0.12); }
+    .nav-item i { font-size: 18px; }
 
-    /* Modal Sheet */
+    /* Floating Action Button (AI Pulse) */
+    .fab-ai {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, #10b981, #059669); color: white;
+      border: none; font-size: 22px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); cursor: pointer; transition: transform 0.2s;
+    }
+    .fab-ai:active { transform: scale(0.9); }
+
+    /* Modal Form Sheet */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6); display: none; justify-content: flex-end;
-      flex-direction: column; z-index: 1000;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none;
+      justify-content: flex-end; flex-direction: column; z-index: 2000;
     }
     .modal-sheet {
-      background: white; border-top-left-radius: 24px; border-top-right-radius: 24px;
-      padding: 24px; max-height: 85vh; overflow-y: auto;
+      background: #0f1c15; border-top-left-radius: 28px; border-top-right-radius: 28px;
+      padding: 24px; max-height: 85vh; overflow-y: auto; border-top: 1px solid var(--card-border);
     }
     .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #1e293b; }
+    .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text-sub); text-transform: uppercase; }
     .form-control {
-      width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 15px; outline: none;
+      width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; font-size: 15px; color: white; outline: none;
     }
     .btn-submit {
-      width: 100%; background: #059669; color: white; border: none; padding: 14px;
-      border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px;
+      width: 100%; background: linear-gradient(135deg, #10b981, #059669); color: white;
+      border: none; padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 800;
+      cursor: pointer; margin-top: 10px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
     }
 
     .ai-result-box {
-      background: #f0fdf4; border: 1px solid #86efac; border-radius: 14px;
-      padding: 16px; margin-top: 16px; display: none; font-size: 14px; color: #064e3b; line-height: 1.5;
+      background: rgba(34, 197, 94, 0.1); border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 16px; margin-top: 16px; display: none; font-size: 14px; line-height: 1.5;
     }
   </style>
 </head>
@@ -141,9 +186,9 @@
 
   <!-- Language Selection Screen -->
   <div class="lang-screen" id="langScreen">
-    <div class="lang-logo"><i class="fa-solid fa-heart-pulse"></i></div>
-    <div class="lang-title">Shifo AI</div>
-    <div class="lang-sub">Iltimos, tilni tanlang / Пожалуйста, выберите язык</div>
+    <div class="lang-logo"><i class="fa-solid fa-notes-medical"></i></div>
+    <div class="lang-title">Shifo AI Platform</div>
+    <div class="lang-sub">Iltimos, muloqot tilini tanlang</div>
 
     <button class="lang-btn" onclick="setLanguage('uz_lat')">
       <span>O'zbekcha</span> <span>🇺🇿</span>
@@ -168,41 +213,72 @@
           <div class="user-name" id="u-name">Assalomu alaykum!</div>
         </div>
       </div>
-      <div class="header-actions">
-        <i class="fa-solid fa-globe" style="font-size: 20px; color: #059669; cursor: pointer;" onclick="showLangScreen()"></i>
-        <i class="fa-regular fa-bell" style="font-size: 22px; color: #059669; cursor: pointer;" onclick="openNotifications()"></i>
+      <div style="display: flex; gap: 10px;">
+        <div class="icon-btn" onclick="showLangScreen()"><i class="fa-solid fa-globe"></i></div>
+        <div class="icon-btn" onclick="openNotifications()"><i class="fa-regular fa-bell"></i></div>
       </div>
     </div>
 
-    <!-- Balance Card -->
-    <div class="balance-card">
-      <div class="balance-sub" id="lbl-balance-title"><i class="fa-solid fa-wallet"></i> Bonus Balansingiz</div>
-      <div class="balance-val" id="u-balance">0 UZS</div>
-      <div class="balance-sub" id="lbl-balance-desc">Qabullardan 10% keshbek yig'iladi</div>
+    <!-- Hero Card -->
+    <div class="hero-card">
+      <div class="hero-badge" id="lbl-balance-badge">Keshbek Balans</div>
+      <div class="hero-val" id="u-balance">0 UZS</div>
+      <div class="hero-sub" id="lbl-balance-sub">Har bir qabuldan 10% keshbek beriladi</div>
     </div>
 
-    <!-- AI Banner -->
-    <div class="ai-banner" onclick="openAiModal()">
-      <div class="ai-icon"><i class="fa-solid fa-robot"></i></div>
-      <div>
-        <strong style="font-size: 14px; color: #064e3b;" id="lbl-ai-title">AI Shifo Maslahatisi</strong>
-        <p style="font-size: 12px; color: #047857;" id="lbl-ai-desc">Qaysi shifokorga borishni bilmaysizmi? Maslahat oling</p>
+    <!-- Bento Grid Menu -->
+    <div class="bento-grid">
+      <div class="bento-card full-width" onclick="openAiModal()">
+        <span class="bento-tag">AI 2.5 PRO</span>
+        <div class="bento-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div class="bento-title" id="lbl-bento-ai-title">AI Shifo Maslahatisi</div>
+        <div class="bento-desc" id="lbl-bento-ai-desc">Simptomlaringizni tahlil qiling va mos shifokorni toping</div>
+      </div>
+
+      <div class="bento-card" onclick="openBookingModal()">
+        <span class="bento-tag" style="background: #3b82f6;">TOP</span>
+        <div class="bento-icon" style="color: #60a5fa; background: rgba(59,130,246,0.15);"><i class="fa-regular fa-calendar-check"></i></div>
+        <div class="bento-title" id="lbl-bento-book-title">Qabulga Yozilish</div>
+        <div class="bento-desc" id="lbl-bento-book-desc">Shifokor va vaqtni tanlang</div>
+      </div>
+
+      <div class="bento-card" onclick="openNotifications()">
+        <div class="bento-icon" style="color: #f59e0b; background: rgba(245,158,11,0.15);"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="bento-title" id="lbl-bento-status-title">Eslatmalar</div>
+        <div class="bento-desc" id="lbl-bento-status-desc">Xabarlar oynasi</div>
       </div>
     </div>
 
     <!-- Doctors List -->
-    <div class="section-title" id="lbl-docs-title">Mavjud Shifokorlar</div>
+    <div class="section-header">
+      <div class="section-title" id="lbl-docs-title">Mavjud Shifokorlar</div>
+    </div>
     <div id="doctors-container"></div>
+  </div>
 
-    <button class="btn-main" onclick="openBookingModal()" id="btn-book-main"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
+  <!-- Floating Navigation Bar -->
+  <div class="floating-nav" id="floatingNav" style="display: none;">
+    <div class="nav-item active" onclick="switchTab('home')">
+      <i class="fa-solid fa-house"></i>
+      <span id="lbl-nav-home">Bosh sahifa</span>
+    </div>
+    <div class="nav-item" onclick="openBookingModal()">
+      <i class="fa-regular fa-calendar-days"></i>
+      <span id="lbl-nav-book">Navbat</span>
+    </div>
+    <div class="nav-item" onclick="showLangScreen()">
+      <i class="fa-solid fa-globe"></i>
+      <span>Til</span>
+    </div>
+    <button class="fab-ai" onclick="openAiModal()"><i class="fa-solid fa-sparkles"></i></button>
   </div>
 
   <!-- Modal Sheet -->
   <div class="modal-overlay" id="mainModal">
     <div class="modal-sheet">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 style="font-size: 18px; color: #064e3b;" id="modalTitle">Qabulga yozilish</h3>
-        <i class="fa-solid fa-xmark" style="font-size: 20px; cursor: pointer; color: #64748b;" onclick="closeModal()"></i>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="font-size: 20px; font-weight: 800;" id="modalTitle">Qabulga yozilish</h3>
+        <i class="fa-solid fa-xmark" style="font-size: 22px; cursor: pointer; color: var(--text-sub);" onclick="closeModal()"></i>
       </div>
 
       <div class="form-group" id="docSelectGroup">
@@ -223,7 +299,7 @@
       <button class="btn-submit" id="modalSubmitBtn" onclick="handleFormSubmit()"><i class="fa-solid fa-check"></i> Tasdiqlash</button>
 
       <div class="ai-result-box" id="aiResultBox">
-        <strong style="display: block; margin-bottom: 6px;" id="aiHeaderTitle"><i class="fa-solid fa-brain"></i> AI Tahlil Natijasi:</strong>
+        <strong style="display: block; margin-bottom: 6px; color: var(--neon-green);" id="aiHeaderTitle"><i class="fa-solid fa-brain"></i> AI Tahlil Natijasi:</strong>
         <div id="aiResultText">Tahlil qilinmoqda...</div>
       </div>
     </div>
@@ -237,12 +313,17 @@
     var dictionary = {
       uz_lat: {
         greeting: "Assalomu alaykum, ",
-        balanceTitle: "Bonus Balansingiz",
-        balanceDesc: "Qabullardan 10% keshbek yig'iladi",
-        aiTitle: "AI Shifo Maslahatisi",
-        aiDesc: "Qaysi shifokorga borishni bilmaysizmi? Maslahat oling",
+        balanceBadge: "Keshbek Balans",
+        balanceSub: "Har bir qabuldan 10% keshbek beriladi",
+        bentoAiTitle: "AI Shifo Maslahatisi",
+        bentoAiDesc: "Simptomlaringizni tahlil qiling va mos shifokorni toping",
+        bentoBookTitle: "Qabulga Yozilish",
+        bentoBookDesc: "Shifokor va vaqtni tanlang",
+        bentoStatusTitle: "Eslatmalar",
+        bentoStatusDesc: "Xabarlar va bildirishnomalar",
         docsTitle: "Mavjud Shifokorlar",
-        btnBookMain: "Qabulga Yozilish",
+        navHome: "Bosh sahifa",
+        navBook: "Navbat",
         lblFormDoc: "Shifokorni tanlang",
         lblFormDate: "Qabul sanasi va vaqti",
         symptomsLabelBooking: "Shikoyatingiz / Simptomlar",
@@ -261,12 +342,17 @@
       },
       uz_cyr: {
         greeting: "Ассалому алайкум, ",
-        balanceTitle: "Бонус Балансингиз",
-        balanceDesc: "Қабуллардан 10% кешбек йиғилади",
-        aiTitle: "AI Шифо Маслаҳатиси",
-        aiDesc: "Қайси шифокорга боришни билмайсизми? Маслаҳат олинг",
+        balanceBadge: "Кешбек Баланс",
+        balanceSub: "Ҳар бир қабулдан 10% кешбек берилади",
+        bentoAiTitle: "AI Шифо Маслаҳатиси",
+        bentoAiDesc: "Симптомларингизни таҳлил қилинг ва мос шифокорни топинг",
+        bentoBookTitle: "Қабулга Ёзилиш",
+        bentoBookDesc: "Шифокор ва вақтни танланг",
+        bentoStatusTitle: "Еслатмалар",
+        bentoStatusDesc: "Хабарлар ва билдиришномалар",
         docsTitle: "Мавжуд Шифокорлар",
-        btnBookMain: "Қабулга Ёзилиш",
+        navHome: "Бош саҳифа",
+        navBook: "Навбат",
         lblFormDoc: "Шифокорни танланг",
         lblFormDate: "Қабул санаси ва вақти",
         symptomsLabelBooking: "Шикоятингиз / Симптомлар",
@@ -285,12 +371,17 @@
       },
       ru: {
         greeting: "Здравствуйте, ",
-        balanceTitle: "Ваш бонусный баланс",
-        balanceDesc: "10% кэшбэк накапливается с каждого приема",
-        aiTitle: "AI Консультант Shifo",
-        aiDesc: "Не знаете к какому врачу обратиться? Получите совет",
+        balanceBadge: "Кэшбэк Баланс",
+        balanceSub: "10% кэшбэк начисляется с каждого приема",
+        bentoAiTitle: "AI Консультант Shifo",
+        bentoAiDesc: "Анализируйте симптомы и подберите врача",
+        bentoBookTitle: "Записаться на прием",
+        bentoBookDesc: "Выберите врача и удобное время",
+        bentoStatusTitle: "Уведомления",
+        bentoStatusDesc: "Сообщения и статусы",
         docsTitle: "Доступные Врачи",
-        btnBookMain: "Записаться на прием",
+        navHome: "Главная",
+        navBook: "Запись",
         lblFormDoc: "Выберите врача",
         lblFormDate: "Дата и время приема",
         symptomsLabelBooking: "Ваши жалобы / Симптомы",
@@ -323,6 +414,7 @@
       currentLang = lang;
       document.getElementById('langScreen').style.display = 'none';
       document.getElementById('appContent').style.display = 'block';
+      document.getElementById('floatingNav').style.display = 'flex';
 
       applyTranslations();
       setupUserHeader();
@@ -331,17 +423,24 @@
 
     function showLangScreen() {
       document.getElementById('appContent').style.display = 'none';
+      document.getElementById('floatingNav').style.display = 'none';
       document.getElementById('langScreen').style.display = 'flex';
     }
 
     function applyTranslations() {
       var langObj = dictionary[currentLang];
-      document.getElementById('lbl-balance-title').innerHTML = '<i class="fa-solid fa-wallet"></i> ' + langObj.balanceTitle;
-      document.getElementById('lbl-balance-desc').innerText = langObj.balanceDesc;
-      document.getElementById('lbl-ai-title').innerText = langObj.aiTitle;
-      document.getElementById('lbl-ai-desc').innerText = langObj.aiDesc;
+      document.getElementById('lbl-balance-badge').innerText = langObj.balanceBadge;
+      document.getElementById('lbl-balance-sub').innerText = langObj.balanceSub;
+      document.getElementById('lbl-bento-ai-title').innerText = langObj.bentoAiTitle;
+      document.getElementById('lbl-bento-ai-desc').innerText = langObj.bentoAiDesc;
+      document.getElementById('lbl-bento-book-title').innerText = langObj.bentoBookTitle;
+      document.getElementById('lbl-bento-book-desc').innerText = langObj.bentoBookDesc;
+      document.getElementById('lbl-bento-status-title').innerText = langObj.bentoStatusTitle;
+      document.getElementById('lbl-bento-status-desc').innerText = langObj.bentoStatusDesc;
       document.getElementById('lbl-docs-title').innerText = langObj.docsTitle;
-      document.getElementById('btn-book-main').innerHTML = '<i class="fa-regular fa-calendar-check"></i> ' + langObj.btnBookMain;
+
+      document.getElementById('lbl-nav-home').innerText = langObj.navHome;
+      document.getElementById('lbl-nav-book').innerText = langObj.navBook;
 
       document.getElementById('lbl-form-doc').innerText = langObj.lblFormDoc;
       document.getElementById('lbl-form-date').innerText = langObj.lblFormDate;
@@ -399,7 +498,7 @@
       currentMode = "booking";
       var langObj = dictionary[currentLang];
 
-      document.getElementById('modalTitle').innerText = langObj.btnBookMain;
+      document.getElementById('modalTitle').innerText = langObj.bentoBookTitle;
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelBooking;
       document.getElementById('docSelectGroup').style.display = "block";
       document.getElementById('dateTimeGroup').style.display = "block";
@@ -416,7 +515,7 @@
       currentMode = "ai";
       var langObj = dictionary[currentLang];
 
-      document.getElementById('modalTitle').innerText = langObj.aiTitle;
+      document.getElementById('modalTitle').innerText = langObj.bentoAiTitle;
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelAi;
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
@@ -474,16 +573,14 @@
 
           if (currentLang === "ru") {
             if (txt.indexOf("нога") !== -1 || txt.indexOf("nogi") !== -1 || txt.indexOf("рука") !== -1 || txt.indexOf("сломал") !== -1 || txt.indexOf("травма") !== -1) {
-              advice = "Признак травмы или повреждения конечности/сустава. Рекомендуется обратиться к <strong>Травматологу / Хирургу</strong>.";
+              advice = "Признак травмы или повреждения конечности. Рекомендуется срочно обратиться к <strong>Травматологу / Хирургу</strong>.";
             } else if (txt.indexOf("голова") !== -1 || txt.indexOf("golova") !== -1 || txt.indexOf("стресс") !== -1) {
-              advice = "Возможно проявление нервного напряжения или давления. Рекомендуется осмотр <strong>Невролога (Dr. Malika Zokirova)</strong>.";
-            } else if (txt.indexOf("сердце") !== -1 || txt.indexOf("боль") !== -1) {
-              advice = "Жалобы на сердечно-сосудистую систему. Запишитесь к <strong>Кардиологу (Dr. Alisher Ahmedov)</strong>.";
+              advice = "Возможно проявление нервного напряжения. Рекомендуется осмотр <strong>Невролога (Dr. Malika Zokirova)</strong>.";
             } else {
               advice = "По вашим симптомам рекомендуется записаться к <strong>Терапевту или Хирургу</strong>.";
             }
           } else {
-            if (txt.indexOf("sindi") !== -1 || txt.indexOf("синди") !== -1 || txt.indexOf("oyoq") !== -1 || txt.indexOf("оёқ") !== -1 || txt.indexOf("jarohat") !== -1) {
+            if (txt.indexOf("sindi") !== -1 || txt.indexOf("синди") !== -1 || txt.indexOf("oyoq") !== -1 || txt.indexOf("jarohat") !== -1) {
               advice = currentLang === "uz_cyr" ? "Оёқ/қўл жароҳати ёки суяк шикастланиши белгиси. Зудлик билан <strong>Травматолог / Хирург</strong> кўригига боринг." : "O'tkir shikastlanish yoki o'g'riq belgisi! Zudlik bilan <strong>Travmatolog / Xirurg</strong> ko'rigiga boring.";
             } else if (txt.indexOf("bosh") !== -1 || txt.indexOf("бош") !== -1) {
               advice = currentLang === "uz_cyr" ? "Асабий зўриқиш белгилари бўлиши мумкин. <strong>Невролог (Dr. Malika Zokirova)</strong> кўриги тавсия этилади." : "Asabiy zo'riqish belgilari bo'lishi mumkin. <strong>Nevrolog (Dr. Malika Zokirova)</strong> ko'rigi tavsiya etiladi.";
