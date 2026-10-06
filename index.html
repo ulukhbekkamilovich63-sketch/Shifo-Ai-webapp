@@ -61,9 +61,8 @@
     .doc-card {
       background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; gap: 14px; align-items: center;
-      cursor: pointer; transition: transform 0.1s;
+      cursor: pointer;
     }
-    .doc-card:active { transform: scale(0.98); }
     .doc-img { width: 60px; height: 60px; border-radius: 14px; background: #e2e8f0; object-fit: cover; }
     .doc-details { flex: 1; }
     .doc-name { font-weight: 700; font-size: 15px; }
@@ -80,8 +79,217 @@
       box-shadow: 0 8px 16px rgba(2, 132, 199, 0.3); cursor: pointer; text-align: center; z-index: 100;
     }
 
-    /* Modal Sheet Styling */
+    /* Modal Form UI */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5); display: none; justify-content: flex-end;
-      flex-direction: column
+      background: rgba(0,0,0,0.6); display: none; justify-content: flex-end;
+      flex-direction: column; z-index: 1000;
+    }
+    .modal-sheet {
+      background: white; border-top-left-radius: 24px; border-top-right-radius: 24px;
+      padding: 24px; max-height: 85vh; overflow-y: auto;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #334155; }
+    .form-control {
+      width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 15px; outline: none;
+    }
+    .btn-submit {
+      width: 100%; background: #0284c7; color: white; border: none; padding: 14px;
+      border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="user-info">
+      <div class="avatar" id="u-avatar">B</div>
+      <div>
+        <div class="user-name" id="u-name">Bemor</div>
+        <div class="user-status" id="u-status">Tashkent • Telegram User</div>
+      </div>
+    </div>
+    <i class="fa-regular fa-bell" style="font-size: 20px; color: #64748b;"></i>
+  </div>
+
+  <!-- Balance Card -->
+  <div class="balance-card">
+    <div class="balance-sub"><i class="fa-solid fa-wallet"></i> Bonus Balansingiz</div>
+    <div class="balance-val" id="u-balance">0 UZS</div>
+    <div class="balance-sub">Qabullardan 10% keshbek yig'iladi</div>
+  </div>
+
+  <!-- AI Banner -->
+  <div class="ai-banner" onclick="openBookingModal()">
+    <div class="ai-icon"><i class="fa-solid fa-robot"></i></div>
+    <div>
+      <strong style="font-size: 14px; color: #166534;">AI Shifo Maslahatisi</strong>
+      <p style="font-size: 12px; color: #15803d;">Qabulga yozilish yoki maslahat olish</p>
+    </div>
+  </div>
+
+  <!-- Doctors List -->
+  <div class="section-title">Mavjud Shifokorlar</div>
+  <div id="doctors-container">
+    <p style="color: #64748b; font-size: 14px;">Shifokorlar yuklanmoqda...</p>
+  </div>
+
+  <button class="btn-main" onclick="openBookingModal()"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
+
+  <!-- Booking Modal -->
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal-sheet">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="font-size: 18px;">Qabulga yozilish</h3>
+        <i class="fa-solid fa-xmark" style="font-size: 20px; cursor: pointer; color: #64748b;" onclick="closeModal()"></i>
+      </div>
+
+      <div class="form-group">
+        <label>Shifokorni tanlang</label>
+        <select class="form-control" id="doctorSelect"></select>
+      </div>
+
+      <div class="form-group">
+        <label>Qabul sanasi va vaqti</label>
+        <input type="datetime-local" class="form-control" id="appointmentTime">
+      </div>
+
+      <div class="form-group">
+        <label>Shikoyatingiz / Simptomlar</label>
+        <textarea class="form-control" id="symptoms" rows="3" placeholder="Shikoyatingizni qisqacha yozing..."></textarea>
+      </div>
+
+      <button class="btn-submit" onclick="submitAppointment()"><i class="fa-solid fa-check"></i> Tasdiqlash</button>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://lcyrrjbngcjpspyrbkfv.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_ZTcriy4OnRZTrpWSL-Dp7w_64D8RQSZ";
+    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    let doctorsList = [];
+    let currentUserId = null;
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    async function initUserAndData() {
+      let telegramUser = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+
+      if (telegramUser) {
+        document.getElementById('u-name').innerText = telegramUser.first_name + (telegramUser.last_name ? ' ' + telegramUser.last_name : '');
+        document.getElementById('u-avatar').innerText = telegramUser.first_name.charAt(0);
+
+        if (supabase) {
+          // Check or create user in Supabase
+          let { data: user, error } = await supabase.from('users').select('*').eq('telegram_id', telegramUser.id).maybeSingle();
+          
+          if (!user) {
+            const { data: newUser } = await supabase.from('users').insert([
+              { telegram_id: telegramUser.id, full_name: telegramUser.first_name, bonus_balance: 15000.00 }
+            ]).select().single();
+            user = newUser;
+          }
+
+          if (user) {
+            currentUserId = user.id;
+            document.getElementById('u-balance').innerText = Number(user.bonus_balance).toLocaleString('uz-UZ') + ' UZS';
+          }
+        }
+      }
+
+      loadDoctors();
+    }
+
+    async function loadDoctors() {
+      const container = document.getElementById('doctors-container');
+      const select = document.getElementById('doctorSelect');
+
+      if (!supabase) {
+        container.innerHTML = '<p style="color: #64748b;">Supabase bilan ulanmadi.</p>';
+        return;
+      }
+
+      const { data: doctors, error } = await supabase.from('doctors').select('*');
+
+      if (error || !doctors || doctors.length === 0) {
+        container.innerHTML = '<p style="color: #64748b; font-size: 14px;">Hozircha bazada shifokorlar yo\'q.</p>';
+        select.innerHTML = '<option value="">Shifokor topilmadi</option>';
+        return;
+      }
+
+      doctorsList = doctors;
+      container.innerHTML = '';
+      select.innerHTML = '';
+
+      doctors.forEach(doc => {
+        container.innerHTML += `
+          <div class="doc-card" onclick="openBookingModal('${doc.id}')">
+            <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" class="doc-img">
+            <div class="doc-details">
+              <div style="display: flex; justify-content: space-between;">
+                <span class="doc-name">${doc.full_name}</span>
+                <span class="rating-badge"><i class="fa-solid fa-star"></i> ${doc.rating || '5.0'}</span>
+              </div>
+              <div class="doc-spec">${doc.specialty} • ${doc.clinic_name || 'Xususiy'}</div>
+              <div class="doc-meta">Qabul: ${Number(doc.consultation_fee).toLocaleString('uz-UZ')} UZS (${doc.cashback_percentage}% Cashback)</div>
+            </div>
+          </div>`;
+
+        select.innerHTML += `<option value="${doc.id}">${doc.full_name} (${doc.specialty})</option>`;
+      });
+    }
+
+    function openBookingModal(doctorId = null) {
+      if (doctorId) {
+        document.getElementById('doctorSelect').value = doctorId;
+      }
+      document.getElementById('bookingModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('bookingModal').style.display = 'none';
+    }
+
+    async function submitAppointment() {
+      const doctorId = document.getElementById('doctorSelect').value;
+      const time = document.getElementById('appointmentTime').value;
+      const symptoms = document.getElementById('symptoms').value;
+
+      if (!doctorId || !time) {
+        if (tg) tg.showAlert("Iltimos, shifokor va vaqtni tanlang!");
+        else alert("Iltimos, shifokor va vaqtni tanlang!");
+        return;
+      }
+
+      const selectedDoc = doctorsList.find(d => d.id === doctorId);
+
+      if (supabase) {
+        await supabase.from('appointments').insert([
+          {
+            user_id: currentUserId,
+            doctor_id: doctorId,
+            appointment_time: new Date(time).toISOString(),
+            symptoms_summary: symptoms,
+            consultation_fee: selectedDoc ? selectedDoc.consultation_fee : 0,
+            status: 'pending'
+          }
+        ]);
+      }
+
+      closeModal();
+      const msg = `Qabulga yozildingiz!\nShifokor: ${selectedDoc ? selectedDoc.full_name : ''}\nVaqti: ${new Date(time).toLocaleString('uz-UZ')}`;
+      if (tg) tg.showAlert(msg);
+      else alert(msg);
+    }
+
+    initUserAndData();
+  </script>
+</body>
+</html>
