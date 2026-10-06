@@ -3,119 +3,258 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ShifoAI - Telegram Mini App</title>
+  <title>Shifo AI - Aqlli Tabib</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
-      --text-color: #0f172a;
       --primary: #0284c7;
-      --secondary: #0f766e;
+      --primary-dark: #0369a1;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-light: #64748b;
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
       padding: 16px;
+      padding-bottom: 80px;
     }
-    .card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
+
+    /* Header Profile */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 16px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 18px;
+    }
+    .user-name { font-weight: 700; font-size: 16px; }
+    .user-status { font-size: 12px; color: var(--text-light); }
+
+    /* Balance Card */
     .balance-card {
       background: linear-gradient(135deg, #0284c7 0%, #0f766e 100%);
       color: white;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 20px rgba(2, 132, 199, 0.2);
     }
-    .balance-title { font-size: 14px; opacity: 0.9; }
-    .balance-amount { font-size: 28px; font-weight: bold; margin-top: 8px; }
-    .btn {
-      width: 100%;
-      background-color: var(--primary);
-      color: white;
-      border: none;
+    .balance-val { font-size: 32px; font-weight: 800; margin: 6px 0; }
+    .balance-sub { font-size: 13px; opacity: 0.85; }
+
+    /* AI Advisory Banner */
+    .ai-banner {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 16px;
       padding: 14px;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
       cursor: pointer;
-      margin-top: 8px;
     }
-    .doctor-item {
-      border: 1px solid #e2e8f0;
+    .ai-icon {
+      width: 40px; height: 40px;
+      background: #22c55e;
+      color: white;
       border-radius: 12px;
-      padding: 12px;
-      margin-top: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+
+    /* Category Filter */
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+    .categories {
+      display: flex; gap: 8px; overflow-x: auto;
+      padding-bottom: 8px; margin-bottom: 16px;
+      scrollbar-width: none;
+    }
+    .cat-chip {
+      background: #e2e8f0; padding: 8px 16px;
+      border-radius: 20px; font-size: 13px;
+      white-space: nowrap; font-weight: 600; color: var(--text-light);
+    }
+    .cat-chip.active { background: var(--primary); color: white; }
+
+    /* Doctor Card */
+    .doc-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      display: flex; gap: 14px; align-items: center;
+    }
+    .doc-img {
+      width: 60px; height: 60px;
+      border-radius: 14px;
+      background: #e2e8f0;
+      object-fit: cover;
+    }
+    .doc-details { flex: 1; }
+    .doc-name { font-weight: 700; font-size: 15px; }
+    .doc-spec { font-size: 13px; color: var(--text-light); margin: 2px 0; }
+    .doc-meta { font-size: 12px; color: var(--primary); font-weight: 600; }
+    .rating-badge {
+      background: #fef9c3; color: #a16207;
+      padding: 2px 8px; border-radius: 8px; font-size: 12px; font-weight: 700;
+    }
+
+    /* Main CTA Button */
+    .btn-main {
+      position: fixed; bottom: 16px; left: 16px; right: 16px;
+      background: var(--primary); color: white; border: none;
+      padding: 16px; border-radius: 16px; font-size: 16px;
+      font-weight: 700; box-shadow: 0 8px 16px rgba(2, 132, 199, 0.3);
+      cursor: pointer; text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <!-- Balance Card -->
-  <div class="card balance-card">
-    <div class="balance-title">Bonus Balansingiz</div>
-    <div class="balance-amount" id="user-balance">15 000 UZS</div>
+  <!-- Header -->
+  <div class="header">
+    <div class="user-info">
+      <div class="avatar" id="u-avatar">B</div>
+      <div>
+        <div class="user-name" id="u-name">Bemor</div>
+        <div class="user-status">Tashkent • Telegram User</div>
+      </div>
+    </div>
+    <i class="fa-regular fa-bell" style="font-size: 20px; color: #64748b;"></i>
   </div>
 
-  <!-- Doctors Section -->
-  <div class="card">
-    <h3>Shifokorlar va Klinikalar</h3>
-    <div id="doctors-list">
-      <p style="color: #64748b;">Shifokorlar yuklanmoqda...</p>
+  <!-- Balance Card -->
+  <div class="balance-card">
+    <div class="balance-sub"><i class="fa-solid fa-wallet"></i> Bonus Balansingiz</div>
+    <div class="balance-val" id="u-balance">15 000 UZS</div>
+    <div class="balance-sub">Qabullardan 10% keshbek yig'iladi</div>
+  </div>
+
+  <!-- AI Triaj Banner -->
+  <div class="ai-banner" onclick="startAIConsultation()">
+    <div class="ai-icon"><i class="fa-solid fa-robot"></i></div>
+    <div>
+      <strong style="font-size: 14px; color: #166534;">AI Shifo Maslahatisi</strong>
+      <p style="font-size: 12px; color: #15803d;">Qaysi shifokorga borishni bilmaysizmi? AI yordam beradi</p>
     </div>
   </div>
 
-  <button class="btn" onclick="bookAppointment()">Qabulga yozilish</button>
+  <!-- Specialities Filter -->
+  <div class="section-title">Kategoriyalar</div>
+  <div class="categories">
+    <div class="cat-chip active">Barchasi</div>
+    <div class="cat-chip">Kardiolog</div>
+    <div class="cat-chip">Nevrolog</div>
+    <div class="cat-chip">Pediatr</div>
+    <div class="cat-chip">Stomatolog</div>
+  </div>
+
+  <!-- Doctors List -->
+  <div class="section-title">Mavjud Shifokorlar</div>
+  <div id="doctors-container">
+    <p style="color: #64748b;">Shifokorlar yuklanmoqda...</p>
+  </div>
+
+  <button class="btn-main" onclick="bookAppointment()"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
 
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
-    if (tg) tg.expand();
+    if (tg) {
+      tg.expand();
+      if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const user = tg.initDataUnsafe.user;
+        document.getElementById('u-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+        document.getElementById('u-avatar').innerText = user.first_name.charAt(0);
+      }
+    }
 
-    // SUPABASE CONFIG (O'zingizning URL va KEY'ingizni joylang)
-    const SUPABASE_URL = "https://lcyrrjbngcjpspyrbkfv.supabase.co"
-    const SUPABASE_KEY ="sb_publishable_ZTcriy4OnRZTrpWSL-Dp7w_64D8RQSZ" ;
+    // Exact Supabase Credentials
+    const SUPABASE_URL = "https://lcyrrjbngcjpspyrbkfv.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_ZTcriy4OnRZTrpWSL-Dp7w_64D8RQSZ";
 
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     async function loadDoctors() {
-      const { data: doctors, error } = await supabase.from('doctors').select('*');
-      const listContainer = document.getElementById('doctors-list');
-      
-      if (error || !doctors || doctors.length === 0) {
-        listContainer.innerHTML = `
-          <div class="doctor-item">
-            <strong>Dr. Alisher Ahmedov</strong><br>
-            <small>Kardiolog • Akfa Medline</small><br>
-            <span style="color: #0284c7;">Qabul: 150 000 UZS (10% Cashback)</span>
-          </div>`;
-        return;
-      }
+      const container = document.getElementById('doctors-container');
+      try {
+        const { data: doctors, error } = await supabase.from('doctors').select('*');
+        
+        if (error || !doctors || doctors.length === 0) {
+          container.innerHTML = `
+            <div class="doc-card">
+              <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" class="doc-img">
+              <div class="doc-details">
+                <div style="display: flex; justify-content: space-between;">
+                  <span class="doc-name">Dr. Alisher Ahmedov</span>
+                  <span class="rating-badge"><i class="fa-solid fa-star"></i> 4.9</span>
+                </div>
+                <div class="doc-spec">Kardiolog • Akfa Medline</div>
+                <div class="doc-meta">Qabul: 150 000 UZS (10% Cashback)</div>
+              </div>
+            </div>
+            <div class="doc-card">
+              <img src="https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" class="doc-img">
+              <div class="doc-details">
+                <div style="display: flex; justify-content: space-between;">
+                  <span class="doc-name">Dr. Malika Zokirova</span>
+                  <span class="rating-badge"><i class="fa-solid fa-star"></i> 5.0</span>
+                </div>
+                <div class="doc-spec">Nevrolog • Shifo Med</div>
+                <div class="doc-meta">Qabul: 120 000 UZS (15% Cashback)</div>
+              </div>
+            </div>`;
+          return;
+        }
 
-      listContainer.innerHTML = '';
-      doctors.forEach(doc => {
-        listContainer.innerHTML += `
-          <div class="doctor-item">
-            <strong>${doc.full_name}</strong><br>
-            <small>${doc.specialty} • ${doc.clinic_name || 'Xususiy'}</small><br>
-            <span style="color: #0284c7;">Qabul: ${doc.consultation_fee.toLocaleString()} UZS (${doc.cashback_percentage}% Cashback)</span>
-          </div>`;
-      });
+        container.innerHTML = '';
+        doctors.forEach(doc => {
+          container.innerHTML += `
+            <div class="doc-card">
+              <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" class="doc-img">
+              <div class="doc-details">
+                <div style="display: flex; justify-content: space-between;">
+                  <span class="doc-name">${doc.full_name}</span>
+                  <span class="rating-badge"><i class="fa-solid fa-star"></i> ${doc.rating || '5.0'}</span>
+                </div>
+                <div class="doc-spec">${doc.specialty} • ${doc.clinic_name || 'Xususiy'}</div>
+                <div class="doc-meta">Qabul: ${Number(doc.consultation_fee).toLocaleString()} UZS (${doc.cashback_percentage}% Cashback)</div>
+              </div>
+            </div>`;
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function startAIConsultation() {
+      if (tg) tg.showAlert("AI Simptom-Tahlil moduli ishga tushmoqda...");
+      else alert("AI Simptom-Tahlil moduli");
     }
 
     function bookAppointment() {
-      if (tg) {
-        tg.showAlert("Qabulga yozilish so'rovingiz qabul qilindi!");
-      } else {
-        alert("Qabulga yozilish so'rovingiz qabul qilindi!");
-      }
+      if (tg) tg.showAlert("Shifokor va qabul vaqtini tanlang.");
+      else alert("Qabulga yozilish");
     }
 
     loadDoctors();
   </script>
 </body>
 </html>
+
