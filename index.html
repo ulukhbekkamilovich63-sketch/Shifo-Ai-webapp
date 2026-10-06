@@ -27,13 +27,15 @@
       overflow-x: hidden;
     }
 
-    /* Onboarding Wizard Screens */
+    /* Onboarding Screens */
     .onboard-screen {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #08160e; z-index: 3000;
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      display: none; flex-direction: column; align-items: center; justify-content: flex-start;
       padding: 24px 16px; text-align: center; overflow-y: auto;
     }
+    .onboard-screen.active { display: flex; }
+    
     .onboard-logo {
       width: 76px; height: 76px; background: linear-gradient(135deg, #10b981, #059669);
       border-radius: 22px; display: flex; align-items: center; justify-content: center;
@@ -53,6 +55,7 @@
 
     /* Main App Container */
     .app-content { display: none; }
+    .app-content.active { display: block; }
 
     /* Header Profile */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -154,9 +157,11 @@
       position: fixed; bottom: 20px; left: 16px; right: 16px;
       background: rgba(12, 32, 22, 0.9); backdrop-filter: blur(20px);
       border: 1px solid rgba(52, 211, 153, 0.25); border-radius: 30px;
-      padding: 8px 16px; display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 16px; display: none; justify-content: space-between; align-items: center;
       z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
+    .floating-nav.active { display: flex; }
+    
     .nav-item {
       display: flex; flex-direction: column; align-items: center; gap: 4px;
       color: var(--text-sub); font-size: 11px; font-weight: 600; text-decoration: none;
@@ -235,7 +240,7 @@
   </div>
 
   <!-- STEP 2: Region (Viloyat) Selection Screen -->
-  <div class="onboard-screen" id="regionScreen" style="display: none;">
+  <div class="onboard-screen" id="regionScreen">
     <div class="onboard-logo"><i class="fa-solid fa-map-location-dot"></i></div>
     <div class="onboard-title" id="lbl-region-title">Viloyatni tanlang</div>
     <div class="onboard-sub" id="lbl-region-sub">Oʻz hududingizni koʻrsating</div>
@@ -243,8 +248,8 @@
     <div id="regionsContainer" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px;"></div>
   </div>
 
-  <!-- STEP 3: District / City (Tuman / Shahar) Selection Screen -->
-  <div class="onboard-screen" id="districtScreen" style="display: none;">
+  <!-- STEP 3: District / City Selection Screen -->
+  <div class="onboard-screen" id="districtScreen">
     <div class="onboard-logo"><i class="fa-solid fa-city"></i></div>
     <div class="onboard-title" id="lbl-district-title">Tuman / Shaharni tanlang</div>
     <div class="onboard-sub" id="lbl-district-sub">Tumaningizni tanlang</div>
@@ -312,7 +317,7 @@
   </div>
 
   <!-- Floating Navigation Bar -->
-  <div class="floating-nav" id="floatingNav" style="display: none;">
+  <div class="floating-nav" id="floatingNav">
     <div class="nav-item active" onclick="switchTab('home')">
       <i class="fa-solid fa-house"></i>
       <span id="lbl-nav-home">Bosh sahifa</span>
@@ -378,9 +383,8 @@
 
   <script>
     var tg = window.Telegram ? window.Telegram.WebApp : null;
-    var currentLang = "uz_lat";
-    var selectedRegion = "Toshkent shahri";
-    var selectedDistrict = "Barcha tumanlar";
+    var currentLang = localStorage.getItem('shifo_lang') || null;
+    var selectedRegion = localStorage.getItem('shifo_region') || null;
     var currentMode = "booking";
     var hasImage = false;
     var chosenViloyat = "";
@@ -566,33 +570,46 @@
         therapy: "Терапевт",
         surgery: "Хирург",
         pediatrics: "Педиатр",
-        topDoctor: "🔥 Топ Врач"
+        topDoctor: "🔥 Top Врач"
       }
     };
 
-    if (tg) {
-      tg.ready();
-      tg.expand();
-    }
+    // App Initialization Logic
+    window.onload = function() {
+      if (tg) {
+        tg.ready();
+        tg.expand();
+      }
+
+      if (!currentLang) {
+        document.getElementById('langScreen').classList.add('active');
+      } else if (!selectedRegion) {
+        renderRegions();
+        document.getElementById('regionScreen').classList.add('active');
+      } else {
+        launchMainApp();
+      }
+    };
 
     function selectLanguage(lang) {
       currentLang = lang;
-      document.getElementById('langScreen').style.display = 'none';
+      localStorage.setItem('shifo_lang', lang);
+      document.getElementById('langScreen').classList.remove('active');
       renderRegions();
-      document.getElementById('regionScreen').style.display = 'flex';
+      document.getElementById('regionScreen').classList.add('active');
     }
 
     function showLangScreen() {
-      document.getElementById('appContent').style.display = 'none';
-      document.getElementById('floatingNav').style.display = 'none';
-      document.getElementById('langScreen').style.display = 'flex';
+      document.getElementById('appContent').classList.remove('active');
+      document.getElementById('floatingNav').classList.remove('active');
+      document.getElementById('langScreen').classList.add('active');
     }
 
     function showRegionScreen() {
-      document.getElementById('appContent').style.display = 'none';
-      document.getElementById('floatingNav').style.display = 'none';
+      document.getElementById('appContent').classList.remove('active');
+      document.getElementById('floatingNav').classList.remove('active');
       renderRegions();
-      document.getElementById('regionScreen').style.display = 'flex';
+      document.getElementById('regionScreen').classList.add('active');
     }
 
     function renderRegions() {
@@ -615,15 +632,15 @@
 
     function selectRegion(regionName) {
       chosenViloyat = regionName;
-      document.getElementById('regionScreen').style.display = 'none';
+      document.getElementById('regionScreen').classList.remove('active');
       renderDistricts(regionName);
-      document.getElementById('districtScreen').style.display = 'flex';
+      document.getElementById('districtScreen').classList.add('active');
     }
 
     function backToRegions() {
-      document.getElementById('districtScreen').style.display = 'none';
+      document.getElementById('districtScreen').classList.remove('active');
       renderRegions();
-      document.getElementById('regionScreen').style.display = 'flex';
+      document.getElementById('regionScreen').classList.add('active');
     }
 
     function renderDistricts(regionName) {
@@ -653,10 +670,14 @@
 
     function finalizeRegion(viloyat, tuman) {
       selectedRegion = viloyat + ", " + tuman;
-      document.getElementById('districtScreen').style.display = 'none';
-      document.getElementById('appContent').style.display = 'block';
-      document.getElementById('floatingNav').style.display = 'flex';
+      localStorage.setItem('shifo_region', selectedRegion);
+      document.getElementById('districtScreen').classList.remove('active');
+      launchMainApp();
+    }
 
+    function launchMainApp() {
+      document.getElementById('appContent').classList.add('active');
+      document.getElementById('floatingNav').classList.add('active');
       document.getElementById('headerRegionInfo').innerText = "📍 " + selectedRegion;
 
       applyTranslations();
