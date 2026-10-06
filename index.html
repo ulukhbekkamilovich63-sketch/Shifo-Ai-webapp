@@ -223,7 +223,7 @@
       <button class="btn-submit" id="modalSubmitBtn" onclick="handleFormSubmit()"><i class="fa-solid fa-check"></i> Tasdiqlash</button>
 
       <div class="ai-result-box" id="aiResultBox">
-        <strong style="display: block; margin-bottom: 6px;"><i class="fa-solid fa-brain"></i> AI Tahlil Natijasi:</strong>
+        <strong style="display: block; margin-bottom: 6px;" id="aiHeaderTitle"><i class="fa-solid fa-brain"></i> AI Tahlil Natijasi:</strong>
         <div id="aiResultText">Tahlil qilinmoqda...</div>
       </div>
     </div>
@@ -254,6 +254,7 @@
         feeLabel: "Qabul",
         cashbackLabel: "Keshbek",
         aiAnalyzing: "AI simptomlarni tahlil qilmoqda...",
+        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Tahlil Natijasi:",
         successBooking: "Qabulga muvaffaqiyatli yozildingiz!",
         cardiology: "Kardiolog",
         neurology: "Nevrolog"
@@ -277,6 +278,7 @@
         feeLabel: "Қабул",
         cashbackLabel: "Кешбек",
         aiAnalyzing: "AI симптомларни таҳлил қилмоқда...",
+        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Таҳлил Натижаси:",
         successBooking: "Қабулга муваффақиятли ёзилдингиз!",
         cardiology: "Кардиолог",
         neurology: "Невролог"
@@ -300,6 +302,7 @@
         feeLabel: "Прием",
         cashbackLabel: "Кэшбэк",
         aiAnalyzing: "ИИ анализирует ваши симптомы...",
+        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> Результат анализа ИИ:",
         successBooking: "Вы успешно записались на прием!",
         cardiology: "Кардиолог",
         neurology: "Невролог"
@@ -343,6 +346,7 @@
       document.getElementById('lbl-form-doc').innerText = langObj.lblFormDoc;
       document.getElementById('lbl-form-date').innerText = langObj.lblFormDate;
       document.getElementById('symptoms').placeholder = langObj.placeholderSymptoms;
+      document.getElementById('aiHeaderTitle').innerHTML = langObj.aiHeaderTitle;
     }
 
     function setupUserHeader() {
@@ -430,6 +434,27 @@
       if (tg && tg.showAlert) tg.showAlert(msg); else alert(msg);
     }
 
+    function formatCustomDate(dateStr) {
+      var d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+
+      var day = d.getDate();
+      var hours = String(d.getHours()).padStart(2, '0');
+      var minutes = String(d.getMinutes()).padStart(2, '0');
+      var year = d.getFullYear();
+
+      if (currentLang === "ru") {
+        var monthsRu = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+        return day + " " + monthsRu[d.getMonth()] + " " + year + " г., " + hours + ":" + minutes;
+      } else if (currentLang === "uz_cyr") {
+        var monthsCyr = ["январ", "феврал", "март", "апрел", "май", "июн", "июл", "август", "сентябр", "октябр", "ноябр", "декабр"];
+        return day + "-" + monthsCyr[d.getMonth()] + ", " + year + "-йил, соат " + hours + ":" + minutes;
+      } else {
+        var monthsUz = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
+        return day + "-" + monthsUz[d.getMonth()] + ", " + year + "-yil, soat " + hours + ":" + minutes;
+      }
+    }
+
     function handleFormSubmit() {
       var symptoms = document.getElementById('symptoms').value;
       var langObj = dictionary[currentLang];
@@ -448,20 +473,22 @@
           var advice = "";
 
           if (currentLang === "ru") {
-            if (txt.indexOf("сломал") !== -1 || txt.indexOf("боль") !== -1 || txt.indexOf("нога") !== -1 || txt.indexOf("рука") !== -1) {
-              advice = "Признак травмы или перелома! Срочно обратитесь к <strong>Травматологу / Хирургу</strong> и иммобилизуйте поврежденную конечность.";
-            } else if (txt.indexOf("голова") !== -1 || txt.indexOf("стресс") !== -1) {
-              advice = "Возможно проявление нервного напряжения. Рекомендуется осмотр <strong>Невролога (Dr. Malika Zokirova)</strong>.";
+            if (txt.indexOf("нога") !== -1 || txt.indexOf("nogi") !== -1 || txt.indexOf("рука") !== -1 || txt.indexOf("сломал") !== -1 || txt.indexOf("травма") !== -1) {
+              advice = "Признак травмы или повреждения конечности/сустава. Рекомендуется обратиться к <strong>Травматологу / Хирургу</strong>.";
+            } else if (txt.indexOf("голова") !== -1 || txt.indexOf("golova") !== -1 || txt.indexOf("стресс") !== -1) {
+              advice = "Возможно проявление нервного напряжения или давления. Рекомендуется осмотр <strong>Невролога (Dr. Malika Zokirova)</strong>.";
+            } else if (txt.indexOf("сердце") !== -1 || txt.indexOf("боль") !== -1) {
+              advice = "Жалобы на сердечно-сосудистую систему. Запишитесь к <strong>Кардиологу (Dr. Alisher Ahmedov)</strong>.";
             } else {
-              advice = "По вашим симптомам рекомендуется записаться к <strong>Терапевту или Неврологу</strong>.";
+              advice = "По вашим симптомам рекомендуется записаться к <strong>Терапевту или Хирургу</strong>.";
             }
           } else {
-            if (txt.indexOf("sindi") !== -1 || txt.indexOf("синди") !== -1 || txt.indexOf("jarohat") !== -1 || txt.indexOf("жароҳат") !== -1) {
-              advice = currentLang === "uz_cyr" ? "Ўткир шикастланиш / суяк синиши белгиси! Зудлик билан <strong>Травматолог / Хирург</strong> кўригига боринг." : "O'tkir shikastlanish / suyak sinishi belgisi! Zudlik bilan <strong>Travmatolog / Xirurg</strong> ko'rigiga boring.";
+            if (txt.indexOf("sindi") !== -1 || txt.indexOf("синди") !== -1 || txt.indexOf("oyoq") !== -1 || txt.indexOf("оёқ") !== -1 || txt.indexOf("jarohat") !== -1) {
+              advice = currentLang === "uz_cyr" ? "Оёқ/қўл жароҳати ёки суяк шикастланиши белгиси. Зудлик билан <strong>Травматолог / Хирург</strong> кўригига боринг." : "O'tkir shikastlanish yoki o'g'riq belgisi! Zudlik bilan <strong>Travmatolog / Xirurg</strong> ko'rigiga boring.";
             } else if (txt.indexOf("bosh") !== -1 || txt.indexOf("бош") !== -1) {
               advice = currentLang === "uz_cyr" ? "Асабий зўриқиш белгилари бўлиши мумкин. <strong>Невролог (Dr. Malika Zokirova)</strong> кўриги тавсия этилади." : "Asabiy zo'riqish belgilari bo'lishi mumkin. <strong>Nevrolog (Dr. Malika Zokirova)</strong> ko'rigi tavsiya etiladi.";
             } else {
-              advice = currentLang === "uz_cyr" ? "Умумий мутахассис <strong>Терапевт ёки Невролог</strong> қабулига ёзилишингиз лозим." : "Umumiy mutaxassis <strong>Terapevt yoki Nevrolog</strong> qabuliga yozilishingiz lozim.";
+              advice = currentLang === "uz_cyr" ? "Умумий мутахассис <strong>Терапевт ёки Хирург</strong> қабулига ёзилишингиз лозим." : "Umumiy mutaxassis <strong>Terapevt yoki Xirurg</strong> qabuliga yozilishingiz lozim.";
             }
           }
 
@@ -477,6 +504,8 @@
           return;
         }
 
+        var formattedTime = formatCustomDate(rawTime);
+
         var selDoc = null;
         for (var j = 0; j < doctorsList.length; j++) {
           if (doctorsList[j].id === docId) selDoc = doctorsList[j];
@@ -486,7 +515,7 @@
           type: "appointment",
           lang: currentLang,
           doctor_name: selDoc ? selDoc.full_name : "",
-          appointment_time: rawTime,
+          appointment_time: formattedTime,
           symptoms: symptoms
         };
 
@@ -495,7 +524,7 @@
         }
 
         closeModal();
-        var okMsg = langObj.successBooking + "\n\nВрач: " + (selDoc ? selDoc.full_name : '') + "\nВремя: " + rawTime;
+        var okMsg = langObj.successBooking + "\n\n" + (currentLang === "ru" ? "Врач: " : "Shifokor: ") + (selDoc ? selDoc.full_name : '') + "\n" + (currentLang === "ru" ? "Время: " : "Vaqti: ") + formattedTime;
         if (tg && tg.showAlert) tg.showAlert(okMsg); else alert(okMsg);
       }
     }
