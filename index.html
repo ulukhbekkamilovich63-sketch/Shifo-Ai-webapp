@@ -26,17 +26,12 @@
     }
 
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
     }
     .user-info { display: flex; align-items: center; gap: 10px; }
     .avatar {
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: white;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--primary); color: white;
       display: flex; align-items: center; justify-content: center;
       font-weight: bold; font-size: 18px;
     }
@@ -45,219 +40,48 @@
 
     .balance-card {
       background: linear-gradient(135deg, #0284c7 0%, #0f766e 100%);
-      color: white;
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 20px;
+      color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px;
       box-shadow: 0 10px 20px rgba(2, 132, 199, 0.2);
     }
     .balance-val { font-size: 32px; font-weight: 800; margin: 6px 0; }
     .balance-sub { font-size: 13px; opacity: 0.85; }
 
     .ai-banner {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-radius: 16px;
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-      cursor: pointer;
+      background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 16px;
+      padding: 14px; display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px; cursor: pointer;
     }
     .ai-icon {
-      width: 40px; height: 40px;
-      background: #22c55e;
-      color: white;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
+      width: 40px; height: 40px; background: #22c55e; color: white;
+      border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;
     }
 
     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
-    .categories {
-      display: flex; gap: 8px; overflow-x: auto;
-      padding-bottom: 8px; margin-bottom: 16px;
-      scrollbar-width: none;
-    }
-    .cat-chip {
-      background: #e2e8f0; padding: 8px 16px;
-      border-radius: 20px; font-size: 13px;
-      white-space: nowrap; font-weight: 600; color: var(--text-light);
-      cursor: pointer;
-    }
-    .cat-chip.active { background: var(--primary); color: white; }
 
     .doc-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      display: flex; gap: 14px; align-items: center;
-      cursor: pointer;
+      background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; gap: 14px; align-items: center;
+      cursor: pointer; transition: transform 0.1s;
     }
-    .doc-img {
-      width: 60px; height: 60px;
-      border-radius: 14px;
-      background: #e2e8f0;
-      object-fit: cover;
-    }
+    .doc-card:active { transform: scale(0.98); }
+    .doc-img { width: 60px; height: 60px; border-radius: 14px; background: #e2e8f0; object-fit: cover; }
     .doc-details { flex: 1; }
     .doc-name { font-weight: 700; font-size: 15px; }
     .doc-spec { font-size: 13px; color: var(--text-light); margin: 2px 0; }
     .doc-meta { font-size: 12px; color: var(--primary); font-weight: 600; }
     .rating-badge {
-      background: #fef9c3; color: #a16207;
-      padding: 2px 8px; border-radius: 8px; font-size: 12px; font-weight: 700;
+      background: #fef9c3; color: #a16207; padding: 2px 8px; border-radius: 8px; font-size: 12px; font-weight: 700;
     }
 
     .btn-main {
       position: fixed; bottom: 16px; left: 16px; right: 16px;
-      background: var(--primary); color: white; border: none;
-      padding: 16px; border-radius: 16px; font-size: 16px;
-      font-weight: 700; box-shadow: 0 8px 16px rgba(2, 132, 199, 0.3);
-      cursor: pointer; text-align: center;
-      z-index: 1000;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="header">
-    <div class="user-info">
-      <div class="avatar" id="u-avatar">B</div>
-      <div>
-        <div class="user-name" id="u-name">Bemor</div>
-        <div class="user-status">Tashkent • Telegram User</div>
-      </div>
-    </div>
-    <i class="fa-regular fa-bell" style="font-size: 20px; color: #64748b;"></i>
-  </div>
-
-  <div class="balance-card">
-    <div class="balance-sub"><i class="fa-solid fa-wallet"></i> Bonus Balansingiz</div>
-    <div class="balance-val" id="u-balance">15 000 UZS</div>
-    <div class="balance-sub">Qabullardan 10% keshbek yig'iladi</div>
-  </div>
-
-  <div class="ai-banner" onclick="handleAiClick()">
-    <div class="ai-icon"><i class="fa-solid fa-robot"></i></div>
-    <div>
-      <strong style="font-size: 14px; color: #166534;">AI Shifo Maslahatisi</strong>
-      <p style="font-size: 12px; color: #15803d;">Qaysi shifokorga borishni bilmaysizmi? AI yordam beradi</p>
-    </div>
-  </div>
-
-  <div class="section-title">Kategoriyalar</div>
-  <div class="categories">
-    <div class="cat-chip active" onclick="filterCat('all')">Barchasi</div>
-    <div class="cat-chip" onclick="filterCat('Kardiolog')">Kardiolog</div>
-    <div class="cat-chip" onclick="filterCat('Nevrolog')">Nevrolog</div>
-    <div class="cat-chip" onclick="filterCat('Pediatr')">Pediatr</div>
-  </div>
-
-  <div class="section-title">Mavjud Shifokorlar</div>
-  <div id="doctors-container"></div>
-
-  <button class="btn-main" onclick="handleBooking()"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
-
-  <script>
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-      if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const u = tg.initDataUnsafe.user;
-        document.getElementById('u-name').innerText = u.first_name + (u.last_name ? ' ' + u.last_name : '');
-        document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
-      }
+      background: var(--primary); color: white; border: none; padding: 16px;
+      border-radius: 16px; font-size: 16px; font-weight: 700;
+      box-shadow: 0 8px 16px rgba(2, 132, 199, 0.3); cursor: pointer; text-align: center; z-index: 100;
     }
 
-    const defaultDoctors = [
-      {
-        full_name: "Dr. Alisher Ahmedov",
-        specialty: "Kardiolog",
-        clinic_name: "Akfa Medline",
-        consultation_fee: 150000,
-        cashback_percentage: 10,
-        rating: "4.9",
-        img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150"
-      },
-      {
-        full_name: "Dr. Malika Zokirova",
-        specialty: "Nevrolog",
-        clinic_name: "Shifo Med",
-        consultation_fee: 120000,
-        cashback_percentage: 15,
-        rating: "5.0",
-        img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150"
-      }
-    ];
-
-    function renderDoctors(docs) {
-      const container = document.getElementById('doctors-container');
-      container.innerHTML = '';
-      docs.forEach(doc => {
-        container.innerHTML += `
-          <div class="doc-card" onclick="selectDoctor('${doc.full_name}')">
-            <img src="${doc.img || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150'}" class="doc-img">
-            <div class="doc-details">
-              <div style="display: flex; justify-content: space-between;">
-                <span class="doc-name">${doc.full_name}</span>
-                <span class="rating-badge"><i class="fa-solid fa-star"></i> ${doc.rating || '5.0'}</span>
-              </div>
-              <div class="doc-spec">${doc.specialty} • ${doc.clinic_name || 'Xususiy'}</div>
-              <div class="doc-meta">Qabul: ${Number(doc.consultation_fee).toLocaleString()} UZS (${doc.cashback_percentage}% Cashback)</div>
-            </div>
-          </div>`;
-      });
-    }
-
-    async function initData() {
-      renderDoctors(defaultDoctors);
-      
-      try {
-        const SUPABASE_URL = "https://lcyrrjbngcjpspyrbkfv.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_ZTcriy4OnRZTrpWSL-Dp7w_64D8RQSZ";
-        if (window.supabase) {
-          const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-          const { data } = await client.from('doctors').select('*');
-          if (data && data.length > 0) renderDoctors(data);
-        }
-      } catch (e) {
-        console.log("Supabase fallback activated");
-      }
-    }
-
-    function handleAiClick() {
-      const msg = "AI Shifo Maslahatisi: Simptomlaringizni yozing, mos shifokorni tavsiya qilamiz.";
-      if (tg && tg.showAlert) tg.showAlert(msg);
-      else alert(msg);
-    }
-
-    function selectDoctor(name) {
-      const msg = name + " tanlandi. Qabul vaqtini belgilang.";
-      if (tg && tg.showAlert) tg.showAlert(msg);
-      else alert(msg);
-    }
-
-    function handleBooking() {
-      const msg = "Qabulga yozilish uchun shifokor va vaqtni tanlang.";
-      if (tg && tg.showAlert) tg.showAlert(msg);
-      else alert(msg);
-    }
-
-    function filterCat(spec) {
-      if (spec === 'all') {
-        renderDoctors(defaultDoctors);
-      } else {
-        const filtered = defaultDoctors.filter(d => d.specialty === spec);
-        renderDoctors(filtered.length ? filtered : defaultDoctors);
-      }
-    }
-
-    initData();
-  </script>
-</body>
-</html>
+    /* Modal Sheet Styling */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); display: none; justify-content: flex-end;
+      flex-direction: column
