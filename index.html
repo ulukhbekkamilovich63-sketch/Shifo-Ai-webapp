@@ -26,14 +26,17 @@
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
     }
     .user-info { display: flex; align-items: center; gap: 12px; }
-    .avatar {
+    .avatar-img {
+      width: 46px; height: 46px; border-radius: 50%; object-fit: cover;
+      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
+    }
+    .avatar-fallback {
       width: 46px; height: 46px; border-radius: 50%;
       background: linear-gradient(135deg, #10b981, #047857); color: white;
       display: flex; align-items: center; justify-content: center;
       font-weight: bold; font-size: 20px; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
     }
     .user-name { font-weight: 700; font-size: 16px; color: #0f172a; }
-    .user-status { font-size: 12px; color: #166534; font-weight: 500; }
 
     .balance-card {
       background: linear-gradient(135deg, #059669 0%, #047857 100%);
@@ -98,7 +101,7 @@
 
     .ai-result-box {
       background: #f0fdf4; border: 1px solid #86efac; border-radius: 14px;
-      padding: 16px; margin-top: 16px; display: none; font-size: 14px; color: #064e3b;
+      padding: 16px; margin-top: 16px; display: none; font-size: 14px; color: #064e3b; line-height: 1.5;
     }
   </style>
 </head>
@@ -107,13 +110,14 @@
   <!-- Header -->
   <div class="header">
     <div class="user-info">
-      <div class="avatar" id="u-avatar">U</div>
+      <div id="avatarContainer">
+        <div class="avatar-fallback" id="u-avatar">U</div>
+      </div>
       <div>
         <div class="user-name" id="u-name">Assalomu alaykum!</div>
-        <div class="user-status">Tashkent • Telegram User</div>
       </div>
     </div>
-    <i class="fa-regular fa-bell" style="font-size: 20px; color: #059669;"></i>
+    <i class="fa-regular fa-bell" style="font-size: 22px; color: #059669; cursor: pointer;" onclick="openNotifications()"></i>
   </div>
 
   <!-- Balance Card -->
@@ -186,7 +190,12 @@
       if (u) {
         var name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
         document.getElementById('u-name').innerText = 'Assalomu alaykum, ' + name + '!';
-        document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
+
+        if (u.photo_url) {
+          document.getElementById('avatarContainer').innerHTML = '<img src="' + u.photo_url + '" class="avatar-img">';
+        } else {
+          document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
+        }
       }
     }
 
@@ -245,6 +254,25 @@
       document.getElementById('mainModal').style.display = 'none';
     }
 
+    function openNotifications() {
+      var msg = "Bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Har bir qabuldan 10% keshbek beriladi.";
+      if (tg && tg.showAlert) tg.showAlert(msg); else alert(msg);
+    }
+
+    function formatUzbekDate(dateStr) {
+      var d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+
+      var months = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
+      var day = d.getDate();
+      var month = months[d.getMonth()];
+      var year = d.getFullYear();
+      var hours = String(d.getHours()).padStart(2, '0');
+      var minutes = String(d.getMinutes()).padStart(2, '0');
+
+      return day + "-" + month + ", " + year + "-yil, soat " + hours + ":" + minutes;
+    }
+
     function handleFormSubmit() {
       var symptoms = document.getElementById('symptoms').value;
 
@@ -255,18 +283,20 @@
 
       if (currentMode === "ai") {
         document.getElementById('aiResultBox').style.display = "block";
-        document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> AI tahlil qilmoqda...";
+        document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> AI simptomlarni tahlil qilmoqda...";
 
         setTimeout(function() {
           var txt = symptoms.toLowerCase();
           var advice = "";
 
-          if (txt.indexOf("bosh") !== -1 || txt.indexOf("og'riq") !== -1 || txt.indexOf("stress") !== -1) {
+          if (txt.indexOf("sindi") !== -1 || txt.indexOf("sinish") !== -1 || txt.indexOf("suyak") !== -1 || txt.indexOf("jarohat") !== -1) {
+            advice = "O'tkir shikastlanish / suyak sinishi belgisi! Zudlik bilan <strong>Travmatolog / Xirurg</strong> ko'rigiga boring va shikastlangan a'zoni harakatsiz tuting.";
+          } else if (txt.indexOf("bosh") !== -1 || txt.indexOf("og'riq") !== -1 || txt.indexOf("stress") !== -1) {
             advice = "Sizda asabiy zo'riqish yoki bosim o'zgarishi belgilari bo'lishi mumkin. <strong>Nevrolog (Dr. Malika Zokirova)</strong> ko'rigidan o'tish tavsiya etiladi.";
           } else if (txt.indexOf("yurak") !== -1 || txt.indexOf("puls") !== -1 || txt.indexOf("sanchiq") !== -1) {
             advice = "Yurak-qon tomir tizimi shikoyati. Tezlikda <strong>Kardiolog (Dr. Alisher Ahmedov)</strong> ko'rigiga yoziling.";
           } else {
-            advice = "Simptomlaringiz bo'yicha umumiy mutaxassis <strong>Nevrolog yoki Kardiolog</strong> qabuliga yozilishingiz lozim.";
+            advice = "Simptomlaringiz bo'yicha umumiy mutaxassis <strong>Terapevt yoki Nevrolog</strong> qabuliga yozilishingiz lozim.";
           }
 
           document.getElementById('aiResultText').innerHTML = advice;
@@ -274,12 +304,14 @@
 
       } else {
         var docId = document.getElementById('doctorSelect').value;
-        var time = document.getElementById('appointmentTime').value;
+        var rawTime = document.getElementById('appointmentTime').value;
 
-        if (!time) {
+        if (!rawTime) {
           alert("Iltimos, qabul vaqtini tanlang!");
           return;
         }
+
+        var formattedTime = formatUzbekDate(rawTime);
 
         var selDoc = null;
         for (var j = 0; j < doctorsList.length; j++) {
@@ -290,7 +322,7 @@
           type: "appointment",
           doctor_name: selDoc ? selDoc.full_name : "",
           specialty: selDoc ? selDoc.specialty : "",
-          appointment_time: time,
+          appointment_time: formattedTime,
           symptoms: symptoms
         };
 
@@ -299,7 +331,7 @@
         }
 
         closeModal();
-        var okMsg = "Qabulga muvaffaqiyatli yozildingiz!\n\nShifokor: " + (selDoc ? selDoc.full_name : '') + "\nVaqti: " + time;
+        var okMsg = "Qabulga muvaffaqiyatli yozildingiz!\n\nShifokor: " + (selDoc ? selDoc.full_name : '') + "\nVaqti: " + formattedTime;
         if (tg && tg.showAlert) tg.showAlert(okMsg); else alert(okMsg);
       }
     }
