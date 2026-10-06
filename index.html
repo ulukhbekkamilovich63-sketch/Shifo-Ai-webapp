@@ -26,28 +26,29 @@
       overflow-x: hidden;
     }
 
-    /* Language Selection Screen */
-    .lang-screen {
+    /* Onboarding Screens (Language & Region) */
+    .onboard-screen {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #06110a; z-index: 3000;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 24px; text-align: center;
+      padding: 24px; text-align: center; overflow-y: auto;
     }
-    .lang-logo {
+    .onboard-logo {
       width: 86px; height: 86px; background: linear-gradient(135deg, #10b981, #059669);
       border-radius: 26px; display: flex; align-items: center; justify-content: center;
       font-size: 42px; color: white; margin-bottom: 20px; box-shadow: 0 0 35px rgba(16, 185, 129, 0.4);
     }
-    .lang-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
-    .lang-sub { font-size: 14px; color: var(--text-sub); margin-bottom: 32px; }
-    .lang-btn {
+    .onboard-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+    .onboard-sub { font-size: 14px; color: var(--text-sub); margin-bottom: 28px; }
+    
+    .onboard-btn {
       width: 100%; max-width: 320px; background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.1); color: var(--text-main);
-      padding: 18px; border-radius: 20px; font-size: 16px; font-weight: 700;
-      margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-radius: 20px; font-size: 16px; font-weight: 700;
+      margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
       backdrop-filter: blur(10px); transition: all 0.2s ease;
     }
-    .lang-btn:active { transform: scale(0.97); background: rgba(34, 197, 94, 0.2); border-color: var(--neon-green); }
+    .onboard-btn:active { transform: scale(0.97); background: rgba(34, 197, 94, 0.2); border-color: var(--neon-green); }
 
     /* Main App Container */
     .app-content { display: none; }
@@ -207,20 +208,154 @@
 </head>
 <body>
 
-  <!-- Language Selection Screen -->
-  <div class="lang-screen" id="langScreen">
-    <div class="lang-logo"><i class="fa-solid fa-notes-medical"></i></div>
-    <div class="lang-title">Shifo AI Platform</div>
-    <div class="lang-sub">Iltimos, muloqot tilini tanlang</div>
+  <!-- STEP 1: Language Selection Screen -->
+  <div class="onboard-screen" id="langScreen">
+    <div class="onboard-logo"><i class="fa-solid fa-notes-medical"></i></div>
+    <div class="onboard-title">Shifo AI Platform</div>
+    <div class="onboard-sub">Iltimos, muloqot tilini tanlang / Пожалуйста, выберите язык</div>
 
-    <button class="lang-btn" onclick="setLanguage('uz_lat')">
-      <span>O'zbekcha</span> <span>🇺🇿</span>
+    <button class="onboard-btn" onclick="selectLanguage('uz_lat')">
+      <span>O'zbekcha (Lotin)</span> <span>🇺🇿</span>
     </button>
-    <button class="lang-btn" onclick="setLanguage('uz_cyr')">
-      <span>Ўзбекча</span> <span>🇺🇿</span>
+    <button class="onboard-btn" onclick="selectLanguage('uz_cyr')">
+      <span>Ўзбекча (Кирилл)</span> <span>🇺🇿</span>
     </button>
-    <button class="lang-btn" onclick="setLanguage('ru')">
+    <button class="onboard-btn" onclick="selectLanguage('ru')">
       <span>Русский</span> <span>🇷🇺</span>
+    </button>
+  </div>
+
+  <!-- STEP 2: Region Selection Screen (Uzbekistan All Regions & Districts) -->
+  <div class="onboard-screen" id="regionScreen" style="display: none;">
+    <div class="onboard-logo"><i class="fa-solid fa-map-location-dot"></i></div>
+    <div class="onboard-title" id="lbl-region-title">Hududni Tanlang</div>
+    <div class="onboard-sub" id="lbl-region-sub">Oʻz hududingizni (viloyat va tuman/shaharni) koʻrsating</div>
+
+    <div style="width: 100%; max-width: 320px; margin-bottom: 16px;">
+      <select class="form-control" id="onboardRegionSelect" style="padding: 16px; font-size: 16px;">
+        <optgroup label="Toshkent shahri">
+          <option value="Toshkent sh. - Barcha tumanlar">Toshkent shahri (Barcha tumanlar)</option>
+        </optgroup>
+        <optgroup label="Toshkent viloyati">
+          <option value="Nurafshon sh.">Nurafshon sh.</option>
+          <option value="Angren sh.">Angren sh.</option>
+          <option value="Olmaliq sh.">Olmaliq sh.</option>
+          <option value="Chirchiq sh.">Chirchiq sh.</option>
+          <option value="Bekobod sh. / t.">Bekobod sh. / t.</option>
+          <option value="Yangiyoʻl sh. / t.">Yangiyoʻl sh. / t.</option>
+          <option value="Boʻka tumani">Boʻka tumani</option>
+          <option value="Boʻstonliq tumani">Boʻstonliq tumani</option>
+          <option value="Chinoz tumani">Chinoz tumani</option>
+          <option value="Qibray tumani">Qibray tumani</option>
+          <option value="Ohangaron t. / sh.">Ohangaron t. / sh.</option>
+          <option value="Oqqoʻrgʻon tumani">Oqqoʻrgʻon tumani</option>
+          <option value="Parkent tumani">Parkent tumani</option>
+          <option value="Piskent tumani">Piskent tumani</option>
+          <option value="Zangiota tumani">Zangiota tumani</option>
+        </optgroup>
+        <optgroup label="Samarqand viloyati">
+          <option value="Samarqand sh.">Samarqand sh.</option>
+          <option value="Kattaqoʻrgʻon sh.">Kattaqoʻrgʻon sh.</option>
+          <option value="Bulungʻur tumani">Bulungʻur tumani</option>
+          <option value="Ishtixon tumani">Ishtixon tumani</option>
+          <option value="Jomboy tumani">Jomboy tumani</option>
+          <option value="Narpay tumani">Narpay tumani</option>
+          <option value="Nurobod tumani">Nurobod tumani</option>
+          <option value="Oqdaryo tumani">Oqdaryo tumani</option>
+          <option value="Pastdargʻom tumani">Pastdargʻom tumani</option>
+          <option value="Paxtachi tumani">Paxtachi tumani</option>
+          <option value="Payariq tumani">Payariq tumani</option>
+          <option value="Samarqand tumani">Samarqand tumani</option>
+          <option value="Toyloq tumani">Toyloq tumani</option>
+          <option value="Urgut tumani">Urgut tumani</option>
+          <option value="Qoʻshrabot tumani">Qoʻshrabot tumani</option>
+        </optgroup>
+        <optgroup label="Navoiy viloyati">
+          <option value="Navoiy sh.">Navoiy sh.</option>
+          <option value="Zarafshon sh.">Zarafshon sh.</option>
+          <option value="Karmana tumani">Karmana tumani</option>
+          <option value="Konimex tumani">Konimex tumani</option>
+          <option value="Navbahor tumani">Navbahor tumani</option>
+          <option value="Nurota tumani">Nurota tumani</option>
+          <option value="Qiziltepa tumani">Qiziltepa tumani</option>
+          <option value="Tomdi tumani">Tomdi tumani</option>
+          <option value="Uchquduq tumani">Uchquduq tumani</option>
+          <option value="Xatirchi tumani">Xatirchi tumani</option>
+        </optgroup>
+        <optgroup label="Buxoro viloyati">
+          <option value="Buxoro sh.">Buxoro sh.</option>
+          <option value="Kogon sh.">Kogon sh.</option>
+          <option value="Buxoro tumani">Buxoro tumani</option>
+          <option value="Gʻijduvon tumani">Gʻijduvon tumani</option>
+          <option value="Jondor tumani">Jondor tumani</option>
+          <option value="Olot tumani">Olot tumani</option>
+          <option value="Peshku tumani">Peshku tumani</option>
+          <option value="Qorakoʻl tumani">Qorakoʻl tumani</option>
+          <option value="Romitan tumani">Romitan tumani</option>
+          <option value="Shofirkon tumani">Shofirkon tumani</option>
+          <option value="Vobkent tumani">Vobkent tumani</option>
+        </optgroup>
+        <optgroup label="Fargʻona viloyati">
+          <option value="Fargʻona sh.">Fargʻona sh.</option>
+          <option value="Qoʻqon sh.">Qoʻqon sh.</option>
+          <option value="Margʻilon sh.">Margʻilon sh.</option>
+          <option value="Quvasoy sh.">Quvasoy sh.</option>
+          <option value="Oltiariq tumani">Oltiariq tumani</option>
+          <option value="Bagʻdod tumani">Bagʻdod tumani</option>
+          <option value="Beshariq tumani">Beshariq tumani</option>
+          <option value="Rishton tumani">Rishton tumani</option>
+          <option value="Quva tumani">Quva tumani</option>
+        </optgroup>
+        <optgroup label="Andijon viloyati">
+          <option value="Andijon sh.">Andijon sh.</option>
+          <option value="Xonobod sh.">Xonobod sh.</option>
+          <option value="Asaka sh. / t.">Asaka sh. / t.</option>
+          <option value="Baliqchi tumani">Baliqchi tumani</option>
+          <option value="Shahrixon tumani">Shahrixon tumani</option>
+        </optgroup>
+        <optgroup label="Namangan viloyati">
+          <option value="Namangan sh.">Namangan sh.</option>
+          <option value="Chortoq tumani">Chortoq tumani</option>
+          <option value="Chust tumani">Chust tumani</option>
+          <option value="Pop tumani">Pop tumani</option>
+        </optgroup>
+        <optgroup label="Qashqadaryo viloyati">
+          <option value="Qarshi sh.">Qarshi sh.</option>
+          <option value="Shahrisabz sh. / t.">Shahrisabz sh. / t.</option>
+          <option value="Kitob tumani">Kitob tumani</option>
+          <option value="Koson tumani">Koson tumani</option>
+        </optgroup>
+        <optgroup label="Surxondaryo viloyati">
+          <option value="Termiz sh. / t.">Termiz sh. / t.</option>
+          <option value="Denov tumani">Denov tumani</option>
+          <option value="Sherobod tumani">Sherobod tumani</option>
+        </optgroup>
+        <optgroup label="Jizzax viloyati">
+          <option value="Jizzax sh.">Jizzax sh.</option>
+          <option value="Zomin tumani">Zomin tumani</option>
+          <option value="Gʻallaorol tumani">Gʻallaorol tumani</option>
+        </optgroup>
+        <optgroup label="Sirdaryo viloyati">
+          <option value="Guliston sh. / t.">Guliston sh. / t.</option>
+          <option value="Shirin sh.">Shirin sh.</option>
+          <option value="Yangiyer sh.">Yangiyer sh.</option>
+        </optgroup>
+        <optgroup label="Xorazm viloyati">
+          <option value="Urganch sh. / t.">Urganch sh. / t.</option>
+          <option value="Xiva sh. / t.">Xiva sh. / t.</option>
+          <option value="Shovot tumani">Shovot tumani</option>
+        </optgroup>
+        <optgroup label="Qoraqalpogʻiston Respublikasi">
+          <option value="Nukus sh.">Nukus sh.</option>
+          <option value="Beruniy tumani">Beruniy tumani</option>
+          <option value="Qoʻngʻirot tumani">Qoʻngʻirot tumani</option>
+          <option value="Toʻrtkoʻl tumani">Toʻrtkoʻl tumani</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <button class="onboard-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; justify-content: center;" onclick="confirmRegion()" id="btnRegionConfirm">
+      Davom etish ➔
     </button>
   </div>
 
@@ -289,9 +424,9 @@
       <i class="fa-regular fa-calendar-days"></i>
       <span id="lbl-nav-book">Navbat</span>
     </div>
-    <div class="nav-item" onclick="showLangScreen()">
-      <i class="fa-solid fa-globe"></i>
-      <span id="lbl-nav-lang">Til</span>
+    <div class="nav-item" onclick="showRegionScreen()">
+      <i class="fa-solid fa-map-pin"></i>
+      <span id="lbl-nav-region">Hudud</span>
     </div>
     <button class="fab-ai" onclick="openAiModal()"><i class="fa-solid fa-camera"></i></button>
   </div>
@@ -302,96 +437,6 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3 style="font-size: 20px; font-weight: 800;" id="modalTitle">Qabulga yozilish</h3>
         <i class="fa-solid fa-xmark" style="font-size: 22px; cursor: pointer; color: var(--text-sub);" onclick="closeModal()"></i>
-      </div>
-
-      <!-- Region Selection (All Regions, Cities, Districts of Uzbekistan) -->
-      <div class="form-group" id="regionGroup">
-        <label id="lbl-form-region">Hududni tanlang (Viloyat / Tuman / Shahar)</label>
-        <select class="form-control" id="regionSelect">
-          <optgroup label="Toshkent shahri">
-            <option value="tashkent_city">Toshkent shahri (Barcha tumanlar)</option>
-          </optgroup>
-          <optgroup label="Toshkent viloyati">
-            <option value="nurafshon">Nurafshon sh.</option>
-            <option value="angren">Angren sh.</option>
-            <option value="olmaliq">Olmaliq sh.</option>
-            <option value="chirchiq">Chirchiq sh.</option>
-            <option value="bekobod_vil">Bekobod sh. / t.</option>
-            <option value="yangiyol">Yangiyoʻl sh. / t.</option>
-            <option value="boka">Boʻka tumani</option>
-            <option value="bostonliq">Boʻstonliq tumani</option>
-            <option value="chinoz">Chinoz tumani</option>
-            <option value="qibray">Qibray tumani</option>
-            <option value="ohangaron">Ohangaron t. / sh.</option>
-            <option value="oqqorgon">Oqqoʻrgʻon tumani</option>
-            <option value="parkent">Parkent tumani</option>
-            <option value="piskent">Piskent tumani</option>
-            <option value="zangiota">Zangiota tumani</option>
-          </optgroup>
-          <optgroup label="Samarqand viloyati">
-            <option value="samarqand_sh">Samarqand sh.</option>
-            <option value="kattaqorgon_sh">Kattaqoʻrgʻon sh.</option>
-            <option value="bulungur">Bulungʻur tumani</option>
-            <option value="ishtixon">Ishtixon tumani</option>
-            <option value="jomboy">Jomboy tumani</option>
-            <option value="narpay">Narpay tumani</option>
-            <option value="nurobod">Nurobod tumani</option>
-            <option value="oqdaryo">Oqdaryo tumani</option>
-            <option value="pastdargom">Pastdargʻom tumani</option>
-            <option value="paxtachi">Paxtachi tumani</option>
-            <option value="payariq">Payariq tumani</option>
-            <option value="samarqand_t">Samarqand tumani</option>
-            <option value="toyloq">Toyloq tumani</option>
-            <option value="urgut">Urgut tumani</option>
-            <option value="qoshrabot">Qoʻshrabot tumani</option>
-          </optgroup>
-          <optgroup label="Navoiy viloyati">
-            <option value="navoiy_sh">Navoiy sh.</option>
-            <option value="zarafshon_sh">Zarafshon sh.</option>
-            <option value="karmana">Karmana tumani</option>
-            <option value="konimex">Konimex tumani</option>
-            <option value="navbahor">Navbahor tumani</option>
-            <option value="nurota">Nurota tumani</option>
-            <option value="qiziltepa">Qiziltepa tumani</option>
-            <option value="tomdi">Tomdi tumani</option>
-            <option value="uchquduq">Uchquduq tumani</option>
-            <option value="xatirchi">Xatirchi tumani</option>
-          </optgroup>
-          <optgroup label="Buxoro viloyati">
-            <option value="buxoro_sh">Buxoro sh.</option>
-            <option value="kogon_sh">Kogon sh.</option>
-            <option value="buxoro_t">Buxoro tumani</option>
-            <option value="gijduvon">Gʻijduvon tumani</option>
-            <option value="jondor">Jondor tumani</option>
-            <option value="olot">Olot tumani</option>
-            <option value="peshku">Peshku tumani</option>
-            <option value="qorakol">Qorakoʻl tumani</option>
-            <option value="romitan">Romitan tumani</option>
-            <option value="shofirkon">Shofirkon tumani</option>
-            <option value="vobkent">Vobkent tumani</option>
-          </optgroup>
-          <optgroup label="Fargʻona viloyati">
-            <option value="fargona_sh">Fargʻona sh.</option>
-            <option value="qoqon_sh">Qoʻqon sh.</option>
-            <option value="margilon_sh">Margʻilon sh.</option>
-            <option value="quvasoy_sh">Quvasoy sh.</option>
-            <option value="oltiariq">Oltiariq tumani</option>
-            <option value="bagdod">Bagʻdod tumani</option>
-            <option value="beshariq">Beshariq tumani</option>
-            <option value="rishton">Rishton tumani</option>
-            <option value="quva">Quva tumani</option>
-          </optgroup>
-          <optgroup label="Boshqa viloyatlar va Qoraqalpogʻiston">
-            <option value="andijon_reg">Andijon viloyati va tumanlari</option>
-            <option value="namangan_reg">Namangan viloyati va tumanlari</option>
-            <option value="qashqadaryo_reg">Qashqadaryo viloyati va tumanlari</option>
-            <option value="surxondaryo_reg">Surxondaryo viloyati va tumanlari</option>
-            <option value="jizzax_reg">Jizzax viloyati va tumanlari</option>
-            <option value="sirdaryo_reg">Sirdaryo viloyati va tumanlari</option>
-            <option value="xorazm_reg">Xorazm viloyati va tumanlari</option>
-            <option value="qoraqalpogiston_reg">Qoraqalpogʻiston Respublikasi</option>
-          </optgroup>
-        </select>
       </div>
 
       <!-- Image Upload Block with Remove Button -->
@@ -437,6 +482,7 @@
   <script>
     var tg = window.Telegram ? window.Telegram.WebApp : null;
     var currentLang = "uz_lat";
+    var selectedRegion = "Toshkent sh. - Barcha tumanlar";
     var currentMode = "booking";
     var hasImage = false;
 
@@ -446,16 +492,18 @@
         balanceBadge: "Keshbek Balans",
         balanceSub: "Har bir qabuldan 10% keshbek beriladi",
         bentoAiTitle: "AI Shifo Maslahatisi (Rasm/Matn)",
-        bentoAiDesc: "Rasm yuklang, hududni tanlang va AI tahlilini oling",
+        bentoAiDesc: "Rasm yuklang, AI zudlik bilan tahlil qiladi",
         bentoBookTitle: "Qabulga Yozilish",
-        bentoBookDesc: "Hudud, shifokor va vaqtni tanlang",
+        bentoBookDesc: "Shifokor va vaqtni tanlang",
         bentoStatusTitle: "Eslatmalar",
         bentoStatusDesc: "Xabarlar va bildirishnomalar",
         docsTitle: "Mavjud Shifokorlar",
         navHome: "Bosh sahifa",
         navBook: "Navbat",
-        navLang: "Til",
-        lblFormRegion: "Hududni tanlang (Viloyat / Tuman / Shahar)",
+        navRegion: "Hudud",
+        regionTitle: "Hududni Tanlang",
+        regionSub: "Oʻz hududingizni (viloyat va tuman/shaharni) koʻrsating",
+        btnRegionConfirm: "Davom etish ➔",
         lblFormDoc: "Shifokorni tanlang",
         lblFormDate: "Qabul sanasi va vaqti",
         symptomsLabelBooking: "Shikoyatingiz / Simptomlar",
@@ -463,7 +511,7 @@
         placeholderSymptoms: "Shikoyatingizni qisqacha yozing...",
         btnSubmitBooking: "Qabulni Tasdiqlash",
         btnSubmitAi: "AI Vizual Tahlil Qilish",
-        notifMsg: "Bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Oʻzbekistonning barcha hududlari qoʻshildi.",
+        notifMsg: "Bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Hududiy qamrov barcha tuman va qishloqlarga kengaytirildi.",
         feeLabel: "Qabul",
         cashbackLabel: "Keshbek",
         aiAnalyzing: "AI rasmni va hududiy ma'lumotlarni tahlil qilmoqda...",
@@ -479,16 +527,18 @@
         balanceBadge: "Кешбек Баланс",
         balanceSub: "Ҳар бир қабулдан 10% кешбек берилади",
         bentoAiTitle: "AI Шифо Маслаҳатиси (Расм/Матн)",
-        bentoAiDesc: "Расм юкланг, ҳудудни танланг ва AI таҳлилини олинг",
+        bentoAiDesc: "Расм юкланг, AI зудлик билан таҳлил қилади",
         bentoBookTitle: "Қабулга Ёзилиш",
-        bentoBookDesc: "Ҳудуд, шифокор ва вақтни танланг",
+        bentoBookDesc: "Шифокор ва вақтни танланг",
         bentoStatusTitle: "Еслатмалар",
         bentoStatusDesc: "Хабарлар ва билдиришномалар",
         docsTitle: "Мавжуд Шифокорлар",
         navHome: "Бош саҳифа",
         navBook: "Навбат",
-        navLang: "Тил",
-        lblFormRegion: "Ҳудудни танланг (Вилоят / Туман / Шаҳар)",
+        navRegion: "Ҳудуд",
+        regionTitle: "Ҳудудни Танланг",
+        regionSub: "Ўз ҳудудингизни (вилоят ва туман/шаҳарни) кўрсатинг",
+        btnRegionConfirm: "Давом этиш ➔",
         lblFormDoc: "Шифокорни танланг",
         lblFormDate: "Қабул санаси ва вақти",
         symptomsLabelBooking: "Шикоятингиз / Симптомлар",
@@ -496,7 +546,7 @@
         placeholderSymptoms: "Шикоятингизни қисқача ёзинг...",
         btnSubmitBooking: "Қабулни Тасдиқлаш",
         btnSubmitAi: "AI Визуал Таҳлил Қилиш",
-        notifMsg: "Билдиришномалар:\n• Тизимга хуш келибсиз!\n• Ўзбекистоннинг барча ҳудудлари қўшилди.",
+        notifMsg: "Билдиришномалар:\n• Тизимга хуш келибсиз!\n• Ҳудудий қамров барча туман ва қишлоқларга кенгайтирилди.",
         feeLabel: "Қабул",
         cashbackLabel: "Кешбек",
         aiAnalyzing: "AI расмни ва ҳудудий маълумотларни таҳлил қилмоқда...",
@@ -512,16 +562,18 @@
         balanceBadge: "Кэшбэк Баланс",
         balanceSub: "10% кэшбэк начисляется с каждого приема",
         bentoAiTitle: "AI Консультант Shifo (Фото/Текст)",
-        bentoAiDesc: "Загрузите фото, выберите регион и получите анализ ИИ",
+        bentoAiDesc: "Загрузите фото, ИИ мгновенно проведет анализ",
         bentoBookTitle: "Записаться на прием",
-        bentoBookDesc: "Выберите регион, врача и удобное время",
+        bentoBookDesc: "Выберите врача и удобное время",
         bentoStatusTitle: "Уведомления",
         bentoStatusDesc: "Сообщения и статусы",
         docsTitle: "Доступные Врачи",
         navHome: "Главная",
         navBook: "Запись",
-        navLang: "Язык",
-        lblFormRegion: "Выберите регион (Область / Район / Город)",
+        navRegion: "Регион",
+        regionTitle: "Выберите Регион",
+        regionSub: "Укажите вашу область, город или район",
+        btnRegionConfirm: "Продолжить ➔",
         lblFormDoc: "Выберите врача",
         lblFormDate: "Дата и время приема",
         symptomsLabelBooking: "Ваши жалобы / Симптомы",
@@ -529,7 +581,7 @@
         placeholderSymptoms: "Кратко опишите ваши жалобы...",
         btnSubmitBooking: "Подтвердить запись",
         btnSubmitAi: "Визуальный анализ ИИ",
-        notifMsg: "Уведомления:\n• Добро пожаловать!\n• Поддерживаются все регионы и районы Узбекистана.",
+        notifMsg: "Уведомления:\n• Добро пожаловать!\n• Поддерживаются все регионы, районы и села Узбекистана.",
         feeLabel: "Прием",
         cashbackLabel: "Кэшбэк",
         aiAnalyzing: "ИИ анализирует изображение и регион...",
@@ -552,21 +604,44 @@
       tg.expand();
     }
 
-    function setLanguage(lang) {
+    function selectLanguage(lang) {
       currentLang = lang;
       document.getElementById('langScreen').style.display = 'none';
-      document.getElementById('appContent').style.display = 'block';
-      document.getElementById('floatingNav').style.display = 'flex';
-
-      applyTranslations();
-      setupUserHeader();
-      renderDoctors(doctorsList);
+      document.getElementById('regionScreen').style.display = 'flex';
+      applyRegionTranslations();
     }
 
     function showLangScreen() {
       document.getElementById('appContent').style.display = 'none';
       document.getElementById('floatingNav').style.display = 'none';
       document.getElementById('langScreen').style.display = 'flex';
+    }
+
+    function showRegionScreen() {
+      document.getElementById('appContent').style.display = 'none';
+      document.getElementById('floatingNav').style.display = 'none';
+      document.getElementById('regionScreen').style.display = 'flex';
+      applyRegionTranslations();
+    }
+
+    function applyRegionTranslations() {
+      var langObj = dictionary[currentLang];
+      document.getElementById('lbl-region-title').innerText = langObj.regionTitle;
+      document.getElementById('lbl-region-sub').innerText = langObj.regionSub;
+      document.getElementById('btnRegionConfirm').innerText = langObj.btnRegionConfirm;
+    }
+
+    function confirmRegion() {
+      var sel = document.getElementById('onboardRegionSelect');
+      selectedRegion = sel.options[sel.selectedIndex].text;
+
+      document.getElementById('regionScreen').style.display = 'none';
+      document.getElementById('appContent').style.display = 'block';
+      document.getElementById('floatingNav').style.display = 'flex';
+
+      applyTranslations();
+      setupUserHeader();
+      renderDoctors(doctorsList);
     }
 
     function applyTranslations() {
@@ -583,9 +658,8 @@
 
       document.getElementById('lbl-nav-home').innerText = langObj.navHome;
       document.getElementById('lbl-nav-book').innerText = langObj.navBook;
-      document.getElementById('lbl-nav-lang').innerText = langObj.navLang;
+      document.getElementById('lbl-nav-region').innerText = langObj.navRegion;
 
-      document.getElementById('lbl-form-region').innerText = langObj.lblFormRegion;
       document.getElementById('lbl-form-doc').innerText = langObj.lblFormDoc;
       document.getElementById('lbl-form-date').innerText = langObj.lblFormDate;
       document.getElementById('symptoms').placeholder = langObj.placeholderSymptoms;
@@ -672,7 +746,6 @@
 
       document.getElementById('modalTitle').innerText = langObj.bentoBookTitle;
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelBooking;
-      document.getElementById('regionGroup').style.display = "block";
       document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "block";
       document.getElementById('dateTimeGroup').style.display = "block";
@@ -691,7 +764,6 @@
 
       document.getElementById('modalTitle').innerText = langObj.bentoAiTitle;
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelAi;
-      document.getElementById('regionGroup').style.display = "block";
       document.getElementById('uploadGroup').style.display = "block";
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
@@ -732,8 +804,6 @@
 
     function handleFormSubmit() {
       var symptoms = document.getElementById('symptoms').value;
-      var regionSelect = document.getElementById('regionSelect');
-      var regionText = regionSelect.options[regionSelect.selectedIndex].text;
       var langObj = dictionary[currentLang];
 
       if (currentMode === "ai") {
@@ -747,8 +817,8 @@
 
         setTimeout(function() {
           var advice = currentLang === "ru" ? 
-            "<strong>ИИ анализ (" + regionText + "):</strong> Жалобы успешно обработаны. По вашему региону рекомендуется консультация топ-специалиста <strong>Dr. Alisher Ahmedov (🔥 Top Врач)</strong>." : 
-            "<strong>AI Vizual tahlil (" + regionText + "):</strong> Murojaatingiz va hududiy ma'lumotlar tahlil qilindi. Ayni paytda eng yuqori reytingli <strong>Dr. Alisher Ahmedov (🔥 Top Shifokor)</strong> ko'rigiga borish tavsiya etiladi.";
+            "<strong>ИИ анализ (" + selectedRegion + "):</strong> Успешно обработано. Рекомендуется консультация <strong>Dr. Alisher Ahmedov (🔥 Top Врач)</strong>." : 
+            "<strong>AI Vizual tahlil (" + selectedRegion + "):</strong> Murojaatingiz ko'rib chiqildi. Ayni paytda eng yuqori reytingli <strong>Dr. Alisher Ahmedov (🔥 Top Shifokor)</strong> ko'rigiga borish tavsiya etiladi.";
 
           document.getElementById('aiResultText').innerHTML = advice;
         }, 900);
@@ -772,7 +842,7 @@
         var payload = {
           type: "appointment",
           lang: currentLang,
-          region: regionText,
+          region: selectedRegion,
           doctor_name: selDoc ? selDoc.full_name : "",
           appointment_time: formattedTime,
           symptoms: symptoms
@@ -783,7 +853,7 @@
         }
 
         closeModal();
-        var okMsg = langObj.successBooking + "\n\n" + (currentLang === "ru" ? "Регион: " : "Hudud: ") + regionText + "\n" + (currentLang === "ru" ? "Врач: " : "Shifokor: ") + (selDoc ? selDoc.full_name : '') + "\n" + (currentLang === "ru" ? "Время: " : "Vaqti: ") + formattedTime;
+        var okMsg = langObj.successBooking + "\n\n" + (currentLang === "ru" ? "Регион: " : "Hudud: ") + selectedRegion + "\n" + (currentLang === "ru" ? "Врач: " : "Shifokor: ") + (selDoc ? selDoc.full_name : '') + "\n" + (currentLang === "ru" ? "Время: " : "Vaqti: ") + formattedTime;
         if (tg && tg.showAlert) tg.showAlert(okMsg); else alert(okMsg);
       }
     }
