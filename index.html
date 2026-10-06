@@ -8,7 +8,6 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      /* Patient-friendly soothing medical green theme (No heavy dark black) */
       --bg-gradient: linear-gradient(135deg, #0b1a12 0%, #06110a 100%);
       --card-bg: rgba(16, 40, 28, 0.75);
       --card-border: rgba(52, 211, 153, 0.25);
@@ -266,7 +265,7 @@
         </div>
         <div>
           <div class="user-name" id="u-name">Assalomu alaykum!</div>
-          <div style="font-size: 11px; color: var(--text-sub);" id="headerRegionInfo">📍 Toshkent shahri</div>
+          <div style="font-size: 11px; color: var(--text-sub); cursor: pointer;" id="headerRegionInfo" onclick="showRegionScreen()">📍 Toshkent shahri</div>
         </div>
       </div>
       <div style="display: flex; gap: 10px;">
@@ -386,13 +385,12 @@
     var hasImage = false;
     var chosenViloyat = "";
 
-    // Comprehensive list of doctors with ratings, statuses (online, break, offline)
     var allDoctorsData = [
       { id: "1", full_name: "Dr. Alisher Ahmedov", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
       { id: "2", full_name: "Dr. Malika Zokirova", spec_key: "neurology", clinic_name: "Shifo Med", fee: 120000, cashback: 15, rating: 4.9, status: "online", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" },
-      { id: "3", full_name: "Dr. Jasur Karimov", spec_key: "therapy", clinic_name: "Mediclub Tashkent", fee: 95000, cashback: 10, rating: 4.6, status: "break", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" },
-      { id: "4", full_name: "Dr. Dilshod Normatov", spec_key: "surgery", clinic_name: "Shox Med Center", fee: 180000, cashback: 12, rating: 4.3, status: "offline", img: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150" },
-      { id: "5", full_name: "Dr. Gulnora Saidova", spec_key: "pediatrics", clinic_name: "Darmon Clinic", fee: 110000, cashback: 10, rating: 4.8, status: "online", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150" }
+      { id: "3", full_name: "Dr. Gulnora Saidova", spec_key: "pediatrics", clinic_name: "Darmon Clinic", fee: 110000, cashback: 10, rating: 4.8, status: "online", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150" },
+      { id: "4", full_name: "Dr. Jasur Karimov", spec_key: "therapy", clinic_name: "Mediclub Tashkent", fee: 95000, cashback: 10, rating: 4.6, status: "break", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" },
+      { id: "5", full_name: "Dr. Dilshod Normatov", spec_key: "surgery", clinic_name: "Shox Med Center", fee: 180000, cashback: 12, rating: 4.3, status: "offline", img: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150" }
     ];
 
     var uzbekistanData = {
@@ -472,7 +470,7 @@
         placeholderSymptoms: "Shikoyatingizni qisqacha yozing...",
         btnSubmitBooking: "Qabulni Tasdiqlash",
         btnSubmitAi: "AI Vizual Tahlil Qilish",
-        notifMsg: "Bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Shifokorlar reyting bo‘yicha tartiblandi.",
+        notifMsg: "Bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Hududiy qamrov muvaffaqiyatli saqlandi.",
         feeLabel: "Qabul",
         cashbackLabel: "Keshbek",
         statusOnline: "🟢 Hozir ishda",
@@ -513,7 +511,7 @@
         placeholderSymptoms: "Шикоятингизни қисқача ёзинг...",
         btnSubmitBooking: "Қабулни Тасдиқлаш",
         btnSubmitAi: "AI Визуал Таҳлил Қилиш",
-        notifMsg: "Билдиришномалар:\n• Тизимга хуш келибсиз!\n• Шифокорлар рейтинг бўйича тартибланди.",
+        notifMsg: "Билдиришномалар:\n• Тизимга хуш келибсиз!\n• Ҳудудий қамров сақланди.",
         feeLabel: "Қабул",
         cashbackLabel: "Кешбек",
         statusOnline: "🟢 Ҳозир ишда",
@@ -554,7 +552,7 @@
         placeholderSymptoms: "Кратко опишите ваши жалобы...",
         btnSubmitBooking: "Подтвердить запись",
         btnSubmitAi: "Визуальный анализ ИИ",
-        notifMsg: "Уведомления:\n• Добро пожаловать!\n• Врачи отсортированы по рейтингу.",
+        notifMsg: "Уведомления:\n• Добро пожаловать!\n• Регион успешно сохранен.",
         feeLabel: "Прием",
         cashbackLabel: "Кэшбэк",
         statusOnline: "🟢 На работе",
@@ -674,7 +672,6 @@
       container.innerHTML = '';
       select.innerHTML = '';
 
-      // Sort doctors by rating descending (highest rating first)
       var sortedDocs = [...allDoctorsData].sort(function(a, b) {
         return b.rating - a.rating;
       });
@@ -687,7 +684,6 @@
         var statusTextClass = doc.status === 'online' ? 'text-online' : (doc.status === 'break' ? 'text-break' : 'text-offline');
         var statusText = doc.status === 'online' ? langObj.statusOnline : (doc.status === 'break' ? langObj.statusBreak : langObj.statusOffline);
         
-        // Show top badge for rating >= 4.8
         var topBadge = doc.rating >= 4.8 ? `<span class="badge-top">${langObj.topDoctor}</span>` : '';
 
         container.innerHTML += `
