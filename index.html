@@ -26,26 +26,26 @@
       overflow-x: hidden;
     }
 
-    /* Onboarding Screens (Language & Region) */
+    /* Onboarding Wizard Screens */
     .onboard-screen {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #06110a; z-index: 3000;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 24px; text-align: center; overflow-y: auto;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      padding: 24px 16px; text-align: center; overflow-y: auto;
     }
     .onboard-logo {
-      width: 86px; height: 86px; background: linear-gradient(135deg, #10b981, #059669);
-      border-radius: 26px; display: flex; align-items: center; justify-content: center;
-      font-size: 42px; color: white; margin-bottom: 20px; box-shadow: 0 0 35px rgba(16, 185, 129, 0.4);
+      width: 76px; height: 76px; background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 22px; display: flex; align-items: center; justify-content: center;
+      font-size: 36px; color: white; margin-bottom: 16px; margin-top: 20px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
     }
-    .onboard-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
-    .onboard-sub { font-size: 14px; color: var(--text-sub); margin-bottom: 28px; }
+    .onboard-title { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+    .onboard-sub { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; }
     
     .onboard-btn {
-      width: 100%; max-width: 320px; background: rgba(255,255,255,0.06);
+      width: 100%; max-width: 360px; background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.1); color: var(--text-main);
-      padding: 16px 20px; border-radius: 20px; font-size: 16px; font-weight: 700;
-      margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-radius: 18px; font-size: 15px; font-weight: 700;
+      margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
       backdrop-filter: blur(10px); transition: all 0.2s ease;
     }
     .onboard-btn:active { transform: scale(0.97); background: rgba(34, 197, 94, 0.2); border-color: var(--neon-green); }
@@ -225,137 +225,28 @@
     </button>
   </div>
 
-  <!-- STEP 2: Region Selection Screen (Uzbekistan All Regions & Districts) -->
+  <!-- STEP 2: Region (Viloyat) Selection Screen -->
   <div class="onboard-screen" id="regionScreen" style="display: none;">
     <div class="onboard-logo"><i class="fa-solid fa-map-location-dot"></i></div>
-    <div class="onboard-title" id="lbl-region-title">Hududni Tanlang</div>
-    <div class="onboard-sub" id="lbl-region-sub">Oʻz hududingizni (viloyat va tuman/shaharni) koʻrsating</div>
+    <div class="onboard-title" id="lbl-region-title">Viloyatni tanlang</div>
+    <div class="onboard-sub" id="lbl-region-sub">Oʻz hududingizni koʻrsating</div>
 
-    <div style="width: 100%; max-width: 320px; margin-bottom: 16px;">
-      <select class="form-control" id="onboardRegionSelect" style="padding: 16px; font-size: 16px;">
-        <optgroup label="Toshkent shahri">
-          <option value="Toshkent sh. - Barcha tumanlar">Toshkent shahri (Barcha tumanlar)</option>
-        </optgroup>
-        <optgroup label="Toshkent viloyati">
-          <option value="Nurafshon sh.">Nurafshon sh.</option>
-          <option value="Angren sh.">Angren sh.</option>
-          <option value="Olmaliq sh.">Olmaliq sh.</option>
-          <option value="Chirchiq sh.">Chirchiq sh.</option>
-          <option value="Bekobod sh. / t.">Bekobod sh. / t.</option>
-          <option value="Yangiyoʻl sh. / t.">Yangiyoʻl sh. / t.</option>
-          <option value="Boʻka tumani">Boʻka tumani</option>
-          <option value="Boʻstonliq tumani">Boʻstonliq tumani</option>
-          <option value="Chinoz tumani">Chinoz tumani</option>
-          <option value="Qibray tumani">Qibray tumani</option>
-          <option value="Ohangaron t. / sh.">Ohangaron t. / sh.</option>
-          <option value="Oqqoʻrgʻon tumani">Oqqoʻrgʻon tumani</option>
-          <option value="Parkent tumani">Parkent tumani</option>
-          <option value="Piskent tumani">Piskent tumani</option>
-          <option value="Zangiota tumani">Zangiota tumani</option>
-        </optgroup>
-        <optgroup label="Samarqand viloyati">
-          <option value="Samarqand sh.">Samarqand sh.</option>
-          <option value="Kattaqoʻrgʻon sh.">Kattaqoʻrgʻon sh.</option>
-          <option value="Bulungʻur tumani">Bulungʻur tumani</option>
-          <option value="Ishtixon tumani">Ishtixon tumani</option>
-          <option value="Jomboy tumani">Jomboy tumani</option>
-          <option value="Narpay tumani">Narpay tumani</option>
-          <option value="Nurobod tumani">Nurobod tumani</option>
-          <option value="Oqdaryo tumani">Oqdaryo tumani</option>
-          <option value="Pastdargʻom tumani">Pastdargʻom tumani</option>
-          <option value="Paxtachi tumani">Paxtachi tumani</option>
-          <option value="Payariq tumani">Payariq tumani</option>
-          <option value="Samarqand tumani">Samarqand tumani</option>
-          <option value="Toyloq tumani">Toyloq tumani</option>
-          <option value="Urgut tumani">Urgut tumani</option>
-          <option value="Qoʻshrabot tumani">Qoʻshrabot tumani</option>
-        </optgroup>
-        <optgroup label="Navoiy viloyati">
-          <option value="Navoiy sh.">Navoiy sh.</option>
-          <option value="Zarafshon sh.">Zarafshon sh.</option>
-          <option value="Karmana tumani">Karmana tumani</option>
-          <option value="Konimex tumani">Konimex tumani</option>
-          <option value="Navbahor tumani">Navbahor tumani</option>
-          <option value="Nurota tumani">Nurota tumani</option>
-          <option value="Qiziltepa tumani">Qiziltepa tumani</option>
-          <option value="Tomdi tumani">Tomdi tumani</option>
-          <option value="Uchquduq tumani">Uchquduq tumani</option>
-          <option value="Xatirchi tumani">Xatirchi tumani</option>
-        </optgroup>
-        <optgroup label="Buxoro viloyati">
-          <option value="Buxoro sh.">Buxoro sh.</option>
-          <option value="Kogon sh.">Kogon sh.</option>
-          <option value="Buxoro tumani">Buxoro tumani</option>
-          <option value="Gʻijduvon tumani">Gʻijduvon tumani</option>
-          <option value="Jondor tumani">Jondor tumani</option>
-          <option value="Olot tumani">Olot tumani</option>
-          <option value="Peshku tumani">Peshku tumani</option>
-          <option value="Qorakoʻl tumani">Qorakoʻl tumani</option>
-          <option value="Romitan tumani">Romitan tumani</option>
-          <option value="Shofirkon tumani">Shofirkon tumani</option>
-          <option value="Vobkent tumani">Vobkent tumani</option>
-        </optgroup>
-        <optgroup label="Fargʻona viloyati">
-          <option value="Fargʻona sh.">Fargʻona sh.</option>
-          <option value="Qoʻqon sh.">Qoʻqon sh.</option>
-          <option value="Margʻilon sh.">Margʻilon sh.</option>
-          <option value="Quvasoy sh.">Quvasoy sh.</option>
-          <option value="Oltiariq tumani">Oltiariq tumani</option>
-          <option value="Bagʻdod tumani">Bagʻdod tumani</option>
-          <option value="Beshariq tumani">Beshariq tumani</option>
-          <option value="Rishton tumani">Rishton tumani</option>
-          <option value="Quva tumani">Quva tumani</option>
-        </optgroup>
-        <optgroup label="Andijon viloyati">
-          <option value="Andijon sh.">Andijon sh.</option>
-          <option value="Xonobod sh.">Xonobod sh.</option>
-          <option value="Asaka sh. / t.">Asaka sh. / t.</option>
-          <option value="Baliqchi tumani">Baliqchi tumani</option>
-          <option value="Shahrixon tumani">Shahrixon tumani</option>
-        </optgroup>
-        <optgroup label="Namangan viloyati">
-          <option value="Namangan sh.">Namangan sh.</option>
-          <option value="Chortoq tumani">Chortoq tumani</option>
-          <option value="Chust tumani">Chust tumani</option>
-          <option value="Pop tumani">Pop tumani</option>
-        </optgroup>
-        <optgroup label="Qashqadaryo viloyati">
-          <option value="Qarshi sh.">Qarshi sh.</option>
-          <option value="Shahrisabz sh. / t.">Shahrisabz sh. / t.</option>
-          <option value="Kitob tumani">Kitob tumani</option>
-          <option value="Koson tumani">Koson tumani</option>
-        </optgroup>
-        <optgroup label="Surxondaryo viloyati">
-          <option value="Termiz sh. / t.">Termiz sh. / t.</option>
-          <option value="Denov tumani">Denov tumani</option>
-          <option value="Sherobod tumani">Sherobod tumani</option>
-        </optgroup>
-        <optgroup label="Jizzax viloyati">
-          <option value="Jizzax sh.">Jizzax sh.</option>
-          <option value="Zomin tumani">Zomin tumani</option>
-          <option value="Gʻallaorol tumani">Gʻallaorol tumani</option>
-        </optgroup>
-        <optgroup label="Sirdaryo viloyati">
-          <option value="Guliston sh. / t.">Guliston sh. / t.</option>
-          <option value="Shirin sh.">Shirin sh.</option>
-          <option value="Yangiyer sh.">Yangiyer sh.</option>
-        </optgroup>
-        <optgroup label="Xorazm viloyati">
-          <option value="Urganch sh. / t.">Urganch sh. / t.</option>
-          <option value="Xiva sh. / t.">Xiva sh. / t.</option>
-          <option value="Shovot tumani">Shovot tumani</option>
-        </optgroup>
-        <optgroup label="Qoraqalpogʻiston Respublikasi">
-          <option value="Nukus sh.">Nukus sh.</option>
-          <option value="Beruniy tumani">Beruniy tumani</option>
-          <option value="Qoʻngʻirot tumani">Qoʻngʻirot tumani</option>
-          <option value="Toʻrtkoʻl tumani">Toʻrtkoʻl tumani</option>
-        </optgroup>
-      </select>
+    <div id="regionsContainer" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px;">
+      <!-- Dynamically filled via JS -->
     </div>
+  </div>
 
-    <button class="onboard-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; justify-content: center;" onclick="confirmRegion()" id="btnRegionConfirm">
-      Davom etish ➔
+  <!-- STEP 3: District / City (Tuman / Shahar) Selection Screen -->
+  <div class="onboard-screen" id="districtScreen" style="display: none;">
+    <div class="onboard-logo"><i class="fa-solid fa-city"></i></div>
+    <div class="onboard-title" id="lbl-district-title">Tuman / Shaharni tanlang</div>
+    <div class="onboard-sub" id="lbl-district-sub">Tumaningizni tanlang</div>
+
+    <div id="districtsContainer" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px;">
+      <!-- Dynamically filled via JS -->
+    </div>
+    <button class="onboard-btn" style="background: rgba(255,255,255,0.08); justify-content: center; margin-top: 10px;" onclick="backToRegions()">
+      <i class="fa-solid fa-arrow-left"></i> Orqaga / Назад
     </button>
   </div>
 
@@ -466,7 +357,7 @@
       </div>
 
       <div class="form-group">
-        <label id="symptomsLabel">Shikoyatingiz / Simptomlar</label>
+        <label id="symptomsLabel">Shikoyatingiz / Simptomлар</label>
         <textarea class="form-control" id="symptoms" rows="3" placeholder="..."></textarea>
       </div>
 
@@ -482,9 +373,63 @@
   <script>
     var tg = window.Telegram ? window.Telegram.WebApp : null;
     var currentLang = "uz_lat";
-    var selectedRegion = "Toshkent sh. - Barcha tumanlar";
+    var selectedRegion = "Toshkent shahri";
+    var selectedDistrict = "Barcha tumanlar";
     var currentMode = "booking";
     var hasImage = false;
+    var chosenViloyat = "";
+
+    // Uzbekistan administrative data (Regions & Districts)
+    var uzbekistanData = {
+      uz_lat: [
+        { name: "Toshkent shahri", districts: ["Bektemir", "Chilonzor", "Mirobod", "Mirzo Ulugʻbek", "Olmazor", "Sergeli", "Shayxontohur", "Uchtepa", "Yashnobod", "Yakkasaroy", "Yunusobod", "Yangihayot"] },
+        { name: "Toshkent viloyati", districts: ["Nurafshon sh.", "Angren sh.", "Olmaliq sh.", "Chirchiq sh.", "Bekobod sh.", "Yangiyoʻl sh.", "Bekobod t.", "Boʻka", "Boʻstonliq", "Chinoz", "Qibray", "Ohangaron", "Oqqoʻrgʻon", "Parkent", "Piskent", "Zangiota"] },
+        { name: "Samarqand viloyati", districts: ["Samarqand sh.", "Kattaqoʻrgʻon sh.", "Bulungʻur", "Ishtixon", "Jomboy", "Narpay", "Nurobod", "Oqdaryo", "Pastdargʻom", "Paxtachi", "Payariq", "Samarqand t.", "Toyloq", "Urgut", "Qoʻshrabot"] },
+        { name: "Fargʻona viloyati", districts: ["Fargʻona sh.", "Qoʻqon sh.", "Margʻilon sh.", "Quvasoy sh.", "Oltiariq", "Bagʻdod", "Beshariq", "Buvayda", "Dangʻara", "Fargʻona t.", "Furqat", "Qoʻshtepa", "Quva", "Rishton", "Soʻx", "Toshloq", "Uchkoʻprik", "Oʻzbekiston", "Yozyovon"] },
+        { name: "Andijon viloyati", districts: ["Andijon sh.", "Xonobod sh.", "Asaka", "Baliqchi", "Boʻston", "Buloqboshi", "Izboskan", "Jalaquduq", "Marhamat", "Oltinkoʻl", "Paxtaobod", "Ulugʻnor", "Xoʻjaobod", "Shahrixon", "Qoʻrgʻontepa"] },
+        { name: "Namangan viloyati", districts: ["Namangan sh.", "Chortoq", "Chust", "Davlatobod", "Kosonsoy", "Mingbuloq", "Namangan t.", "Norin", "Pop", "Toʻraqoʻrgʻon", "Uychi", "Uchqoʻrgʻon", "Yangi Namangan", "Yangiqoʻrgʻon"] },
+        { name: "Buxoro viloyati", districts: ["Buxoro sh.", "Kogon sh.", "Buxoro t.", "Gʻijduvon", "Jondor", "Kogon t.", "Olot", "Peshku", "Qorakoʻl", "Qoravulbozor", "Romitan", "Shofirkon", "Vobkent"] },
+        { name: "Qashqadaryo viloyati", districts: ["Qarshi sh.", "Shahrisabz sh.", "Dehqonobod", "Kasbi", "Kitob", "Koson", "Koʻkdala", "Mirishkor", "Muborak", "Nishon", "Qarshi t.", "Shahrisabz t.", "Chiroqchi", "Yakkabogʻ"] },
+        { name: "Surxondaryo viloyati", districts: ["Termiz sh.", "Angor", "Bandixon", "Boysun", "Denov", "Jarqoʻrgʻon", "Qiziriq", "Qumqoʻrgʻon", "Muzrabot", "Oltinsoy", "Sariosiyo", "Sherobod", "Shoʻrchi", "Termiz t.", "Uzun"] },
+        { name: "Navoiy viloyati", districts: ["Navoiy sh.", "Zarafshon sh.", "Karmana", "Konimex", "Navbahor", "Nurota", "Qiziltepa", "Tomdi", "Uchquduq", "Xatirchi"] },
+        { name: "Jizzax viloyati", districts: ["Jizzax sh.", "Arnasoy", "Baxmal", "Doʻstlik", "Forish", "Gʻallaorol", "Sharof Rashidov", "Mirzachoʻl", "Paxtakor", "Yangiobod", "Zarbdor", "Zafarobod", "Zomin"] },
+        { name: "Sirdaryo viloyati", districts: ["Guliston sh.", "Shirin sh.", "Yangiyer sh.", "Boyovut", "Guliston t.", "Mirzaobod", "Oqoltin", "Sardoba", "Sayhunobod", "Sirdaryo t.", "Xovast"] },
+        { name: "Xorazm viloyati", districts: ["Urganch sh.", "Xiva sh.", "Bogʻot", "Gurlan", "Qoʻshkoʻpir", "Shovot", "Toʻproqqalʼa", "Urganch t.", "Xonqa", "Hazarasp", "Xiva t.", "Yangiariq", "Yangibozor"] },
+        { name: "Qoraqalpogʻiston Respublikasi", districts: ["Nukus sh.", "Amudaryo", "Beruniy", "Boʻzatov", "Chimboy", "Ellikqalʼa", "Kegeyli", "Moʻynoq", "Nukus t.", "Qonlikoʻl", "Qoʻngʻirot", "Qorauzyak", "Shumanay", "Taxtakoʻpir", "Toʻrtkoʻl", "Xoʻjayli", "Taxiatosh"] }
+      ],
+      uz_cyr: [
+        { name: "Тошкент шаҳри", districts: ["Бектемир", "Чилонзор", "Миробод", "Мирзо Улуғбек", "Олмазор", "Сергели", "Шайхонтоҳур", "Учтепа", "Яшнобод", "Яккасарой", "Юнусобод", "Янгиҳаёт"] },
+        { name: "Тошкент вилояти", districts: ["Нурафшон ш.", "Ангрен ш.", "Олмалиқ ш.", "Чирчиқ ш.", "Бекобод ш.", "Янгийўл ш.", "Бекобод т.", "Бўка", "Бўстонлиқ", "Чиноз", "Қибрай", "Оҳангарон", "Оққўрғон", "Паркент", "Пискент", "Зангиота"] },
+        { name: "Самарқанд вилояти", districts: ["Самарқанд ш.", "Каттақўрғон ш.", "Булунғур", "Иштихон", "Жомбой", "Нарпай", "Нуробод", "Оқдарё", "Пастдарғом", "Пахтачи", "Паяриқ", "Самарқанд т.", "Тойлоқ", "Ургут", "Қўшработ"] },
+        { name: "Фарғона вилояти", districts: ["Фарғона ш.", "Қўқон ш.", "Марғилон ш.", "Қувасой ш.", "Олтиариқ", "Бағдод", "Бешариқ", "Бувайда", "Данғара", "Фарғона т.", "Фурқат", "Қўштепа", "Қува", "Риштон", "Сўх", "Тошлоқ", "Учкўприк", "Ўзбекистон", "Ёзёвон"] },
+        { name: "Андижон вилояти", districts: ["Андижон ш.", "Хонобод ш.", "Асака", "Балиқчи", "Бўстон", "Булоқбоши", "Избоскан", "Жалақудуқ", "Марҳамат", "Олтинкўл", "Пахтаобод", "Улуғнор", "Хўжаобод", "Шаҳрихон", "Қўрғонтепа"] },
+        { name: "Наманган вилояти", districts: ["Наманган ш.", "Чортоқ", "Чуст", "Давлатобод", "Косонсой", "Мингбулоқ", "Наманган т.", "Норин", "Поп", "Тўрақўрғон", "Уйчи", "Учқўрғон", "Янги Наманган", "Янгиқўрғон"] },
+        { name: "Бухоро вилояти", districts: ["Бухоро ш.", "Когон ш.", "Бухоро т.", "Ғиждувон", "Жондор", "Когон т.", "Олот", "Пешку", "Қоракўл", "Қоравулбозор", "Ромитан", "Шофиркон", "Вобкент"] },
+        { name: "Қашқадарё вилояти", districts: ["Қарши ш.", "Шаҳрисабз ш.", "Деҳқонобод", "Касби", "Китоб", "Косон", "Кўкдала", "Миришкор", "Муборак", "Нишон", "Қарши т.", "Шаҳрисабз т.", "Чироқчи", "Яккабоғ"] },
+        { name: "Сурхондарё вилояти", districts: ["Термиз ш.", "Ангор", "Бандихон", "Бойсун", "Денов", "Жарқўрғон", "Қизириқ", "Қумқўрғон", "Музработ", "Олтинсой", "Сариосиё", "Шеробод", "Шўрчи", "Термиз т.", "Узун"] },
+        { name: "Навоий вилояти", districts: ["Навоий ш.", "Зарафшон ш.", "Кармана", "Конимех", "Навбаҳор", "Нурота", "Қизилтепа", "Томди", "Учқудуқ", "Хатирчи"] },
+        { name: "Жиззах вилояти", districts: ["Жиззах ш.", "Арнасой", "Бахмал", "Дўстлик", "Фориш", "Ғаллаорол", "Шароф Рашидов", "Мирзачўл", "Пахтакор", "Янгиобод", "Зарбдор", "Зафаробод", "Зомин"] },
+        { name: "Сирдарё вилояти", districts: ["Гулистон ш.", "Ширин ш.", "Янгиер ш.", "Боёвут", "Гулистон т.", "Мирзаобод", "Оқолтин", "Сардоба", "Сайхунобод", "Сирдарё т.", "Ховос"] },
+        { name: "Хоразм вилояти", districts: ["Урганч ш.", "Хива ш.", "Боғот", "Гурлан", "Қўшкўпир", "Шовот", "Тўпроққалъа", "Урганч т.", "Хонқа", "Ҳазорасп", "Хива т.", "Янгиариқ", "Янгибозор"] },
+        { name: "Қорақалпоғистон Республикаси", districts: ["Нукус ш.", "Амударё", "Беруний", "Бўзатов", "Чимбой", "Элликқалъа", "Кегейли", "Мўйноқ", "Нукус т.", "Қонлиқўл", "Қўнғирот", "Қораўзак", "Шуманай", "Тахтакўпир", "Тўрткўл", "Хўжайли", "Тахиатош"] }
+      ],
+      ru: [
+        { name: "Город Ташкент", districts: ["Бектемирский", "Чиланзарский", "Мирабадский", "Мирзо-Улугбекский", "Алмазарский", "Сергелийский", "Шайхантахурский", "Учтепинский", "Яшнабадский", "Яккасарайский", "Юнусабадский", "Янгихаётский"] },
+        { name: "Ташкентская область", districts: ["Нурафшон", "Ангрен", "Алмалык", "Чирчик", "Бекабад", "Янгиюль", "Букинский", "Бостанлыкский", "Чиназский", "Кибрайский", "Ахангаранский", "Аккурганский", "Паркентский", "Пскентский", "Зангиатинский"] },
+        { name: "Самаркандская область", districts: ["Самарканд", "Каттакурган", "Булунгурский", "Иштыханский", "Джамбайский", "Нарпайский", "Нурабадский", "Акдарьинский", "Пастдаргомский", "Пахтачинский", "Пайарыкский", "Самаркандский", "Тойлакский", "Ургутский", "Кошрабатский"] },
+        { name: "Ферганская область", districts: ["Фергана", "Коканд", "Маргилан", "Кувасай", "Алтыарыкский", "Багдадский", "Бешарыкский", "Бувайдинский", "Дангаринский", "Ферганский", "Фуркатский", "Куштепинский", "Кувинский", "Риштанский", "Сохский", "Ташлакский", "Учкуприкский", "Узбекистанский", "Язъяванский"] },
+        { name: "Андижанская область", districts: ["Андижан", "Ханабад", "Асака", "Балыкчинский", "Бустонский", "Булакбашинский", "Избасканский", "Джалакудукский", "Мархаматский", "Алтынкульский", "Пахтаабадский", "Улугнорский", "Ходжаабадский", "Шахриханский", "Кургантепинский"] },
+        { name: "Наманганская область", districts: ["Наманган", "Чартакский", "Чустский", "Давлатобадский", "Касансайский", "Мингбулакский", "Наманганский", "Нарынский", "Папский", "Туракурганский", "Уйчинский", "Учкурганский", "Новый Наманган", "Янгикурганский"] },
+        { name: "Бухарская область", districts: ["Бухара", "Каган", "Бухарский", "Гиждуванский", "Жондорский", "Каганский", "Алатский", "Пешкунский", "Каракульский", "Караулбазарский", "Ромитанский", "Шафирканский", "Вабкентский"] },
+        { name: "Кашкадарьинская область", districts: ["Карши", "Шахрисабз", "Дехканабадский", "Касбинский", " Китабский", "Касанский", "Кукдалинский", "Миришкорский", "Мубарекский", "Нишанский", "Каршинский", "Шахрисабзский", "Чиракчинский", "Яккабагский"] },
+        { name: "Сурхандарьинская область", districts: ["Термез", "Ангорский", "Бандиханский", "Байсунский", "Денауский", "Джаркурганский", "Кизирыкский", "Кумкурганский", "Музрабадский", "Алтынсайский", "Сариасийский", "Шерабадский", "Шурчинский", "Термезский", "Узунский"] },
+        { name: "Навоийская область", districts: ["Навои", "Зарафшан", "Карманинский", "Конимехский", "Навбахорский", "Нуратинский", "Кызылтепинский", "Томдинский", "Учкудукский", "Хатырчинский"] },
+        { name: "Джизакская область", districts: ["Джизак", "Арнасайский", "Бахмальский", "Дустликский", "Форишский", "Галляаральский", "Шароф Рашидов", "Мирзачульский", "Пахтакорский", "Янгиабадский", "Зарбдарский", "Зафарабадский", "Заминский"] },
+        { name: "Сырдарьинская область", districts: ["Гулистан", "Ширин", "Янгиер", "Баяутский", "Гулистанский", "Мирзаабадский", "Акалтынский", "Сырдарьинский", "Сайхунабадский", "Сырдарьинский", "Хавастский"] },
+        { name: "Хорезмская область", districts: ["Ургенч", "Хива", "Богатский", "Гурленский", "Кошкупирский", "Шавотский", "Тупроккалинский", "Ургенчский", "Ханкинский", "Хазараспский", "Хивинский", "Янгиарыкский", "Янгибазарский"] },
+        { name: "Республика Каракалпакстан", districts: ["Нукус", "Амударьинский", "Берунийский", "Бозатауский", "Чимбайский", "Элликкалинский", "Кегейлийский", "Муйнакский", "Нукусский", "Канлыкульский", "Кунградский", "Караузякский", "Шуманайский", "Тахтакупырский", "Терткульский", "Ходжейлийский", "Тахиаташ"] }
+      ]
+    };
 
     var dictionary = {
       uz_lat: {
@@ -501,9 +446,10 @@
         navHome: "Bosh sahifa",
         navBook: "Navbat",
         navRegion: "Hudud",
-        regionTitle: "Hududni Tanlang",
-        regionSub: "Oʻz hududingizni (viloyat va tuman/shaharni) koʻrsating",
-        btnRegionConfirm: "Davom etish ➔",
+        regionTitle: "Viloyatni tanlang",
+        regionSub: "Oʻz hududingizni koʻrsating",
+        districtTitle: "Tuman / Shaharni tanlang",
+        districtSub: "Tumaningizni tanlang",
         lblFormDoc: "Shifokorni tanlang",
         lblFormDate: "Qabul sanasi va vaqti",
         symptomsLabelBooking: "Shikoyatingiz / Simptomlar",
@@ -511,7 +457,7 @@
         placeholderSymptoms: "Shikoyatingizni qisqacha yozing...",
         btnSubmitBooking: "Qabulni Tasdiqlash",
         btnSubmitAi: "AI Vizual Tahlil Qilish",
-        notifMsg: "Bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Hududiy qamrov barcha tuman va qishloqlarga kengaytirildi.",
+        notifMsg: "Bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Viloyat va tumanlar bo‘yicha to‘liq qamrov qo‘shildi.",
         feeLabel: "Qabul",
         cashbackLabel: "Keshbek",
         aiAnalyzing: "AI rasmni va hududiy ma'lumotlarni tahlil qilmoqda...",
@@ -536,9 +482,10 @@
         navHome: "Бош саҳифа",
         navBook: "Навбат",
         navRegion: "Ҳудуд",
-        regionTitle: "Ҳудудни Танланг",
-        regionSub: "Ўз ҳудудингизни (вилоят ва туман/шаҳарни) кўрсатинг",
-        btnRegionConfirm: "Давом этиш ➔",
+        regionTitle: "Вилоятни танlang",
+        regionSub: "Ўз ҳудудингизни кўрсатинг",
+        districtTitle: "Туман / Шаҳарни танlang",
+        districtSub: "Туманни танlang",
         lblFormDoc: "Шифокорни танланг",
         lblFormDate: "Қабул санаси ва вақти",
         symptomsLabelBooking: "Шикоятингиз / Симптомлар",
@@ -546,7 +493,7 @@
         placeholderSymptoms: "Шикоятингизни қисқача ёзинг...",
         btnSubmitBooking: "Қабулни Тасдиқлаш",
         btnSubmitAi: "AI Визуал Таҳлил Қилиш",
-        notifMsg: "Билдиришномалар:\n• Тизимга хуш келибсиз!\n• Ҳудудий қамров барча туман ва қишлоқларга кенгайтирилди.",
+        notifMsg: "Билдиришномалар:\n• Тизимга хуш келибсиз!\n• Вилоят ва туманлар бўйича тўлиқ қамров қўшилди.",
         feeLabel: "Қабул",
         cashbackLabel: "Кешбек",
         aiAnalyzing: "AI расмни ва ҳудудий маълумотларни таҳлил қилмоқда...",
@@ -571,9 +518,10 @@
         navHome: "Главная",
         navBook: "Запись",
         navRegion: "Регион",
-        regionTitle: "Выберите Регион",
-        regionSub: "Укажите вашу область, город или район",
-        btnRegionConfirm: "Продолжить ➔",
+        regionTitle: "Выберите регион",
+        regionSub: "Укажите вашу область или город",
+        districtTitle: "Выберите район / город",
+        districtSub: "Укажите ваш район или населенный пункт",
         lblFormDoc: "Выберите врача",
         lblFormDate: "Дата и время приема",
         symptomsLabelBooking: "Ваши жалобы / Симптомы",
@@ -581,7 +529,7 @@
         placeholderSymptoms: "Кратко опишите ваши жалобы...",
         btnSubmitBooking: "Подтвердить запись",
         btnSubmitAi: "Визуальный анализ ИИ",
-        notifMsg: "Уведомления:\n• Добро пожаловать!\n• Поддерживаются все регионы, районы и села Узбекистана.",
+        notifMsg: "Уведомления:\n• Добро пожаловать!\n• Поддерживаются все регионы и районы Узбекистана.",
         feeLabel: "Прием",
         cashbackLabel: "Кэшбэк",
         aiAnalyzing: "ИИ анализирует изображение и регион...",
@@ -607,8 +555,8 @@
     function selectLanguage(lang) {
       currentLang = lang;
       document.getElementById('langScreen').style.display = 'none';
+      renderRegions();
       document.getElementById('regionScreen').style.display = 'flex';
-      applyRegionTranslations();
     }
 
     function showLangScreen() {
@@ -620,22 +568,69 @@
     function showRegionScreen() {
       document.getElementById('appContent').style.display = 'none';
       document.getElementById('floatingNav').style.display = 'none';
+      renderRegions();
       document.getElementById('regionScreen').style.display = 'flex';
-      applyRegionTranslations();
     }
 
-    function applyRegionTranslations() {
+    function renderRegions() {
+      var container = document.getElementById('regionsContainer');
+      container.innerHTML = "";
+      var regions = uzbekistanData[currentLang] || uzbekistanData['uz_lat'];
       var langObj = dictionary[currentLang];
+
       document.getElementById('lbl-region-title').innerText = langObj.regionTitle;
       document.getElementById('lbl-region-sub').innerText = langObj.regionSub;
-      document.getElementById('btnRegionConfirm').innerText = langObj.btnRegionConfirm;
+
+      for (var i = 0; i < regions.length; i++) {
+        var reg = regions[i];
+        container.innerHTML += `
+          <button class="onboard-btn" onclick="selectRegion('${reg.name.replace(/'/g, "\\'")}')">
+            <span>${reg.name}</span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
+          </button>`;
+      }
     }
 
-    function confirmRegion() {
-      var sel = document.getElementById('onboardRegionSelect');
-      selectedRegion = sel.options[sel.selectedIndex].text;
-
+    function selectRegion(regionName) {
+      chosenViloyat = regionName;
       document.getElementById('regionScreen').style.display = 'none';
+      renderDistricts(regionName);
+      document.getElementById('districtScreen').style.display = 'flex';
+    }
+
+    function backToRegions() {
+      document.getElementById('districtScreen').style.display = 'none';
+      renderRegions();
+      document.getElementById('regionScreen').style.display = 'flex';
+    }
+
+    function renderDistricts(regionName) {
+      var container = document.getElementById('districtsContainer');
+      container.innerHTML = "";
+      var regions = uzbekistanData[currentLang] || uzbekistanData['uz_lat'];
+      var langObj = dictionary[currentLang];
+
+      document.getElementById('lbl-district-title').innerText = regionName;
+      document.getElementById('lbl-district-sub').innerText = langObj.districtSub;
+
+      var targetDistricts = [];
+      for (var i = 0; i < regions.length; i++) {
+        if (regions[i].name === regionName) {
+          targetDistricts = regions[i].districts;
+        }
+      }
+
+      for (var j = 0; j < targetDistricts.length; j++) {
+        var dist = targetDistricts[j];
+        container.innerHTML += `
+          <button class="onboard-btn" onclick="finalizeRegion('${regionName.replace(/'/g, "\\'")}', '${dist.replace(/'/g, "\\'")}')">
+            <span>${dist}</span> <i class="fa-solid fa-check" style="color:var(--neon-green);"></i>
+          </button>`;
+      }
+    }
+
+    function finalizeRegion(viloyat, tuman) {
+      selectedRegion = viloyat + ", " + tuman;
+      document.getElementById('districtScreen').style.display = 'none';
       document.getElementById('appContent').style.display = 'block';
       document.getElementById('floatingNav').style.display = 'flex';
 
