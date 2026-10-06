@@ -22,6 +22,33 @@
       padding-bottom: 95px;
     }
 
+    /* Language Selection Screen Overlay */
+    .lang-screen {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: #047857; z-index: 2000;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px; color: white; text-align: center;
+    }
+    .lang-logo {
+      width: 80px; height: 80px; background: white; color: #059669;
+      border-radius: 24px; display: flex; align-items: center; justify-content: center;
+      font-size: 38px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .lang-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .lang-sub { font-size: 14px; opacity: 0.85; margin-bottom: 30px; }
+    .lang-btn {
+      width: 100%; max-width: 300px; background: white; color: #064e3b;
+      border: none; padding: 16px; border-radius: 16px; font-size: 16px;
+      font-weight: 700; margin-bottom: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .lang-btn:active { transform: scale(0.98); background: #dcfce7; }
+
+    /* Main App Container */
+    .app-content { display: none; }
+
+    /* Header */
     .header {
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
     }
@@ -38,6 +65,9 @@
     }
     .user-name { font-weight: 700; font-size: 16px; color: #0f172a; }
 
+    .header-actions { display: flex; gap: 14px; align-items: center; }
+
+    /* Balance Card */
     .balance-card {
       background: linear-gradient(135deg, #059669 0%, #047857 100%);
       color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px;
@@ -46,6 +76,7 @@
     .balance-val { font-size: 32px; font-weight: 800; margin: 6px 0; }
     .balance-sub { font-size: 13px; opacity: 0.9; }
 
+    /* AI Banner */
     .ai-banner {
       background: #dcfce7; border: 1px solid #86efac; border-radius: 16px;
       padding: 14px; display: flex; align-items: center; gap: 12px;
@@ -58,6 +89,7 @@
 
     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #064e3b; }
 
+    /* Doctor Card */
     .doc-card {
       background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; gap: 14px; align-items: center;
@@ -107,40 +139,63 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="user-info">
-      <div id="avatarContainer">
-        <div class="avatar-fallback" id="u-avatar">U</div>
+  <!-- Language Selection Screen -->
+  <div class="lang-screen" id="langScreen">
+    <div class="lang-logo"><i class="fa-solid fa-heart-pulse"></i></div>
+    <div class="lang-title">Shifo AI</div>
+    <div class="lang-sub">Iltimos, tilni tanlang / Пожалуйста, выберите язык</div>
+
+    <button class="lang-btn" onclick="setLanguage('uz_lat')">
+      <span>O'zbekcha</span> <span>🇺🇿</span>
+    </button>
+    <button class="lang-btn" onclick="setLanguage('uz_cyr')">
+      <span>Ўзбекча</span> <span>🇺🇿</span>
+    </button>
+    <button class="lang-btn" onclick="setLanguage('ru')">
+      <span>Русский</span> <span>🇷🇺</span>
+    </button>
+  </div>
+
+  <!-- Main App -->
+  <div class="app-content" id="appContent">
+    <!-- Header -->
+    <div class="header">
+      <div class="user-info">
+        <div id="avatarContainer">
+          <div class="avatar-fallback" id="u-avatar">U</div>
+        </div>
+        <div>
+          <div class="user-name" id="u-name">Assalomu alaykum!</div>
+        </div>
       </div>
+      <div class="header-actions">
+        <i class="fa-solid fa-globe" style="font-size: 20px; color: #059669; cursor: pointer;" onclick="showLangScreen()"></i>
+        <i class="fa-regular fa-bell" style="font-size: 22px; color: #059669; cursor: pointer;" onclick="openNotifications()"></i>
+      </div>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="balance-card">
+      <div class="balance-sub" id="lbl-balance-title"><i class="fa-solid fa-wallet"></i> Bonus Balansingiz</div>
+      <div class="balance-val" id="u-balance">0 UZS</div>
+      <div class="balance-sub" id="lbl-balance-desc">Qabullardan 10% keshbek yig'iladi</div>
+    </div>
+
+    <!-- AI Banner -->
+    <div class="ai-banner" onclick="openAiModal()">
+      <div class="ai-icon"><i class="fa-solid fa-robot"></i></div>
       <div>
-        <div class="user-name" id="u-name">Assalomu alaykum!</div>
+        <strong style="font-size: 14px; color: #064e3b;" id="lbl-ai-title">AI Shifo Maslahatisi</strong>
+        <p style="font-size: 12px; color: #047857;" id="lbl-ai-desc">Qaysi shifokorga borishni bilmaysizmi? Maslahat oling</p>
       </div>
     </div>
-    <i class="fa-regular fa-bell" style="font-size: 22px; color: #059669; cursor: pointer;" onclick="openNotifications()"></i>
+
+    <!-- Doctors List -->
+    <div class="section-title" id="lbl-docs-title">Mavjud Shifokorlar</div>
+    <div id="doctors-container"></div>
+
+    <button class="btn-main" onclick="openBookingModal()" id="btn-book-main"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
   </div>
-
-  <!-- Balance Card -->
-  <div class="balance-card">
-    <div class="balance-sub"><i class="fa-solid fa-wallet"></i> Bonus Balansingiz</div>
-    <div class="balance-val" id="u-balance">0 UZS</div>
-    <div class="balance-sub">Qabullardan 10% keshbek yig'iladi</div>
-  </div>
-
-  <!-- AI Banner -->
-  <div class="ai-banner" onclick="openAiModal()">
-    <div class="ai-icon"><i class="fa-solid fa-robot"></i></div>
-    <div>
-      <strong style="font-size: 14px; color: #064e3b;">AI Shifo Maslahatisi</strong>
-      <p style="font-size: 12px; color: #047857;">Qaysi shifokorga borishni bilmaysizmi? Maslahat oling</p>
-    </div>
-  </div>
-
-  <!-- Doctors List -->
-  <div class="section-title">Mavjud Shifokorlar</div>
-  <div id="doctors-container"></div>
-
-  <button class="btn-main" onclick="openBookingModal()"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
 
   <!-- Modal Sheet -->
   <div class="modal-overlay" id="mainModal">
@@ -151,18 +206,18 @@
       </div>
 
       <div class="form-group" id="docSelectGroup">
-        <label>Shifokorni tanlang</label>
+        <label id="lbl-form-doc">Shifokorni tanlang</label>
         <select class="form-control" id="doctorSelect"></select>
       </div>
 
       <div class="form-group" id="dateTimeGroup">
-        <label>Qabul sanasi va vaqti</label>
+        <label id="lbl-form-date">Qabul sanasi va vaqti</label>
         <input type="datetime-local" class="form-control" id="appointmentTime">
       </div>
 
       <div class="form-group">
         <label id="symptomsLabel">Shikoyatingiz / Simptomlar</label>
-        <textarea class="form-control" id="symptoms" rows="3" placeholder="Shikoyatingizni qisqacha yozing..."></textarea>
+        <textarea class="form-control" id="symptoms" rows="3" placeholder="..."></textarea>
       </div>
 
       <button class="btn-submit" id="modalSubmitBtn" onclick="handleFormSubmit()"><i class="fa-solid fa-check"></i> Tasdiqlash</button>
@@ -176,25 +231,133 @@
 
   <script>
     var tg = window.Telegram ? window.Telegram.WebApp : null;
+    var currentLang = "uz_lat";
     var currentMode = "booking";
 
+    var dictionary = {
+      uz_lat: {
+        greeting: "Assalomu alaykum, ",
+        balanceTitle: "Bonus Balansingiz",
+        balanceDesc: "Qabullardan 10% keshbek yig'iladi",
+        aiTitle: "AI Shifo Maslahatisi",
+        aiDesc: "Qaysi shifokorga borishni bilmaysizmi? Maslahat oling",
+        docsTitle: "Mavjud Shifokorlar",
+        btnBookMain: "Qabulga Yozilish",
+        lblFormDoc: "Shifokorni tanlang",
+        lblFormDate: "Qabul sanasi va vaqti",
+        symptomsLabelBooking: "Shikoyatingiz / Simptomlar",
+        symptomsLabelAi: "Simptomlaringizni batafsil yozing",
+        placeholderSymptoms: "Shikoyatingizni qisqacha yozing...",
+        btnSubmitBooking: "Qabulni Tasdiqlash",
+        btnSubmitAi: "AI Tahlil Qilish",
+        notifMsg: "Bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Har bir qabuldan 10% keshbek beriladi.",
+        feeLabel: "Qabul",
+        cashbackLabel: "Keshbek",
+        aiAnalyzing: "AI simptomlarni tahlil qilmoqda...",
+        successBooking: "Qabulga muvaffaqiyatli yozildingiz!",
+        cardiology: "Kardiolog",
+        neurology: "Nevrolog"
+      },
+      uz_cyr: {
+        greeting: "Ассалому алайкум, ",
+        balanceTitle: "Бонус Балансингиз",
+        balanceDesc: "Қабуллардан 10% кешбек йиғилади",
+        aiTitle: "AI Шифо Маслаҳатиси",
+        aiDesc: "Қайси шифокорга боришни билмайсизми? Маслаҳат олинг",
+        docsTitle: "Мавжуд Шифокорлар",
+        btnBookMain: "Қабулга Ёзилиш",
+        lblFormDoc: "Шифокорни танланг",
+        lblFormDate: "Қабул санаси ва вақти",
+        symptomsLabelBooking: "Шикоятингиз / Симптомлар",
+        symptomsLabelAi: "Симптомларингизни батафсил ёзинг",
+        placeholderSymptoms: "Шикоятингизни қисқача ёзинг...",
+        btnSubmitBooking: "Қабулни Тасдиқлаш",
+        btnSubmitAi: "AI Таҳлил Қилиш",
+        notifMsg: "Билдиришномалар:\n• Тизимга хуш келибсиз!\n• Ҳар бир қабулдан 10% кешбек берилади.",
+        feeLabel: "Қабул",
+        cashbackLabel: "Кешбек",
+        aiAnalyzing: "AI симптомларни таҳлил қилмоқда...",
+        successBooking: "Қабулга муваффақиятли ёзилдингиз!",
+        cardiology: "Кардиолог",
+        neurology: "Невролог"
+      },
+      ru: {
+        greeting: "Здравствуйте, ",
+        balanceTitle: "Ваш бонусный баланс",
+        balanceDesc: "10% кэшбэк накапливается с каждого приема",
+        aiTitle: "AI Консультант Shifo",
+        aiDesc: "Не знаете к какому врачу обратиться? Получите совет",
+        docsTitle: "Доступные Врачи",
+        btnBookMain: "Записаться на прием",
+        lblFormDoc: "Выберите врача",
+        lblFormDate: "Дата и время приема",
+        symptomsLabelBooking: "Ваши жалобы / Симптомы",
+        symptomsLabelAi: "Опишите ваши симптомы подробно",
+        placeholderSymptoms: "Кратко опишите ваши жалобы...",
+        btnSubmitBooking: "Подтвердить запись",
+        btnSubmitAi: "Анализировать с AI",
+        notifMsg: "Уведомления:\n• Добро пожаловать в систему!\n• Начисляется 10% кэшбэк с каждого приема.",
+        feeLabel: "Прием",
+        cashbackLabel: "Кэшбэк",
+        aiAnalyzing: "ИИ анализирует ваши симптомы...",
+        successBooking: "Вы успешно записались на прием!",
+        cardiology: "Кардиолог",
+        neurology: "Невролог"
+      }
+    };
+
     var doctorsList = [
-      { id: "1", full_name: "Dr. Alisher Ahmedov", specialty: "Kardiolog", clinic_name: "Akfa Medline", consultation_fee: 150000, cashback_percentage: 10, rating: "4.9", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
-      { id: "2", full_name: "Dr. Malika Zokirova", specialty: "Nevrolog", clinic_name: "Shifo Med", consultation_fee: 120000, cashback_percentage: 15, rating: "5.0", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" }
+      { id: "1", full_name: "Dr. Alisher Ahmedov", spec_key: "cardiology", clinic_name: "Akfa Medline", consultation_fee: 150000, cashback_percentage: 10, rating: "4.9", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
+      { id: "2", full_name: "Dr. Malika Zokirova", spec_key: "neurology", clinic_name: "Shifo Med", consultation_fee: 120000, cashback_percentage: 15, rating: "5.0", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" }
     ];
 
     if (tg) {
       tg.ready();
       tg.expand();
-      var u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-      if (u) {
-        var name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
-        document.getElementById('u-name').innerText = 'Assalomu alaykum, ' + name + '!';
+    }
 
-        if (u.photo_url) {
-          document.getElementById('avatarContainer').innerHTML = '<img src="' + u.photo_url + '" class="avatar-img">';
-        } else {
-          document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.getElementById('langScreen').style.display = 'none';
+      document.getElementById('appContent').style.display = 'block';
+
+      applyTranslations();
+      setupUserHeader();
+      renderDoctors(doctorsList);
+    }
+
+    function showLangScreen() {
+      document.getElementById('appContent').style.display = 'none';
+      document.getElementById('langScreen').style.display = 'flex';
+    }
+
+    function applyTranslations() {
+      var langObj = dictionary[currentLang];
+      document.getElementById('lbl-balance-title').innerHTML = '<i class="fa-solid fa-wallet"></i> ' + langObj.balanceTitle;
+      document.getElementById('lbl-balance-desc').innerText = langObj.balanceDesc;
+      document.getElementById('lbl-ai-title').innerText = langObj.aiTitle;
+      document.getElementById('lbl-ai-desc').innerText = langObj.aiDesc;
+      document.getElementById('lbl-docs-title').innerText = langObj.docsTitle;
+      document.getElementById('btn-book-main').innerHTML = '<i class="fa-regular fa-calendar-check"></i> ' + langObj.btnBookMain;
+
+      document.getElementById('lbl-form-doc').innerText = langObj.lblFormDoc;
+      document.getElementById('lbl-form-date').innerText = langObj.lblFormDate;
+      document.getElementById('symptoms').placeholder = langObj.placeholderSymptoms;
+    }
+
+    function setupUserHeader() {
+      var langObj = dictionary[currentLang];
+      if (tg) {
+        var u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+        if (u) {
+          var name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
+          document.getElementById('u-name').innerText = langObj.greeting + name + '!';
+
+          if (u.photo_url) {
+            document.getElementById('avatarContainer').innerHTML = '<img src="' + u.photo_url + '" class="avatar-img">';
+          } else {
+            document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
+          }
         }
       }
     }
@@ -202,11 +365,15 @@
     function renderDoctors(docs) {
       var container = document.getElementById('doctors-container');
       var select = document.getElementById('doctorSelect');
+      var langObj = dictionary[currentLang];
+
       container.innerHTML = '';
       select.innerHTML = '';
 
       for (var i = 0; i < docs.length; i++) {
         var doc = docs[i];
+        var specText = langObj[doc.spec_key] || doc.spec_key;
+
         container.innerHTML += `
           <div class="doc-card" onclick="openBookingModal('${doc.id}')">
             <img src="${doc.img}" class="doc-img">
@@ -215,23 +382,25 @@
                 <span class="doc-name">${doc.full_name}</span>
                 <span class="rating-badge"><i class="fa-solid fa-star"></i> ${doc.rating}</span>
               </div>
-              <div class="doc-spec">${doc.specialty} • ${doc.clinic_name}</div>
-              <div class="doc-meta">Qabul: ${Number(doc.consultation_fee).toLocaleString('uz-UZ')} UZS (${doc.cashback_percentage}% Cashback)</div>
+              <div class="doc-spec">${specText} • ${doc.clinic_name}</div>
+              <div class="doc-meta">${langObj.feeLabel}: ${Number(doc.consultation_fee).toLocaleString('uz-UZ')} UZS (${doc.cashback_percentage}% ${langObj.cashbackLabel})</div>
             </div>
           </div>`;
 
-        select.innerHTML += `<option value="${doc.id}">${doc.full_name} (${doc.specialty})</option>`;
+        select.innerHTML += `<option value="${doc.id}">${doc.full_name} (${specText})</option>`;
       }
     }
 
     function openBookingModal(doctorId) {
       currentMode = "booking";
-      document.getElementById('modalTitle').innerText = "Qabulga yozilish";
-      document.getElementById('symptomsLabel').innerText = "Shikoyatingiz / Simptomlar";
+      var langObj = dictionary[currentLang];
+
+      document.getElementById('modalTitle').innerText = langObj.btnBookMain;
+      document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelBooking;
       document.getElementById('docSelectGroup').style.display = "block";
       document.getElementById('dateTimeGroup').style.display = "block";
       document.getElementById('aiResultBox').style.display = "none";
-      document.getElementById('modalSubmitBtn').innerHTML = '<i class="fa-solid fa-check"></i> Qabulni Tasdiqlash';
+      document.getElementById('modalSubmitBtn').innerHTML = '<i class="fa-solid fa-check"></i> ' + langObj.btnSubmitBooking;
       
       if (doctorId) {
         document.getElementById('doctorSelect').value = doctorId;
@@ -241,12 +410,14 @@
 
     function openAiModal() {
       currentMode = "ai";
-      document.getElementById('modalTitle').innerText = "AI Shifo Maslahatisi";
-      document.getElementById('symptomsLabel').innerText = "Simptomlaringizni batafsil yozing";
+      var langObj = dictionary[currentLang];
+
+      document.getElementById('modalTitle').innerText = langObj.aiTitle;
+      document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelAi;
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
       document.getElementById('aiResultBox').style.display = "none";
-      document.getElementById('modalSubmitBtn').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> AI Tahlil Qilish';
+      document.getElementById('modalSubmitBtn').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + langObj.btnSubmitAi;
       document.getElementById('mainModal').style.display = 'flex';
     }
 
@@ -255,26 +426,13 @@
     }
 
     function openNotifications() {
-      var msg = "Bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Har bir qabuldan 10% keshbek beriladi.";
+      var msg = dictionary[currentLang].notifMsg;
       if (tg && tg.showAlert) tg.showAlert(msg); else alert(msg);
-    }
-
-    function formatUzbekDate(dateStr) {
-      var d = new Date(dateStr);
-      if (isNaN(d.getTime())) return dateStr;
-
-      var months = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
-      var day = d.getDate();
-      var month = months[d.getMonth()];
-      var year = d.getFullYear();
-      var hours = String(d.getHours()).padStart(2, '0');
-      var minutes = String(d.getMinutes()).padStart(2, '0');
-
-      return day + "-" + month + ", " + year + "-yil, soat " + hours + ":" + minutes;
     }
 
     function handleFormSubmit() {
       var symptoms = document.getElementById('symptoms').value;
+      var langObj = dictionary[currentLang];
 
       if (!symptoms || symptoms.trim() === "") {
         alert("Iltimos, simptomlar yoki shikoyatingizni yozing!");
@@ -283,20 +441,28 @@
 
       if (currentMode === "ai") {
         document.getElementById('aiResultBox').style.display = "block";
-        document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> AI simptomlarni tahlil qilmoqda...";
+        document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> " + langObj.aiAnalyzing;
 
         setTimeout(function() {
           var txt = symptoms.toLowerCase();
           var advice = "";
 
-          if (txt.indexOf("sindi") !== -1 || txt.indexOf("sinish") !== -1 || txt.indexOf("suyak") !== -1 || txt.indexOf("jarohat") !== -1) {
-            advice = "O'tkir shikastlanish / suyak sinishi belgisi! Zudlik bilan <strong>Travmatolog / Xirurg</strong> ko'rigiga boring va shikastlangan a'zoni harakatsiz tuting.";
-          } else if (txt.indexOf("bosh") !== -1 || txt.indexOf("og'riq") !== -1 || txt.indexOf("stress") !== -1) {
-            advice = "Sizda asabiy zo'riqish yoki bosim o'zgarishi belgilari bo'lishi mumkin. <strong>Nevrolog (Dr. Malika Zokirova)</strong> ko'rigidan o'tish tavsiya etiladi.";
-          } else if (txt.indexOf("yurak") !== -1 || txt.indexOf("puls") !== -1 || txt.indexOf("sanchiq") !== -1) {
-            advice = "Yurak-qon tomir tizimi shikoyati. Tezlikda <strong>Kardiolog (Dr. Alisher Ahmedov)</strong> ko'rigiga yoziling.";
+          if (currentLang === "ru") {
+            if (txt.indexOf("сломал") !== -1 || txt.indexOf("боль") !== -1 || txt.indexOf("нога") !== -1 || txt.indexOf("рука") !== -1) {
+              advice = "Признак травмы или перелома! Срочно обратитесь к <strong>Травматологу / Хирургу</strong> и иммобилизуйте поврежденную конечность.";
+            } else if (txt.indexOf("голова") !== -1 || txt.indexOf("стресс") !== -1) {
+              advice = "Возможно проявление нервного напряжения. Рекомендуется осмотр <strong>Невролога (Dr. Malika Zokirova)</strong>.";
+            } else {
+              advice = "По вашим симптомам рекомендуется записаться к <strong>Терапевту или Неврологу</strong>.";
+            }
           } else {
-            advice = "Simptomlaringiz bo'yicha umumiy mutaxassis <strong>Terapevt yoki Nevrolog</strong> qabuliga yozilishingiz lozim.";
+            if (txt.indexOf("sindi") !== -1 || txt.indexOf("синди") !== -1 || txt.indexOf("jarohat") !== -1 || txt.indexOf("жароҳат") !== -1) {
+              advice = currentLang === "uz_cyr" ? "Ўткир шикастланиш / суяк синиши белгиси! Зудлик билан <strong>Травматолог / Хирург</strong> кўригига боринг." : "O'tkir shikastlanish / suyak sinishi belgisi! Zudlik bilan <strong>Travmatolog / Xirurg</strong> ko'rigiga boring.";
+            } else if (txt.indexOf("bosh") !== -1 || txt.indexOf("бош") !== -1) {
+              advice = currentLang === "uz_cyr" ? "Асабий зўриқиш белгилари бўлиши мумкин. <strong>Невролог (Dr. Malika Zokirova)</strong> кўриги тавсия этилади." : "Asabiy zo'riqish belgilari bo'lishi mumkin. <strong>Nevrolog (Dr. Malika Zokirova)</strong> ko'rigi tavsiya etiladi.";
+            } else {
+              advice = currentLang === "uz_cyr" ? "Умумий мутахассис <strong>Терапевт ёки Невролог</strong> қабулига ёзилишингиз лозим." : "Umumiy mutaxassis <strong>Terapevt yoki Nevrolog</strong> qabuliga yozilishingiz lozim.";
+            }
           }
 
           document.getElementById('aiResultText').innerHTML = advice;
@@ -307,11 +473,9 @@
         var rawTime = document.getElementById('appointmentTime').value;
 
         if (!rawTime) {
-          alert("Iltimos, qabul vaqtini tanlang!");
+          alert("Iltimos, vaqtni tanlang!");
           return;
         }
-
-        var formattedTime = formatUzbekDate(rawTime);
 
         var selDoc = null;
         for (var j = 0; j < doctorsList.length; j++) {
@@ -320,9 +484,9 @@
 
         var payload = {
           type: "appointment",
+          lang: currentLang,
           doctor_name: selDoc ? selDoc.full_name : "",
-          specialty: selDoc ? selDoc.specialty : "",
-          appointment_time: formattedTime,
+          appointment_time: rawTime,
           symptoms: symptoms
         };
 
@@ -331,12 +495,10 @@
         }
 
         closeModal();
-        var okMsg = "Qabulga muvaffaqiyatli yozildingiz!\n\nShifokor: " + (selDoc ? selDoc.full_name : '') + "\nVaqti: " + formattedTime;
+        var okMsg = langObj.successBooking + "\n\nВрач: " + (selDoc ? selDoc.full_name : '') + "\nВремя: " + rawTime;
         if (tg && tg.showAlert) tg.showAlert(okMsg); else alert(okMsg);
       }
     }
-
-    renderDoctors(doctorsList);
   </script>
 </body>
 </html>
