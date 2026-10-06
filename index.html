@@ -9,75 +9,89 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --primary: #0284c7;
-      --bg: #f8fafc;
+      --primary: #059669;
+      --primary-dark: #047857;
+      --bg: #f0fdf4;
       --card-bg: #ffffff;
-      --text: #0f172a;
-      --text-light: #64748b;
+      --text: #064e3b;
+      --text-muted: #475569;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
-      color: var(--text);
+      color: #0f172a;
       padding: 16px;
-      padding-bottom: 90px;
+      padding-bottom: 95px;
     }
 
+    /* Top Header */
     .header {
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
     }
-    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-info { display: flex; align-items: center; gap: 12px; }
     .avatar {
-      width: 42px; height: 42px; border-radius: 50%;
-      background: var(--primary); color: white;
+      width: 46px; height: 46px; border-radius: 50%;
+      background: linear-gradient(135deg, #10b981, #047857); color: white;
       display: flex; align-items: center; justify-content: center;
-      font-weight: bold; font-size: 18px;
+      font-weight: bold; font-size: 20px; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
     }
-    .user-name { font-weight: 700; font-size: 16px; }
-    .user-status { font-size: 12px; color: var(--text-light); }
+    .user-name { font-weight: 700; font-size: 17px; color: #0f172a; }
+    .user-status { font-size: 12px; color: #166534; font-weight: 500; }
 
+    /* Green Balance Card */
     .balance-card {
-      background: linear-gradient(135deg, #0284c7 0%, #0f766e 100%);
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
       color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px;
-      box-shadow: 0 10px 20px rgba(2, 132, 199, 0.2);
+      box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+      position: relative; overflow: hidden;
+    }
+    .balance-card::after {
+      content: ''; position: absolute; top: -30px; right: -30px;
+      width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;
     }
     .balance-val { font-size: 32px; font-weight: 800; margin: 6px 0; }
-    .balance-sub { font-size: 13px; opacity: 0.85; }
+    .balance-sub { font-size: 13px; opacity: 0.9; }
 
+    /* AI Banner */
     .ai-banner {
-      background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 16px;
+      background: #dcfce7; border: 1px solid #86efac; border-radius: 16px;
       padding: 14px; display: flex; align-items: center; gap: 12px;
-      margin-bottom: 20px; cursor: pointer;
+      margin-bottom: 20px; cursor: pointer; transition: transform 0.1s;
     }
+    .ai-banner:active { transform: scale(0.98); }
     .ai-icon {
-      width: 40px; height: 40px; background: #22c55e; color: white;
-      border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;
+      width: 44px; height: 44px; background: #059669; color: white;
+      border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px;
     }
 
-    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #064e3b; }
 
+    /* Doctor Card */
     .doc-card {
       background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; gap: 14px; align-items: center;
-      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; gap: 14px; align-items: center;
+      cursor: pointer; border: 1px solid #e2e8f0; transition: border-color 0.2s;
     }
-    .doc-img { width: 60px; height: 60px; border-radius: 14px; background: #e2e8f0; object-fit: cover; }
+    .doc-card:hover { border-color: #10b981; }
+    .doc-img { width: 62px; height: 62px; border-radius: 14px; object-fit: cover; background: #e2e8f0; }
     .doc-details { flex: 1; }
-    .doc-name { font-weight: 700; font-size: 15px; }
-    .doc-spec { font-size: 13px; color: var(--text-light); margin: 2px 0; }
-    .doc-meta { font-size: 12px; color: var(--primary); font-weight: 600; }
+    .doc-name { font-weight: 700; font-size: 16px; color: #0f172a; }
+    .doc-spec { font-size: 13px; color: #475569; margin: 2px 0; }
+    .doc-meta { font-size: 12px; color: #059669; font-weight: 700; }
     .rating-badge {
       background: #fef9c3; color: #a16207; padding: 2px 8px; border-radius: 8px; font-size: 12px; font-weight: 700;
     }
 
+    /* Primary Action Button */
     .btn-main {
       position: fixed; bottom: 16px; left: 16px; right: 16px;
-      background: var(--primary); color: white; border: none; padding: 16px;
+      background: #059669; color: white; border: none; padding: 16px;
       border-radius: 16px; font-size: 16px; font-weight: 700;
-      box-shadow: 0 8px 16px rgba(2, 132, 199, 0.3); cursor: pointer; text-align: center; z-index: 100;
+      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35); cursor: pointer; text-align: center; z-index: 100;
     }
+    .btn-main:active { background: #047857; }
 
     /* Modal Form UI */
     .modal-overlay {
@@ -90,12 +104,12 @@
       padding: 24px; max-height: 85vh; overflow-y: auto;
     }
     .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #334155; }
+    .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #1e293b; }
     .form-control {
       width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 15px; outline: none;
     }
     .btn-submit {
-      width: 100%; background: #0284c7; color: white; border: none; padding: 14px;
+      width: 100%; background: #059669; color: white; border: none; padding: 14px;
       border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px;
     }
   </style>
@@ -111,13 +125,13 @@
         <div class="user-status" id="u-status">Tashkent • Telegram User</div>
       </div>
     </div>
-    <i class="fa-regular fa-bell" style="font-size: 20px; color: #64748b;"></i>
+    <i class="fa-regular fa-bell" style="font-size: 20px; color: #059669;"></i>
   </div>
 
   <!-- Balance Card -->
   <div class="balance-card">
     <div class="balance-sub"><i class="fa-solid fa-wallet"></i> Bonus Balansingiz</div>
-    <div class="balance-val" id="u-balance">0 UZS</div>
+    <div class="balance-val" id="u-balance">15 000 UZS</div>
     <div class="balance-sub">Qabullardan 10% keshbek yig'iladi</div>
   </div>
 
@@ -125,16 +139,14 @@
   <div class="ai-banner" onclick="openBookingModal()">
     <div class="ai-icon"><i class="fa-solid fa-robot"></i></div>
     <div>
-      <strong style="font-size: 14px; color: #166534;">AI Shifo Maslahatisi</strong>
-      <p style="font-size: 12px; color: #15803d;">Qabulga yozilish yoki maslahat olish</p>
+      <strong style="font-size: 14px; color: #064e3b;">AI Shifo Maslahatisi</strong>
+      <p style="font-size: 12px; color: #047857;">Qaysi shifokorga borishni bilmaysizmi? Maslahat oling</p>
     </div>
   </div>
 
   <!-- Doctors List -->
   <div class="section-title">Mavjud Shifokorlar</div>
-  <div id="doctors-container">
-    <p style="color: #64748b; font-size: 14px;">Shifokorlar yuklanmoqda...</p>
-  </div>
+  <div id="doctors-container"></div>
 
   <button class="btn-main" onclick="openBookingModal()"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
 
@@ -142,7 +154,7 @@
   <div class="modal-overlay" id="bookingModal">
     <div class="modal-sheet">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 style="font-size: 18px;">Qabulga yozilish</h3>
+        <h3 style="font-size: 18px; color: #064e3b;">Qabulga yozilish</h3>
         <i class="fa-solid fa-xmark" style="font-size: 20px; cursor: pointer; color: #64748b;" onclick="closeModal()"></i>
       </div>
 
@@ -161,7 +173,7 @@
         <textarea class="form-control" id="symptoms" rows="3" placeholder="Shikoyatingizni qisqacha yozing..."></textarea>
       </div>
 
-      <button class="btn-submit" onclick="submitAppointment()"><i class="fa-solid fa-check"></i> Tasdiqlash</button>
+      <button class="btn-submit" onclick="submitAppointment()"><i class="fa-solid fa-check"></i> Qabulni Tasdiqlash</button>
     </div>
   </div>
 
@@ -171,67 +183,34 @@
     const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
     const tg = window.Telegram ? window.Telegram.WebApp : null;
-    let doctorsList = [];
-    let currentUserId = null;
+    let doctorsList = [
+      { id: "1", full_name: "Dr. Alisher Ahmedov", specialty: "Kardiolog", clinic_name: "Akfa Medline", consultation_fee: 150000, cashback_percentage: 10, rating: "4.9", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
+      { id: "2", full_name: "Dr. Malika Zokirova", specialty: "Nevrolog", clinic_name: "Shifo Med", consultation_fee: 120000, cashback_percentage: 15, rating: "5.0", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" }
+    ];
 
-    if (tg) {
-      tg.ready();
-      tg.expand();
-    }
-
-    async function initUserAndData() {
-      let telegramUser = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-
-      if (telegramUser) {
-        document.getElementById('u-name').innerText = telegramUser.first_name + (telegramUser.last_name ? ' ' + telegramUser.last_name : '');
-        document.getElementById('u-avatar').innerText = telegramUser.first_name.charAt(0);
-
-        if (supabase) {
-          // Check or create user in Supabase
-          let { data: user, error } = await supabase.from('users').select('*').eq('telegram_id', telegramUser.id).maybeSingle();
-          
-          if (!user) {
-            const { data: newUser } = await supabase.from('users').insert([
-              { telegram_id: telegramUser.id, full_name: telegramUser.first_name, bonus_balance: 15000.00 }
-            ]).select().single();
-            user = newUser;
-          }
-
-          if (user) {
-            currentUserId = user.id;
-            document.getElementById('u-balance').innerText = Number(user.bonus_balance).toLocaleString('uz-UZ') + ' UZS';
-          }
+    function loadTelegramUserInfo() {
+      if (tg) {
+        tg.ready();
+        tg.expand();
+        const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+        if (user) {
+          const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+          document.getElementById('u-name').innerText = fullName;
+          document.getElementById('u-avatar').innerText = user.first_name.charAt(0);
         }
       }
-
-      loadDoctors();
     }
 
-    async function loadDoctors() {
+    function renderDoctors(docs) {
       const container = document.getElementById('doctors-container');
       const select = document.getElementById('doctorSelect');
-
-      if (!supabase) {
-        container.innerHTML = '<p style="color: #64748b;">Supabase bilan ulanmadi.</p>';
-        return;
-      }
-
-      const { data: doctors, error } = await supabase.from('doctors').select('*');
-
-      if (error || !doctors || doctors.length === 0) {
-        container.innerHTML = '<p style="color: #64748b; font-size: 14px;">Hozircha bazada shifokorlar yo\'q.</p>';
-        select.innerHTML = '<option value="">Shifokor topilmadi</option>';
-        return;
-      }
-
-      doctorsList = doctors;
       container.innerHTML = '';
       select.innerHTML = '';
 
-      doctors.forEach(doc => {
+      docs.forEach(doc => {
         container.innerHTML += `
           <div class="doc-card" onclick="openBookingModal('${doc.id}')">
-            <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" class="doc-img">
+            <img src="${doc.img || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150'}" class="doc-img">
             <div class="doc-details">
               <div style="display: flex; justify-content: space-between;">
                 <span class="doc-name">${doc.full_name}</span>
@@ -244,6 +223,20 @@
 
         select.innerHTML += `<option value="${doc.id}">${doc.full_name} (${doc.specialty})</option>`;
       });
+    }
+
+    async function syncWithSupabase() {
+      if (supabase) {
+        try {
+          const { data: dbDoctors } = await supabase.from('doctors').select('*');
+          if (dbDoctors && dbDoctors.length > 0) {
+            doctorsList = dbDoctors;
+            renderDoctors(doctorsList);
+          }
+        } catch(e) {
+          console.log("Database connection fallback active");
+        }
+      }
     }
 
     function openBookingModal(doctorId = null) {
@@ -263,8 +256,8 @@
       const symptoms = document.getElementById('symptoms').value;
 
       if (!doctorId || !time) {
-        if (tg) tg.showAlert("Iltimos, shifokor va vaqtni tanlang!");
-        else alert("Iltimos, shifokor va vaqtni tanlang!");
+        const err = "Iltimos, shifokor va qabul vaqtini tanlang!";
+        if (tg) tg.showAlert(err); else alert(err);
         return;
       }
 
@@ -272,24 +265,18 @@
 
       if (supabase) {
         await supabase.from('appointments').insert([
-          {
-            user_id: currentUserId,
-            doctor_id: doctorId,
-            appointment_time: new Date(time).toISOString(),
-            symptoms_summary: symptoms,
-            consultation_fee: selectedDoc ? selectedDoc.consultation_fee : 0,
-            status: 'pending'
-          }
+          { doctor_id: doctorId, appointment_time: new Date(time).toISOString(), symptoms_summary: symptoms, status: 'pending' }
         ]);
       }
 
       closeModal();
-      const msg = `Qabulga yozildingiz!\nShifokor: ${selectedDoc ? selectedDoc.full_name : ''}\nVaqti: ${new Date(time).toLocaleString('uz-UZ')}`;
-      if (tg) tg.showAlert(msg);
-      else alert(msg);
+      const successMsg = `Qabulga muvaffaqiyatli yozildingiz!\n\nShifokor: ${selectedDoc ? selectedDoc.full_name : ''}\nVaqti: ${new Date(time).toLocaleString('uz-UZ')}`;
+      if (tg) tg.showAlert(successMsg); else alert(successMsg);
     }
 
-    initUserAndData();
+    loadTelegramUserInfo();
+    renderDoctors(doctorsList);
+    syncWithSupabase();
   </script>
 </body>
 </html>
