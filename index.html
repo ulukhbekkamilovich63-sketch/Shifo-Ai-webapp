@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shifo AI - Aqlli Tabib</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
       --primary: #059669;
-      --primary-dark: #047857;
       --bg: #f0fdf4;
       --card-bg: #ffffff;
     }
@@ -24,7 +22,6 @@
       padding-bottom: 95px;
     }
 
-    /* Header */
     .header {
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
     }
@@ -38,23 +35,19 @@
     .user-name { font-weight: 700; font-size: 16px; color: #0f172a; }
     .user-status { font-size: 12px; color: #166534; font-weight: 500; }
 
-    /* Balance Card */
     .balance-card {
       background: linear-gradient(135deg, #059669 0%, #047857 100%);
       color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px;
       box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
-      position: relative; overflow: hidden;
     }
     .balance-val { font-size: 32px; font-weight: 800; margin: 6px 0; }
     .balance-sub { font-size: 13px; opacity: 0.9; }
 
-    /* AI Banner */
     .ai-banner {
       background: #dcfce7; border: 1px solid #86efac; border-radius: 16px;
       padding: 14px; display: flex; align-items: center; gap: 12px;
-      margin-bottom: 20px; cursor: pointer; transition: transform 0.1s;
+      margin-bottom: 20px; cursor: pointer;
     }
-    .ai-banner:active { transform: scale(0.98); }
     .ai-icon {
       width: 44px; height: 44px; background: #059669; color: white;
       border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px;
@@ -62,7 +55,6 @@
 
     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #064e3b; }
 
-    /* Doctor Card */
     .doc-card {
       background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; gap: 14px; align-items: center;
@@ -84,7 +76,7 @@
       box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35); cursor: pointer; text-align: center; z-index: 100;
     }
 
-    /* Modal Form UI */
+    /* Modal Sheet */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.6); display: none; justify-content: flex-end;
@@ -104,7 +96,6 @@
       border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px;
     }
 
-    /* AI Answer Box */
     .ai-result-box {
       background: #f0fdf4; border: 1px solid #86efac; border-radius: 14px;
       padding: 16px; margin-top: 16px; display: none; font-size: 14px; color: #064e3b;
@@ -155,28 +146,23 @@
         <i class="fa-solid fa-xmark" style="font-size: 20px; cursor: pointer; color: #64748b;" onclick="closeModal()"></i>
       </div>
 
-      <!-- Doctor Selection Group -->
       <div class="form-group" id="docSelectGroup">
         <label>Shifokorni tanlang</label>
         <select class="form-control" id="doctorSelect"></select>
       </div>
 
-      <!-- Date Time Group -->
       <div class="form-group" id="dateTimeGroup">
         <label>Qabul sanasi va vaqti</label>
         <input type="datetime-local" class="form-control" id="appointmentTime">
       </div>
 
-      <!-- Symptoms Input -->
       <div class="form-group">
         <label id="symptomsLabel">Shikoyatingiz / Simptomlar</label>
         <textarea class="form-control" id="symptoms" rows="3" placeholder="Shikoyatingizni qisqacha yozing..."></textarea>
       </div>
 
-      <!-- Action Button -->
       <button class="btn-submit" id="modalSubmitBtn" onclick="handleFormSubmit()"><i class="fa-solid fa-check"></i> Tasdiqlash</button>
 
-      <!-- AI Response Container -->
       <div class="ai-result-box" id="aiResultBox">
         <strong style="display: block; margin-bottom: 6px;"><i class="fa-solid fa-brain"></i> AI Tahlil Natijasi:</strong>
         <div id="aiResultText">Tahlil qilinmoqda...</div>
@@ -185,14 +171,10 @@
   </div>
 
   <script>
-    const SUPABASE_URL = "https://lcyrrjbngcjpspyrbkfv.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_ZTcriy4OnRZTrpWSL-Dp7w_64D8RQSZ";
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    var tg = window.Telegram ? window.Telegram.WebApp : null;
+    var currentMode = "booking";
 
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
-    let mode = "booking"; // "booking" or "ai"
-
-    let doctorsList = [
+    var doctorsList = [
       { id: "1", full_name: "Dr. Alisher Ahmedov", specialty: "Kardiolog", clinic_name: "Akfa Medline", consultation_fee: 150000, cashback_percentage: 10, rating: "4.9", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
       { id: "2", full_name: "Dr. Malika Zokirova", specialty: "Nevrolog", clinic_name: "Shifo Med", consultation_fee: 120000, cashback_percentage: 15, rating: "5.0", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" }
     ];
@@ -200,40 +182,41 @@
     if (tg) {
       tg.ready();
       tg.expand();
-      const u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+      var u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
       if (u) {
-        const name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
+        var name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
         document.getElementById('u-name').innerText = 'Assalomu alaykum, ' + name + '!';
         document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
       }
     }
 
     function renderDoctors(docs) {
-      const container = document.getElementById('doctors-container');
-      const select = document.getElementById('doctorSelect');
+      var container = document.getElementById('doctors-container');
+      var select = document.getElementById('doctorSelect');
       container.innerHTML = '';
       select.innerHTML = '';
 
-      docs.forEach(doc => {
+      for (var i = 0; i < docs.length; i++) {
+        var doc = docs[i];
         container.innerHTML += `
           <div class="doc-card" onclick="openBookingModal('${doc.id}')">
-            <img src="${doc.img || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150'}" class="doc-img">
+            <img src="${doc.img}" class="doc-img">
             <div class="doc-details">
               <div style="display: flex; justify-content: space-between;">
                 <span class="doc-name">${doc.full_name}</span>
-                <span class="rating-badge"><i class="fa-solid fa-star"></i> ${doc.rating || '5.0'}</span>
+                <span class="rating-badge"><i class="fa-solid fa-star"></i> ${doc.rating}</span>
               </div>
-              <div class="doc-spec">${doc.specialty} • ${doc.clinic_name || 'Xususiy'}</div>
+              <div class="doc-spec">${doc.specialty} • ${doc.clinic_name}</div>
               <div class="doc-meta">Qabul: ${Number(doc.consultation_fee).toLocaleString('uz-UZ')} UZS (${doc.cashback_percentage}% Cashback)</div>
             </div>
           </div>`;
 
         select.innerHTML += `<option value="${doc.id}">${doc.full_name} (${doc.specialty})</option>`;
-      });
+      }
     }
 
-    function openBookingModal(doctorId = null) {
-      mode = "booking";
+    function openBookingModal(doctorId) {
+      currentMode = "booking";
       document.getElementById('modalTitle').innerText = "Qabulga yozilish";
       document.getElementById('symptomsLabel').innerText = "Shikoyatingiz / Simptomlar";
       document.getElementById('docSelectGroup').style.display = "block";
@@ -248,7 +231,7 @@
     }
 
     function openAiModal() {
-      mode = "ai";
+      currentMode = "ai";
       document.getElementById('modalTitle').innerText = "AI Shifo Maslahatisi";
       document.getElementById('symptomsLabel').innerText = "Simptomlaringizni batafsil yozing";
       document.getElementById('docSelectGroup').style.display = "none";
@@ -262,95 +245,66 @@
       document.getElementById('mainModal').style.display = 'none';
     }
 
-    async function handleFormSubmit() {
-      const symptoms = document.getElementById('symptoms').value;
+    function handleFormSubmit() {
+      var symptoms = document.getElementById('symptoms').value;
 
       if (!symptoms || symptoms.trim() === "") {
-        alert("Iltimos, simptomlar yoki shikoyatni yozing!");
+        alert("Iltimos, simptomlar yoki shikoyatingizni yozing!");
         return;
       }
 
-      if (mode === "ai") {
-        // AI Advice Logic
+      if (currentMode === "ai") {
         document.getElementById('aiResultBox').style.display = "block";
-        document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Simptomlaringiz tahlil qilinmoqda...";
+        document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> AI tahlil qilmoqda...";
 
-        setTimeout(() => {
-          let textLower = symptoms.toLowerCase();
-          let advice = "";
+        setTimeout(function() {
+          var txt = symptoms.toLowerCase();
+          var advice = "";
 
-          if (textLower.includes("bosh") || textLower.includes("og'riq") || textLower.includes("stress")) {
-            advice = "Sizda asabiy zo'riqish yoki qon bosimi o'zgarishi belgilari kuzatilishi mumkin. <strong>Nevrolog (Dr. Malika Zokirova)</strong> ko'rigidan o'tishingiz tavsiya etiladi.";
-          } else if (textLower.includes("yurak") || textLower.includes("ko'krak") || textLower.includes("puls")) {
-            advice = "Yurak-qon tomir tizimi bilan bog'liq shikoyat. Tezlikda <strong>Kardiolog (Dr. Alisher Ahmedov)</strong> ko'rigiga yozilishingiz lozim.";
+          if (txt.indexOf("bosh") !== -1 || txt.indexOf("og'riq") !== -1 || txt.indexOf("stress") !== -1) {
+            advice = "Sizda asabiy zo'riqish yoki bosim o'zgarishi belgilari bo'lishi mumkin. <strong>Nevrolog (Dr. Malika Zokirova)</strong> ko'rigidan o'tish tavsiya etiladi.";
+          } else if (txt.indexOf("yurak") !== -1 || txt.indexOf("puls") !== -1 || txt.indexOf("sanchiq") !== -1) {
+            advice = "Yurak-qon tomir tizimi shikoyati. Tezlikda <strong>Kardiolog (Dr. Alisher Ahmedov)</strong> ko'rigiga yoziling.";
           } else {
-            advice = "Siz ko'rsatgan simptomlar bo'yicha umumiy mutaxassis yoki <strong>Terapevt / Nevrolog</strong> qabuliga yozilish tavsiya etiladi.";
+            advice = "Simptomlaringiz bo'yicha umumiy mutaxassis <strong>Nevrolog yoki Kardiolog</strong> qabuliga yozilishingiz lozim.";
           }
 
           document.getElementById('aiResultText').innerHTML = advice;
-        }, 1200);
+        }, 800);
 
       } else {
-        // Booking Submit Logic
-        const doctorId = document.getElementById('doctorSelect').value;
-        const time = document.getElementById('appointmentTime').value;
+        var docId = document.getElementById('doctorSelect').value;
+        var time = document.getElementById('appointmentTime').value;
 
         if (!time) {
-          alert("Iltimos, qabul sanasi va vaqtini tanlang!");
+          alert("Iltimos, qabul vaqtini tanlang!");
           return;
         }
 
-        const selectedDoc = doctorsList.find(d => d.id === doctorId);
+        var selDoc = null;
+        for (var j = 0; j < doctorsList.length; j++) {
+          if (doctorsList[j].id === docId) selDoc = doctorsList[j];
+        }
 
-        // 1. Send data back to Telegram Bot
-        const appointmentPayload = {
+        var payload = {
           type: "appointment",
-          doctor_name: selectedDoc ? selectedDoc.full_name : "Shifokor",
-          specialty: selectedDoc ? selectedDoc.specialty : "",
-          appointment_time: new Date(time).toLocaleString('uz-UZ'),
+          doctor_name: selDoc ? selDoc.full_name : "",
+          specialty: selDoc ? selDoc.specialty : "",
+          appointment_time: time,
           symptoms: symptoms
         };
 
         if (tg && tg.sendData) {
-          tg.sendData(JSON.stringify(appointmentPayload));
-        }
-
-        // 2. Save to Supabase DB if available
-        if (supabase) {
-          try {
-            await supabase.from('appointments').insert([
-              {
-                doctor_id: doctorId,
-                appointment_time: new Date(time).toISOString(),
-                symptoms_summary: symptoms,
-                status: 'pending'
-              }
-            ]);
-          } catch(e) {
-            console.log("Supabase insert error");
-          }
+          tg.sendData(JSON.stringify(payload));
         }
 
         closeModal();
-        const successMsg = `Qabulga muvaffaqiyatli yozildingiz!\n\nShifokor: ${selectedDoc ? selectedDoc.full_name : ''}\nVaqti: ${new Date(time).toLocaleString('uz-UZ')}`;
-        if (tg && tg.showAlert) tg.showAlert(successMsg); else alert(successMsg);
+        var okMsg = "Qabulga muvaffaqiyatli yozildingiz!\n\nShifokor: " + (selDoc ? selDoc.full_name : '') + "\nVaqti: " + time;
+        if (tg && tg.showAlert) tg.showAlert(okMsg); else alert(okMsg);
       }
     }
 
     renderDoctors(doctorsList);
-
-    // Sync with Supabase background
-    setTimeout(async () => {
-      try {
-        if (supabase) {
-          const { data } = await supabase.from('doctors').select('*');
-          if (data && data.length > 0) {
-            doctorsList = data;
-            renderDoctors(doctorsList);
-          }
-        }
-      } catch(e) {}
-    }, 500);
   </script>
 </body>
 </html>
