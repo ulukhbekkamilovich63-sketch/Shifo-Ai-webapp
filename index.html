@@ -10,7 +10,6 @@
   <style>
     :root {
       --primary: #0284c7;
-      --primary-dark: #0369a1;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #0f172a;
@@ -23,10 +22,9 @@
       background-color: var(--bg);
       color: var(--text);
       padding: 16px;
-      padding-bottom: 80px;
+      padding-bottom: 90px;
     }
 
-    /* Header Profile */
     .header {
       display: flex;
       justify-content: space-between;
@@ -45,7 +43,6 @@
     .user-name { font-weight: 700; font-size: 16px; }
     .user-status { font-size: 12px; color: var(--text-light); }
 
-    /* Balance Card */
     .balance-card {
       background: linear-gradient(135deg, #0284c7 0%, #0f766e 100%);
       color: white;
@@ -57,7 +54,6 @@
     .balance-val { font-size: 32px; font-weight: 800; margin: 6px 0; }
     .balance-sub { font-size: 13px; opacity: 0.85; }
 
-    /* AI Advisory Banner */
     .ai-banner {
       background: #f0fdf4;
       border: 1px solid #bbf7d0;
@@ -78,7 +74,6 @@
       font-size: 20px;
     }
 
-    /* Category Filter */
     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
     .categories {
       display: flex; gap: 8px; overflow-x: auto;
@@ -89,10 +84,10 @@
       background: #e2e8f0; padding: 8px 16px;
       border-radius: 20px; font-size: 13px;
       white-space: nowrap; font-weight: 600; color: var(--text-light);
+      cursor: pointer;
     }
     .cat-chip.active { background: var(--primary); color: white; }
 
-    /* Doctor Card */
     .doc-card {
       background: var(--card-bg);
       border-radius: 16px;
@@ -100,6 +95,7 @@
       margin-bottom: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       display: flex; gap: 14px; align-items: center;
+      cursor: pointer;
     }
     .doc-img {
       width: 60px; height: 60px;
@@ -116,19 +112,18 @@
       padding: 2px 8px; border-radius: 8px; font-size: 12px; font-weight: 700;
     }
 
-    /* Main CTA Button */
     .btn-main {
       position: fixed; bottom: 16px; left: 16px; right: 16px;
       background: var(--primary); color: white; border: none;
       padding: 16px; border-radius: 16px; font-size: 16px;
       font-weight: 700; box-shadow: 0 8px 16px rgba(2, 132, 199, 0.3);
       cursor: pointer; text-align: center;
+      z-index: 1000;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
   <div class="header">
     <div class="user-info">
       <div class="avatar" id="u-avatar">B</div>
@@ -140,15 +135,13 @@
     <i class="fa-regular fa-bell" style="font-size: 20px; color: #64748b;"></i>
   </div>
 
-  <!-- Balance Card -->
   <div class="balance-card">
     <div class="balance-sub"><i class="fa-solid fa-wallet"></i> Bonus Balansingiz</div>
     <div class="balance-val" id="u-balance">15 000 UZS</div>
     <div class="balance-sub">Qabullardan 10% keshbek yig'iladi</div>
   </div>
 
-  <!-- AI Triaj Banner -->
-  <div class="ai-banner" onclick="startAIConsultation()">
+  <div class="ai-banner" onclick="handleAiClick()">
     <div class="ai-icon"><i class="fa-solid fa-robot"></i></div>
     <div>
       <strong style="font-size: 14px; color: #166534;">AI Shifo Maslahatisi</strong>
@@ -156,105 +149,115 @@
     </div>
   </div>
 
-  <!-- Specialities Filter -->
   <div class="section-title">Kategoriyalar</div>
   <div class="categories">
-    <div class="cat-chip active">Barchasi</div>
-    <div class="cat-chip">Kardiolog</div>
-    <div class="cat-chip">Nevrolog</div>
-    <div class="cat-chip">Pediatr</div>
-    <div class="cat-chip">Stomatolog</div>
+    <div class="cat-chip active" onclick="filterCat('all')">Barchasi</div>
+    <div class="cat-chip" onclick="filterCat('Kardiolog')">Kardiolog</div>
+    <div class="cat-chip" onclick="filterCat('Nevrolog')">Nevrolog</div>
+    <div class="cat-chip" onclick="filterCat('Pediatr')">Pediatr</div>
   </div>
 
-  <!-- Doctors List -->
   <div class="section-title">Mavjud Shifokorlar</div>
-  <div id="doctors-container">
-    <p style="color: #64748b;">Shifokorlar yuklanmoqda...</p>
-  </div>
+  <div id="doctors-container"></div>
 
-  <button class="btn-main" onclick="bookAppointment()"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
+  <button class="btn-main" onclick="handleBooking()"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
 
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) {
+      tg.ready();
       tg.expand();
       if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const user = tg.initDataUnsafe.user;
-        document.getElementById('u-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-        document.getElementById('u-avatar').innerText = user.first_name.charAt(0);
+        const u = tg.initDataUnsafe.user;
+        document.getElementById('u-name').innerText = u.first_name + (u.last_name ? ' ' + u.last_name : '');
+        document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
       }
     }
 
-    // Exact Supabase Credentials
-    const SUPABASE_URL = "https://lcyrrjbngcjpspyrbkfv.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_ZTcriy4OnRZTrpWSL-Dp7w_64D8RQSZ";
+    const defaultDoctors = [
+      {
+        full_name: "Dr. Alisher Ahmedov",
+        specialty: "Kardiolog",
+        clinic_name: "Akfa Medline",
+        consultation_fee: 150000,
+        cashback_percentage: 10,
+        rating: "4.9",
+        img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150"
+      },
+      {
+        full_name: "Dr. Malika Zokirova",
+        specialty: "Nevrolog",
+        clinic_name: "Shifo Med",
+        consultation_fee: 120000,
+        cashback_percentage: 15,
+        rating: "5.0",
+        img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150"
+      }
+    ];
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    async function loadDoctors() {
+    function renderDoctors(docs) {
       const container = document.getElementById('doctors-container');
-      try {
-        const { data: doctors, error } = await supabase.from('doctors').select('*');
-        
-        if (error || !doctors || doctors.length === 0) {
-          container.innerHTML = `
-            <div class="doc-card">
-              <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" class="doc-img">
-              <div class="doc-details">
-                <div style="display: flex; justify-content: space-between;">
-                  <span class="doc-name">Dr. Alisher Ahmedov</span>
-                  <span class="rating-badge"><i class="fa-solid fa-star"></i> 4.9</span>
-                </div>
-                <div class="doc-spec">Kardiolog • Akfa Medline</div>
-                <div class="doc-meta">Qabul: 150 000 UZS (10% Cashback)</div>
+      container.innerHTML = '';
+      docs.forEach(doc => {
+        container.innerHTML += `
+          <div class="doc-card" onclick="selectDoctor('${doc.full_name}')">
+            <img src="${doc.img || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150'}" class="doc-img">
+            <div class="doc-details">
+              <div style="display: flex; justify-content: space-between;">
+                <span class="doc-name">${doc.full_name}</span>
+                <span class="rating-badge"><i class="fa-solid fa-star"></i> ${doc.rating || '5.0'}</span>
               </div>
+              <div class="doc-spec">${doc.specialty} • ${doc.clinic_name || 'Xususiy'}</div>
+              <div class="doc-meta">Qabul: ${Number(doc.consultation_fee).toLocaleString()} UZS (${doc.cashback_percentage}% Cashback)</div>
             </div>
-            <div class="doc-card">
-              <img src="https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" class="doc-img">
-              <div class="doc-details">
-                <div style="display: flex; justify-content: space-between;">
-                  <span class="doc-name">Dr. Malika Zokirova</span>
-                  <span class="rating-badge"><i class="fa-solid fa-star"></i> 5.0</span>
-                </div>
-                <div class="doc-spec">Nevrolog • Shifo Med</div>
-                <div class="doc-meta">Qabul: 120 000 UZS (15% Cashback)</div>
-              </div>
-            </div>`;
-          return;
-        }
+          </div>`;
+      });
+    }
 
-        container.innerHTML = '';
-        doctors.forEach(doc => {
-          container.innerHTML += `
-            <div class="doc-card">
-              <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" class="doc-img">
-              <div class="doc-details">
-                <div style="display: flex; justify-content: space-between;">
-                  <span class="doc-name">${doc.full_name}</span>
-                  <span class="rating-badge"><i class="fa-solid fa-star"></i> ${doc.rating || '5.0'}</span>
-                </div>
-                <div class="doc-spec">${doc.specialty} • ${doc.clinic_name || 'Xususiy'}</div>
-                <div class="doc-meta">Qabul: ${Number(doc.consultation_fee).toLocaleString()} UZS (${doc.cashback_percentage}% Cashback)</div>
-              </div>
-            </div>`;
-        });
+    async function initData() {
+      renderDoctors(defaultDoctors);
+      
+      try {
+        const SUPABASE_URL = "https://lcyrrjbngcjpspyrbkfv.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_ZTcriy4OnRZTrpWSL-Dp7w_64D8RQSZ";
+        if (window.supabase) {
+          const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+          const { data } = await client.from('doctors').select('*');
+          if (data && data.length > 0) renderDoctors(data);
+        }
       } catch (e) {
-        console.error(e);
+        console.log("Supabase fallback activated");
       }
     }
 
-    function startAIConsultation() {
-      if (tg) tg.showAlert("AI Simptom-Tahlil moduli ishga tushmoqda...");
-      else alert("AI Simptom-Tahlil moduli");
+    function handleAiClick() {
+      const msg = "AI Shifo Maslahatisi: Simptomlaringizni yozing, mos shifokorni tavsiya qilamiz.";
+      if (tg && tg.showAlert) tg.showAlert(msg);
+      else alert(msg);
     }
 
-    function bookAppointment() {
-      if (tg) tg.showAlert("Shifokor va qabul vaqtini tanlang.");
-      else alert("Qabulga yozilish");
+    function selectDoctor(name) {
+      const msg = name + " tanlandi. Qabul vaqtini belgilang.";
+      if (tg && tg.showAlert) tg.showAlert(msg);
+      else alert(msg);
     }
 
-    loadDoctors();
+    function handleBooking() {
+      const msg = "Qabulga yozilish uchun shifokor va vaqtni tanlang.";
+      if (tg && tg.showAlert) tg.showAlert(msg);
+      else alert(msg);
+    }
+
+    function filterCat(spec) {
+      if (spec === 'all') {
+        renderDoctors(defaultDoctors);
+      } else {
+        const filtered = defaultDoctors.filter(d => d.specialty === spec);
+        renderDoctors(filtered.length ? filtered : defaultDoctors);
+      }
+    }
+
+    initData();
   </script>
 </body>
 </html>
-
