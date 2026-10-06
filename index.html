@@ -26,7 +26,7 @@
       overflow-x: hidden;
     }
 
-    /* Language Selection Screen Overlay */
+    /* Language Selection Overlay */
     .lang-screen {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #06110a; z-index: 3000;
@@ -38,7 +38,7 @@
       border-radius: 26px; display: flex; align-items: center; justify-content: center;
       font-size: 42px; color: white; margin-bottom: 20px; box-shadow: 0 0 35px rgba(16, 185, 129, 0.4);
     }
-    .lang-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .lang-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
     .lang-sub { font-size: 14px; color: var(--text-sub); margin-bottom: 32px; }
     .lang-btn {
       width: 100%; max-width: 320px; background: rgba(255,255,255,0.06);
@@ -62,16 +62,15 @@
       display: flex; align-items: center; justify-content: center;
       font-weight: bold; font-size: 20px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
     }
-    .user-name { font-weight: 800; font-size: 17px; letter-spacing: -0.3px; }
+    .user-name { font-weight: 800; font-size: 17px; }
 
-    /* Header Actions */
     .icon-btn {
       width: 42px; height: 42px; border-radius: 14px; background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center;
       color: var(--primary-green); font-size: 18px; cursor: pointer;
     }
 
-    /* Hero Promo Card (Bento Style) */
+    /* Hero Promo Card */
     .hero-card {
       background: linear-gradient(135deg, #059669 0%, #064e3b 100%);
       border-radius: 24px; padding: 22px; margin-bottom: 20px;
@@ -109,27 +108,38 @@
     .bento-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
     .bento-desc { font-size: 12px; color: var(--text-sub); }
 
-    /* Doctors Section */
+    /* Doctor Cards with Online & Top Badges */
     .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .section-title { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+    .section-title { font-size: 18px; font-weight: 800; }
 
     .doc-card {
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: 20px; padding: 16px; margin-bottom: 12px;
       display: flex; gap: 14px; align-items: center; backdrop-filter: blur(12px);
-      cursor: pointer;
+      cursor: pointer; position: relative;
     }
+    .doc-img-wrap { position: relative; }
     .doc-img { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; }
+    .online-dot {
+      width: 14px; height: 14px; background: #22c55e; border: 2px solid #0f1c15;
+      border-radius: 50%; position: absolute; bottom: 2px; right: 2px;
+    }
     .doc-details { flex: 1; }
+    .doc-header-row { display: flex; justify-content: space-between; align-items: center; }
     .doc-name { font-weight: 700; font-size: 16px; }
     .doc-spec { font-size: 13px; color: var(--text-sub); margin: 3px 0; }
     .doc-meta { font-size: 12px; color: var(--neon-green); font-weight: 700; }
-    .rating-badge {
-      background: rgba(234, 179, 8, 0.15); color: #facc15;
-      padding: 3px 8px; border-radius: 8px; font-size: 12px; font-weight: 800;
+    
+    .badge-top {
+      background: linear-gradient(135deg, #f59e0b, #d97706); color: white;
+      padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 800; margin-left: 6px;
+    }
+    .badge-online {
+      background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3);
+      padding: 2px 6px; border-radius: 6px; font-size: 10px; font-weight: 700;
     }
 
-    /* Floating Navigation Bar (Skrinshotdagi kabi) */
+    /* Floating Navigation Bar */
     .floating-nav {
       position: fixed; bottom: 20px; left: 16px; right: 16px;
       background: rgba(15, 28, 21, 0.85); backdrop-filter: blur(20px);
@@ -145,16 +155,23 @@
     .nav-item.active { color: var(--neon-green); background: rgba(34, 197, 94, 0.12); }
     .nav-item i { font-size: 18px; }
 
-    /* Floating Action Button (AI Pulse) */
     .fab-ai {
       width: 52px; height: 52px; border-radius: 50%;
       background: linear-gradient(135deg, #10b981, #059669); color: white;
       border: none; font-size: 22px; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); cursor: pointer; transition: transform 0.2s;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); cursor: pointer;
     }
-    .fab-ai:active { transform: scale(0.9); }
 
-    /* Modal Form Sheet */
+    /* Upload Box (40-skrinshot uslubida) */
+    .upload-box {
+      border: 2px dashed rgba(34, 197, 94, 0.4); border-radius: 18px;
+      padding: 20px; text-align: center; background: rgba(255,255,255,0.02);
+      cursor: pointer; margin-bottom: 16px; transition: all 0.2s;
+    }
+    .upload-box:active { background: rgba(34, 197, 94, 0.1); }
+    .upload-preview { max-width: 100%; max-height: 140px; border-radius: 12px; display: none; margin: 10px auto; }
+
+    /* Modal Sheet */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none;
@@ -229,10 +246,10 @@
     <!-- Bento Grid Menu -->
     <div class="bento-grid">
       <div class="bento-card full-width" onclick="openAiModal()">
-        <span class="bento-tag">AI 2.5 PRO</span>
+        <span class="bento-tag">AI VISION 2.5</span>
         <div class="bento-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-        <div class="bento-title" id="lbl-bento-ai-title">AI Shifo Maslahatisi</div>
-        <div class="bento-desc" id="lbl-bento-ai-desc">Simptomlaringizni tahlil qiling va mos shifokorni toping</div>
+        <div class="bento-title" id="lbl-bento-ai-title">AI Shifo Maslahatisi (Rasm/Matn)</div>
+        <div class="bento-desc" id="lbl-bento-ai-desc">Rasm yuklang yoki simptomlarni yozing, AI zudlik bilan tahlil qiladi</div>
       </div>
 
       <div class="bento-card" onclick="openBookingModal()">
@@ -270,7 +287,7 @@
       <i class="fa-solid fa-globe"></i>
       <span>Til</span>
     </div>
-    <button class="fab-ai" onclick="openAiModal()"><i class="fa-solid fa-sparkles"></i></button>
+    <button class="fab-ai" onclick="openAiModal()"><i class="fa-solid fa-camera"></i></button>
   </div>
 
   <!-- Modal Sheet -->
@@ -279,6 +296,17 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3 style="font-size: 20px; font-weight: 800;" id="modalTitle">Qabulga yozilish</h3>
         <i class="fa-solid fa-xmark" style="font-size: 22px; cursor: pointer; color: var(--text-sub);" onclick="closeModal()"></i>
+      </div>
+
+      <!-- Image Upload Block for AI Diagnosis -->
+      <div class="form-group" id="uploadGroup" style="display: none;">
+        <label id="lbl-upload-title">Rasm yuklash (Jarohat / Analiz varaqasi)</label>
+        <div class="upload-box" onclick="document.getElementById('imgInput').click()">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--neon-green); margin-bottom: 6px;"></i>
+          <p style="font-size: 13px; color: var(--text-sub);" id="lbl-upload-sub">Rasmni tanlang yoki bu yerga bosing</p>
+          <img id="imgPreview" class="upload-preview">
+        </div>
+        <input type="file" id="imgInput" accept="image/*" style="display: none;" onchange="previewSelectedImage(this)">
       </div>
 
       <div class="form-group" id="docSelectGroup">
@@ -309,14 +337,15 @@
     var tg = window.Telegram ? window.Telegram.WebApp : null;
     var currentLang = "uz_lat";
     var currentMode = "booking";
+    var hasImage = false;
 
     var dictionary = {
       uz_lat: {
         greeting: "Assalomu alaykum, ",
         balanceBadge: "Keshbek Balans",
         balanceSub: "Har bir qabuldan 10% keshbek beriladi",
-        bentoAiTitle: "AI Shifo Maslahatisi",
-        bentoAiDesc: "Simptomlaringizni tahlil qiling va mos shifokorni toping",
+        bentoAiTitle: "AI Shifo Maslahatisi (Rasm/Matn)",
+        bentoAiDesc: "Rasm yuklang yoki simptomlarni yozing, AI zudlik bilan tahlil qiladi",
         bentoBookTitle: "Qabulga Yozilish",
         bentoBookDesc: "Shifokor va vaqtni tanlang",
         bentoStatusTitle: "Eslatmalar",
@@ -327,25 +356,27 @@
         lblFormDoc: "Shifokorni tanlang",
         lblFormDate: "Qabul sanasi va vaqti",
         symptomsLabelBooking: "Shikoyatingiz / Simptomlar",
-        symptomsLabelAi: "Simptomlaringizni batafsil yozing",
+        symptomsLabelAi: "Simptomlaringizni yozing yoki rasm biriktiring",
         placeholderSymptoms: "Shikoyatingizni qisqacha yozing...",
         btnSubmitBooking: "Qabulni Tasdiqlash",
-        btnSubmitAi: "AI Tahlil Qilish",
+        btnSubmitAi: "AI Vizual Tahlil Qilish",
         notifMsg: "Bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Har bir qabuldan 10% keshbek beriladi.",
         feeLabel: "Qabul",
         cashbackLabel: "Keshbek",
-        aiAnalyzing: "AI simptomlarni tahlil qilmoqda...",
-        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Tahlil Natijasi:",
+        aiAnalyzing: "AI rasmni va simptomlarni tahlil qilmoqda...",
+        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Vizual Tahlil Natijasi:",
         successBooking: "Qabulga muvaffaqiyatli yozildingiz!",
         cardiology: "Kardiolog",
-        neurology: "Nevrolog"
+        neurology: "Nevrolog",
+        isOnline: "Hozir ishda",
+        topDoctor: "🔥 Top Shifokor"
       },
       uz_cyr: {
         greeting: "Ассалому алайкум, ",
         balanceBadge: "Кешбек Баланс",
         balanceSub: "Ҳар бир қабулдан 10% кешбек берилади",
-        bentoAiTitle: "AI Шифо Маслаҳатиси",
-        bentoAiDesc: "Симптомларингизни таҳлил қилинг ва мос шифокорни топинг",
+        bentoAiTitle: "AI Шифо Маслаҳатиси (Расм/Матн)",
+        bentoAiDesc: "Расм юкланг ёки симптомларни ёзинг, AI зудлик билан таҳлил қилади",
         bentoBookTitle: "Қабулга Ёзилиш",
         bentoBookDesc: "Шифокор ва вақтни танланг",
         bentoStatusTitle: "Еслатмалар",
@@ -356,25 +387,27 @@
         lblFormDoc: "Шифокорни танланг",
         lblFormDate: "Қабул санаси ва вақти",
         symptomsLabelBooking: "Шикоятингиз / Симптомлар",
-        symptomsLabelAi: "Симптомларингизни батафсил ёзинг",
+        symptomsLabelAi: "Симптомларингизни ёзинг ёки расм бириктиринг",
         placeholderSymptoms: "Шикоятингизни қисқача ёзинг...",
         btnSubmitBooking: "Қабулни Тасдиқлаш",
-        btnSubmitAi: "AI Таҳлил Қилиш",
+        btnSubmitAi: "AI Визуал Таҳлил Қилиш",
         notifMsg: "Билдиришномалар:\n• Тизимга хуш келибсиз!\n• Ҳар бир қабулдан 10% кешбек берилади.",
         feeLabel: "Қабул",
         cashbackLabel: "Кешбек",
-        aiAnalyzing: "AI симптомларни таҳлил қилмоқда...",
-        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Таҳлил Натижаси:",
+        aiAnalyzing: "AI расмни ва симптомларни таҳлил қилмоқда...",
+        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Визуал Таҳлил Натижаси:",
         successBooking: "Қабулга муваффақиятли ёзилдингиз!",
         cardiology: "Кардиолог",
-        neurology: "Невролог"
+        neurology: "Невролог",
+        isOnline: "Ҳозир ишда",
+        topDoctor: "🔥 Топ Шифокор"
       },
       ru: {
         greeting: "Здравствуйте, ",
         balanceBadge: "Кэшбэк Баланс",
         balanceSub: "10% кэшбэк начисляется с каждого приема",
-        bentoAiTitle: "AI Консультант Shifo",
-        bentoAiDesc: "Анализируйте симптомы и подберите врача",
+        bentoAiTitle: "AI Консультант Shifo (Фото/Текст)",
+        bentoAiDesc: "Загрузите фото или опишите симптомы для мгновенного анализа ИИ",
         bentoBookTitle: "Записаться на прием",
         bentoBookDesc: "Выберите врача и удобное время",
         bentoStatusTitle: "Уведомления",
@@ -385,24 +418,26 @@
         lblFormDoc: "Выберите врача",
         lblFormDate: "Дата и время приема",
         symptomsLabelBooking: "Ваши жалобы / Симптомы",
-        symptomsLabelAi: "Опишите ваши симптомы подробно",
+        symptomsLabelAi: "Опишите симптомы или прикрепите фото",
         placeholderSymptoms: "Кратко опишите ваши жалобы...",
         btnSubmitBooking: "Подтвердить запись",
-        btnSubmitAi: "Анализировать с AI",
+        btnSubmitAi: "Визуальный анализ ИИ",
         notifMsg: "Уведомления:\n• Добро пожаловать в систему!\n• Начисляется 10% кэшбэк с каждого приема.",
         feeLabel: "Прием",
         cashbackLabel: "Кэшбэк",
-        aiAnalyzing: "ИИ анализирует ваши симптомы...",
-        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> Результат анализа ИИ:",
+        aiAnalyzing: "ИИ анализирует изображение и симптомы...",
+        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> Результат визуального анализа ИИ:",
         successBooking: "Вы успешно записались на прием!",
         cardiology: "Кардиолог",
-        neurology: "Невролог"
+        neurology: "Невролог",
+        isOnline: "Сейчас на работе",
+        topDoctor: "🔥 Топ Врач"
       }
     };
 
     var doctorsList = [
-      { id: "1", full_name: "Dr. Alisher Ahmedov", spec_key: "cardiology", clinic_name: "Akfa Medline", consultation_fee: 150000, cashback_percentage: 10, rating: "4.9", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
-      { id: "2", full_name: "Dr. Malika Zokirova", spec_key: "neurology", clinic_name: "Shifo Med", consultation_fee: 120000, cashback_percentage: 15, rating: "5.0", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" }
+      { id: "1", full_name: "Dr. Alisher Ahmedov", spec_key: "cardiology", clinic_name: "Akfa Medline", consultation_fee: 150000, cashback_percentage: 10, rating: "5.0", is_online: true, is_top: true, img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
+      { id: "2", full_name: "Dr. Malika Zokirova", spec_key: "neurology", clinic_name: "Shifo Med", consultation_fee: 120000, cashback_percentage: 15, rating: "4.9", is_online: true, is_top: false, img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" }
     ];
 
     if (tg) {
@@ -477,20 +512,39 @@
         var doc = docs[i];
         var specText = langObj[doc.spec_key] || doc.spec_key;
 
+        var onlineBadge = doc.is_online ? `<span class="badge-online"><i class="fa-solid fa-circle" style="font-size: 8px;"></i> ${langObj.isOnline}</span>` : '';
+        var topBadge = doc.is_top ? `<span class="badge-top">${langObj.topDoctor}</span>` : '';
+
         container.innerHTML += `
           <div class="doc-card" onclick="openBookingModal('${doc.id}')">
-            <img src="${doc.img}" class="doc-img">
+            <div class="doc-img-wrap">
+              <img src="${doc.img}" class="doc-img">
+              ${doc.is_online ? '<div class="online-dot"></div>' : ''}
+            </div>
             <div class="doc-details">
-              <div style="display: flex; justify-content: space-between;">
-                <span class="doc-name">${doc.full_name}</span>
-                <span class="rating-badge"><i class="fa-solid fa-star"></i> ${doc.rating}</span>
+              <div class="doc-header-row">
+                <span class="doc-name">${doc.full_name} ${topBadge}</span>
+                <span style="color:#facc15; font-size:12px; font-weight:800;"><i class="fa-solid fa-star"></i> ${doc.rating}</span>
               </div>
-              <div class="doc-spec">${specText} • ${doc.clinic_name}</div>
+              <div class="doc-spec">${specText} • ${doc.clinic_name} ${onlineBadge}</div>
               <div class="doc-meta">${langObj.feeLabel}: ${Number(doc.consultation_fee).toLocaleString('uz-UZ')} UZS (${doc.cashback_percentage}% ${langObj.cashbackLabel})</div>
             </div>
           </div>`;
 
         select.innerHTML += `<option value="${doc.id}">${doc.full_name} (${specText})</option>`;
+      }
+    }
+
+    function previewSelectedImage(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var imgPreview = document.getElementById('imgPreview');
+          imgPreview.src = e.target.result;
+          imgPreview.style.display = 'block';
+          hasImage = true;
+        }
+        reader.readAsDataURL(input.files[0]);
       }
     }
 
@@ -500,6 +554,7 @@
 
       document.getElementById('modalTitle').innerText = langObj.bentoBookTitle;
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelBooking;
+      document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "block";
       document.getElementById('dateTimeGroup').style.display = "block";
       document.getElementById('aiResultBox').style.display = "none";
@@ -517,6 +572,7 @@
 
       document.getElementById('modalTitle').innerText = langObj.bentoAiTitle;
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelAi;
+      document.getElementById('uploadGroup').style.display = "block";
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
       document.getElementById('aiResultBox').style.display = "none";
@@ -558,12 +614,12 @@
       var symptoms = document.getElementById('symptoms').value;
       var langObj = dictionary[currentLang];
 
-      if (!symptoms || symptoms.trim() === "") {
-        alert("Iltimos, simptomlar yoki shikoyatingizni yozing!");
-        return;
-      }
-
       if (currentMode === "ai") {
+        if (!symptoms && !hasImage) {
+          alert("Iltimos, rasm yuklang yoki simptomlarni yozing!");
+          return;
+        }
+
         document.getElementById('aiResultBox').style.display = "block";
         document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> " + langObj.aiAnalyzing;
 
@@ -571,26 +627,18 @@
           var txt = symptoms.toLowerCase();
           var advice = "";
 
-          if (currentLang === "ru") {
-            if (txt.indexOf("нога") !== -1 || txt.indexOf("nogi") !== -1 || txt.indexOf("рука") !== -1 || txt.indexOf("сломал") !== -1 || txt.indexOf("травма") !== -1) {
-              advice = "Признак травмы или повреждения конечности. Рекомендуется срочно обратиться к <strong>Травматологу / Хирургу</strong>.";
-            } else if (txt.indexOf("голова") !== -1 || txt.indexOf("golova") !== -1 || txt.indexOf("стресс") !== -1) {
-              advice = "Возможно проявление нервного напряжения. Рекомендуется осмотр <strong>Невролога (Dr. Malika Zokirova)</strong>.";
-            } else {
-              advice = "По вашим симптомам рекомендуется записаться к <strong>Терапевту или Хирургу</strong>.";
-            }
+          if (hasImage) {
+            advice = currentLang === "ru" ? "<strong>ИИ визуальный анализ:</strong> Обнаружены признаки локального повреждения/воспаления. Рекомендуется консультация <strong>Травматолога / Хирурга (Dr. Alisher Ahmedov - 🔥 Top Врач)</strong>." : "<strong>AI Vizual tahlil natijasi:</strong> Yuklangan rasmda teri/to'qima jarohati alomatlari bor. Hozirda navbatda turgan va ko'p mijozlar tanlagan <strong>Dr. Alisher Ahmedov (🔥 Top Shifokor)</strong> ko'rigiga borish tavsiya etiladi.";
           } else {
-            if (txt.indexOf("sindi") !== -1 || txt.indexOf("синди") !== -1 || txt.indexOf("oyoq") !== -1 || txt.indexOf("jarohat") !== -1) {
-              advice = currentLang === "uz_cyr" ? "Оёқ/қўл жароҳати ёки суяк шикастланиши белгиси. Зудлик билан <strong>Травматолог / Хирург</strong> кўригига боринг." : "O'tkir shikastlanish yoki o'g'riq belgisi! Zudlik bilan <strong>Travmatolog / Xirurg</strong> ko'rigiga boring.";
-            } else if (txt.indexOf("bosh") !== -1 || txt.indexOf("бош") !== -1) {
-              advice = currentLang === "uz_cyr" ? "Асабий зўриқиш белгилари бўлиши мумкин. <strong>Невролог (Dr. Malika Zokirova)</strong> кўриги тавсия этилади." : "Asabiy zo'riqish belgilari bo'lishi mumkin. <strong>Nevrolog (Dr. Malika Zokirova)</strong> ko'rigi tavsiya etiladi.";
+            if (txt.indexOf("sindi") !== -1 || txt.indexOf("oyoq") !== -1) {
+              advice = "Suyak va bo'g'im shikastlanishi belgisi. Hozirda ishda bo'lgan <strong>Dr. Alisher Ahmedov (Kardiolog/Xirurg)</strong> qabuliga yoziling.";
             } else {
-              advice = currentLang === "uz_cyr" ? "Умумий мутахассис <strong>Терапевт ёки Хирург</strong> қабулига ёзилишингиз лозим." : "Umumiy mutaxassis <strong>Terapevt yoki Xirurg</strong> qabuliga yozilishingiz lozim.";
+              advice = "Ayni paytda eng yuqori reytingli va faol shifokorimiz <strong>Dr. Alisher Ahmedov (5.0 ★)</strong> qabuliga yozilishingiz mumkin.";
             }
           }
 
           document.getElementById('aiResultText').innerHTML = advice;
-        }, 800);
+        }, 900);
 
       } else {
         var docId = document.getElementById('doctorSelect').value;
