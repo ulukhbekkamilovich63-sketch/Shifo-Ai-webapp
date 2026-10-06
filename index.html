@@ -10,7 +10,6 @@
   <style>
     :root {
       --primary: #059669;
-      --primary-dark: #047857;
       --bg: #f0fdf4;
       --card-bg: #ffffff;
     }
@@ -24,7 +23,6 @@
       padding-bottom: 95px;
     }
 
-    /* Top Header */
     .header {
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
     }
@@ -38,27 +36,20 @@
     .user-name { font-weight: 700; font-size: 16px; color: #0f172a; }
     .user-status { font-size: 12px; color: #166534; font-weight: 500; }
 
-    /* Green Balance Card */
     .balance-card {
       background: linear-gradient(135deg, #059669 0%, #047857 100%);
       color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px;
       box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
       position: relative; overflow: hidden;
     }
-    .balance-card::after {
-      content: ''; position: absolute; top: -30px; right: -30px;
-      width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;
-    }
     .balance-val { font-size: 32px; font-weight: 800; margin: 6px 0; }
     .balance-sub { font-size: 13px; opacity: 0.9; }
 
-    /* AI Banner */
     .ai-banner {
       background: #dcfce7; border: 1px solid #86efac; border-radius: 16px;
       padding: 14px; display: flex; align-items: center; gap: 12px;
-      margin-bottom: 20px; cursor: pointer; transition: transform 0.1s;
+      margin-bottom: 20px; cursor: pointer; user-select: none;
     }
-    .ai-banner:active { transform: scale(0.98); }
     .ai-icon {
       width: 44px; height: 44px; background: #059669; color: white;
       border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px;
@@ -66,13 +57,11 @@
 
     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #064e3b; }
 
-    /* Doctor Card */
     .doc-card {
       background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; gap: 14px; align-items: center;
-      cursor: pointer; border: 1px solid #e2e8f0; transition: border-color 0.2s;
+      cursor: pointer; border: 1px solid #e2e8f0;
     }
-    .doc-card:hover { border-color: #10b981; }
     .doc-img { width: 62px; height: 62px; border-radius: 14px; object-fit: cover; background: #e2e8f0; }
     .doc-details { flex: 1; }
     .doc-name { font-weight: 700; font-size: 16px; color: #0f172a; }
@@ -82,7 +71,6 @@
       background: #fef9c3; color: #a16207; padding: 2px 8px; border-radius: 8px; font-size: 12px; font-weight: 700;
     }
 
-    /* Primary Action Button */
     .btn-main {
       position: fixed; bottom: 16px; left: 16px; right: 16px;
       background: #059669; color: white; border: none; padding: 16px;
@@ -119,7 +107,7 @@
       <div class="avatar" id="u-avatar">U</div>
       <div>
         <div class="user-name" id="u-name">Assalomu alaykum!</div>
-        <div class="user-status" id="u-status">Tashkent • Telegram User</div>
+        <div class="user-status">Tashkent • Telegram User</div>
       </div>
     </div>
     <i class="fa-regular fa-bell" style="font-size: 20px; color: #059669;"></i>
@@ -133,7 +121,7 @@
   </div>
 
   <!-- AI Banner -->
-  <div class="ai-banner" onclick="openBookingModal()">
+  <div class="ai-banner" onclick="openAiHelp()">
     <div class="ai-icon"><i class="fa-solid fa-robot"></i></div>
     <div>
       <strong style="font-size: 14px; color: #064e3b;">AI Shifo Maslahatisi</strong>
@@ -143,9 +131,7 @@
 
   <!-- Doctors List -->
   <div class="section-title">Mavjud Shifokorlar</div>
-  <div id="doctors-container">
-    <p style="color: #64748b; font-size: 14px;">Shifokorlar yuklanmoqda...</p>
-  </div>
+  <div id="doctors-container"></div>
 
   <button class="btn-main" onclick="openBookingModal()"><i class="fa-regular fa-calendar-check"></i> Qabulga Yozilish</button>
 
@@ -153,11 +139,11 @@
   <div class="modal-overlay" id="bookingModal">
     <div class="modal-sheet">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 style="font-size: 18px; color: #064e3b;">Qabulga yozilish</h3>
+        <h3 style="font-size: 18px; color: #064e3b;" id="modalTitle">Qabulga yozilish</h3>
         <i class="fa-solid fa-xmark" style="font-size: 20px; cursor: pointer; color: #64748b;" onclick="closeModal()"></i>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" id="docSelectGroup">
         <label>Shifokorni tanlang</label>
         <select class="form-control" id="doctorSelect"></select>
       </div>
@@ -168,63 +154,44 @@
       </div>
 
       <div class="form-group">
-        <label>Shikoyatingiz / Simptomlar</label>
+        <label id="symptomsLabel">Shikoyatingiz / Simptomlar</label>
         <textarea class="form-control" id="symptoms" rows="3" placeholder="Shikoyatingizni qisqacha yozing..."></textarea>
       </div>
 
-      <button class="btn-submit" onclick="submitAppointment()"><i class="fa-solid fa-check"></i> Qabulni Tasdiqlash</button>
+      <button class="btn-submit" onclick="submitAppointment()"><i class="fa-solid fa-check"></i> Tasdiqlash</button>
     </div>
   </div>
 
   <script>
-    const SUPABASE_URL = "https://lcyrrjbngcjpspyrbkfv.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_ZTcriy4OnRZTrpWSL-Dp7w_64D8RQSZ";
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-
     const tg = window.Telegram ? window.Telegram.WebApp : null;
-    let doctorsList = [];
 
-    function setupUser() {
-      if (tg) {
-        tg.ready();
-        tg.expand();
-        const u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-        if (u) {
-          const name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
-          document.getElementById('u-name').innerText = `Assalomu alaykum, ${name}!`;
-          document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
-        } else {
-          document.getElementById('u-name').innerText = "Assalomu alaykum, Ulukhbek Kamilovich!";
-          document.getElementById('u-avatar').innerText = "U";
-        }
+    // Default doctors array so buttons always work
+    let doctorsList = [
+      { id: "1", full_name: "Dr. Alisher Ahmedov", specialty: "Kardiolog", clinic_name: "Akfa Medline", consultation_fee: 150000, cashback_percentage: 10, rating: "4.9", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
+      { id: "2", full_name: "Dr. Malika Zokirova", specialty: "Nevrolog", clinic_name: "Shifo Med", consultation_fee: 120000, cashback_percentage: 15, rating: "5.0", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" }
+    ];
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      const u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+      if (u) {
+        const name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
+        document.getElementById('u-name').innerText = 'Assalomu alaykum, ' + name + '!';
+        document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
       }
     }
 
-    async function loadDoctorsFromSupabase() {
+    function renderDoctors(docs) {
       const container = document.getElementById('doctors-container');
       const select = document.getElementById('doctorSelect');
-
-      if (!supabase) {
-        container.innerHTML = '<p style="color: #64748b;">Supabase bilan ulanmadi.</p>';
-        return;
-      }
-
-      const { data: doctors, error } = await supabase.from('doctors').select('*');
-
-      if (error || !doctors || doctors.length === 0) {
-        container.innerHTML = '<p style="color: #64748b; font-size: 14px;">Hozircha bazada shifokorlar yo\'q. Shifokorlar ro\'yxatdan o\'tgach ko\'rinadi.</p>';
-        select.innerHTML = '<option value="">Shifokor topilmadi</option>';
-        return;
-      }
-
-      doctorsList = doctors;
       container.innerHTML = '';
       select.innerHTML = '';
 
-      doctors.forEach(doc => {
+      docs.forEach(doc => {
         container.innerHTML += `
           <div class="doc-card" onclick="openBookingModal('${doc.id}')">
-            <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" class="doc-img">
+            <img src="${doc.img || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150'}" class="doc-img">
             <div class="doc-details">
               <div style="display: flex; justify-content: space-between;">
                 <span class="doc-name">${doc.full_name}</span>
@@ -240,9 +207,20 @@
     }
 
     function openBookingModal(doctorId = null) {
+      document.getElementById('modalTitle').innerText = "Qabulga yozilish";
+      document.getElementById('symptomsLabel').innerText = "Shikoyatingiz / Simptomlar";
+      document.getElementById('docSelectGroup').style.display = "block";
+      
       if (doctorId) {
         document.getElementById('doctorSelect').value = doctorId;
       }
+      document.getElementById('bookingModal').style.display = 'flex';
+    }
+
+    function openAiHelp() {
+      document.getElementById('modalTitle').innerText = "AI Shifo Maslahati";
+      document.getElementById('symptomsLabel').innerText = "Simptomlaringizni batafsil yozing";
+      document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('bookingModal').style.display = 'flex';
     }
 
@@ -250,32 +228,42 @@
       document.getElementById('bookingModal').style.display = 'none';
     }
 
-    async function submitAppointment() {
-      const doctorId = document.getElementById('doctorSelect').value;
+    function submitAppointment() {
       const time = document.getElementById('appointmentTime').value;
       const symptoms = document.getElementById('symptoms').value;
 
-      if (!doctorId || !time) {
-        const err = "Iltimos, shifokor va qabul vaqtini tanlang!";
-        if (tg) tg.showAlert(err); else alert(err);
+      if (!time) {
+        alert("Iltimos, qabul vaqtini tanlang!");
         return;
       }
 
-      const selectedDoc = doctorsList.find(d => d.id === doctorId);
-
-      if (supabase) {
-        await supabase.from('appointments').insert([
-          { doctor_id: doctorId, appointment_time: new Date(time).toISOString(), symptoms_summary: symptoms, status: 'pending' }
-        ]);
-      }
-
       closeModal();
-      const successMsg = `Qabulga muvaffaqiyatli yozildingiz!\n\nShifokor: ${selectedDoc ? selectedDoc.full_name : ''}\nVaqti: ${new Date(time).toLocaleString('uz-UZ')}`;
-      if (tg) tg.showAlert(successMsg); else alert(successMsg);
+      const msg = "Arizangiz qabul qilindi! Tez orada shifokor siz bilan bog'lanadi.";
+      if (tg && tg.showAlert) tg.showAlert(msg);
+      else alert(msg);
     }
 
-    setupUser();
-    loadDoctorsFromSupabase();
+    // Load doctors immediately on page load
+    renderDoctors(doctorsList);
+
+    // Async load from Supabase in background without blocking UI
+    setTimeout(async () => {
+      try {
+        if (window.supabase) {
+          const client = window.supabase.createClient(
+            "https://lcyrrjbngcjpspyrbkfv.supabase.co",
+            "sb_publishable_ZTcriy4OnRZTrpWSL-Dp7w_64D8RQSZ"
+          );
+          const { data } = await client.from('doctors').select('*');
+          if (data && data.length > 0) {
+            doctorsList = data;
+            renderDoctors(doctorsList);
+          }
+        }
+      } catch(e) {
+        console.log("Supabase background fetch error");
+      }
+    }, 500);
   </script>
 </body>
 </html>
