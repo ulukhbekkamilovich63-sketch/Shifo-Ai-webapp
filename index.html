@@ -644,9 +644,29 @@
         <button class="btn-submit" onclick="hapticTrigger(); submitPatientReview()">Bahoni va Fikrni Yuborish</button>
       </div>
 
+      <!-- QABULGA YOZILISH BLOKI (TO'G'RILANGAN TARTIB) -->
+      <div id="bookingModalContentBlock" style="display: none;">
+        <div class="form-group" id="symptomsGroupContainer">
+          <label id="symptomsLabelBooking">Shikoyatingiz / Simptomlar</label>
+          <textarea class="form-control" id="bookingSymptoms" rows="3" placeholder="Shikoyatingizni qisqacha yozing..."></textarea>
+        </div>
+
+        <div class="form-group" id="docSelectGroup">
+          <label id="lbl-form-doc">Shifokorni tanlang</label>
+          <select class="form-control" id="doctorSelect"></select>
+        </div>
+
+        <div class="form-group" id="dateTimeGroup">
+          <label id="lbl-form-date">Qabul sanasi va vaqti</label>
+          <input type="datetime-local" class="form-control" id="appointmentTime">
+        </div>
+
+        <button class="btn-submit" id="bookingSubmitBtn" onclick="hapticTrigger(); handleBookingSubmit()"><i class="fa-solid fa-check"></i> Qabulga yozilish</button>
+      </div>
+
       <!-- AI MASLAHAT VA KESHBEKNI YECHISH (SHIFOKOR UCHUN) PANELI -->
-      <div id="aiModalContentBlock">
-        <!-- Shifokor uchun Keshbekni yechish bloki (AI Maslahat bo'limi ichiga ko'chirildi) -->
+      <div id="aiModalContentBlock" style="display: none;">
+        <!-- Shifokor uchun Keshbekni yechish bloki -->
         <div id="doctorCashbackPanelInAi" style="display: none; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 16px; padding: 14px; margin-bottom: 16px;">
           <div style="font-weight: 800; font-size: 15px; margin-bottom: 6px; color: var(--accent-blue);">
             <i class="fa-solid fa-ticket"></i> Bemor Keshbekini Chegirma sifatida Yechish
@@ -677,12 +697,12 @@
           <input type="file" id="imgInput" accept="image/*" style="display: none;" onchange="previewSelectedImage(this)">
         </div>
 
-        <div class="form-group" id="symptomsGroupContainer">
-          <label id="symptomsLabel">Shikoyatingiz / Simptomlar</label>
-          <textarea class="form-control" id="symptoms" rows="3" placeholder="..."></textarea>
+        <div class="form-group">
+          <label id="symptomsLabelAi">Simptomlaringizni yozing yoki rasm biriktiring</label>
+          <textarea class="form-control" id="aiSymptoms" rows="3" placeholder="..."></textarea>
         </div>
 
-        <button class="btn-submit" id="modalSubmitBtn" onclick="hapticTrigger(); handleFormSubmit()"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Vizual Tahlil Qilish</button>
+        <button class="btn-submit" id="aiSubmitBtn" onclick="hapticTrigger(); handleAiSubmit()"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Vizual Tahlil Qilish</button>
 
         <div class="ai-result-box" id="aiResultBox">
           <strong style="display: block; margin-bottom: 6px; color: var(--neon-green);" id="aiHeaderTitle"><i class="fa-solid fa-brain"></i> AI Tahlil Natijasi:</strong>
@@ -690,15 +710,6 @@
         </div>
       </div>
 
-      <div class="form-group" id="docSelectGroup" style="display: none;">
-        <label id="lbl-form-doc">Shifokorni tanlang</label>
-        <select class="form-control" id="doctorSelect"></select>
-      </div>
-
-      <div class="form-group" id="dateTimeGroup" style="display: none;">
-        <label id="lbl-form-date">Qabul sanasi va vaqti</label>
-        <input type="datetime-local" class="form-control" id="appointmentTime">
-      </div>
     </div>
   </div>
 
@@ -836,7 +847,7 @@
         symptomsLabelBooking: "Shikoyatingiz / Simptomlar",
         symptomsLabelAi: "Simptomlaringizni yozing yoki rasm biriktiring",
         placeholderSymptoms: "Shikoyatingizni qisqacha yozing...",
-        btnSubmitBooking: "Qabulni Tasdiqlash",
+        btnSubmitBooking: "Qabulga yozilish",
         btnSubmitAi: "AI Vizual Tahlil Qilish",
         notifTitle: "Bildirishnomalar",
         feeLabel: "Qabul",
@@ -886,7 +897,7 @@
         symptomsLabelBooking: "Шикоятингиз / Симптомлар",
         symptomsLabelAi: "Симптомларингизни ёзинг ёки расм бириктиринг",
         placeholderSymptoms: "Шикоятингизни қисқача ёзинг...",
-        btnSubmitBooking: "Қабулни Тасдиқлаш",
+        btnSubmitBooking: "Қабулга ёзилиш",
         btnSubmitAi: "AI Визуал Таҳлил Қилиш",
         notifTitle: "Билдиришномалар",
         feeLabel: "Қабул",
@@ -936,7 +947,7 @@
         symptomsLabelBooking: "Ваши жалобы / Симптомы",
         symptomsLabelAi: "Опишите симптомы или прикрепите фото",
         placeholderSymptoms: "Кратко опишите ваши жалобы...",
-        btnSubmitBooking: "Подтвердить запись",
+        btnSubmitBooking: "Записаться на прием",
         btnSubmitAi: "Визуальный анализ ИИ",
         notifTitle: "Уведомления",
         feeLabel: "Прием",
@@ -1208,7 +1219,7 @@
         localStorage.setItem('shifo_pending_doctors', JSON.stringify(pendingDoctorsData));
 
         renderAdminPanelRequests();
-        showCustomAlert("Admin Panel", "Shifokorning arizasi tasdiqlandi!");
+        showCustomAlert("Admin Panel", "Shifokorning arizasi tasdiqlandi va bemorlarga ko'rina boshladi!");
       }
     }
 
@@ -1234,7 +1245,6 @@
         activeAppointmentsQueue.splice(targetIndex, 1);
         localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
         
-        // Bemor keshbekiga 10,000 UZS avtomatik qo'shiladi
         userBalance += 10000;
         localStorage.setItem('shifo_balance', userBalance);
 
@@ -1334,7 +1344,7 @@
 
       pendingDoctorsData.push(newDocObj);
       localStorage.setItem('shifo_pending_doctors', JSON.stringify(pendingDoctorsData));
-      showCustomAlert("Muvaffaqiyatli", "Arizangiz yuborildi! Admin tasdiqlagach faollashadi.");
+      showCustomAlert("Muvaffaqiyatli", "Arizangiz yuborildi! Admin tasdiqlagach bemorlarga ko'rina boshlaysiz.");
       
       document.getElementById('newDocName').value = "";
       document.getElementById('newDocClinic').value = "";
@@ -1432,7 +1442,7 @@
 
       document.getElementById('lbl-form-doc').innerText = langObj.lblFormDoc;
       document.getElementById('lbl-form-date').innerText = langObj.lblFormDate;
-      document.getElementById('symptoms').placeholder = langObj.placeholderSymptoms;
+      document.getElementById('bookingSymptoms').placeholder = langObj.placeholderSymptoms;
       document.getElementById('aiHeaderTitle').innerHTML = langObj.aiHeaderTitle;
     }
 
@@ -1521,19 +1531,11 @@
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
       document.getElementById('modalTitle').innerText = langObj.bentoBookTitle;
-      document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelBooking;
       
       document.getElementById('queueModalContent').style.display = "none";
       document.getElementById('reviewModalContent').style.display = "none";
-      document.getElementById('aiModalContentBlock').style.display = "block";
-      document.getElementById('uploadGroup').style.display = "none";
-      document.getElementById('doctorCashbackPanelInAi').style.display = "none";
-      document.getElementById('docSelectGroup').style.display = "block";
-      document.getElementById('dateTimeGroup').style.display = "block";
-      document.getElementById('symptomsGroupContainer').style.display = "block";
-      document.getElementById('modalSubmitBtn').style.display = "block";
-      document.getElementById('aiResultBox').style.display = "none";
-      document.getElementById('modalSubmitBtn').innerHTML = '<i class="fa-solid fa-check"></i> ' + langObj.btnSubmitBooking;
+      document.getElementById('aiModalContentBlock').style.display = "none";
+      document.getElementById('bookingModalContentBlock').style.display = "block";
       
       if (doctorId) {
         document.getElementById('doctorSelect').value = doctorId;
@@ -1547,8 +1549,9 @@
       document.getElementById('modalTitle').innerText = langObj.bentoReviewTitle;
 
       document.getElementById('queueModalContent').style.display = "none";
-      document.getElementById('reviewModalContent').style.display = "block";
+      document.getElementById('bookingModalContentBlock').style.display = "none";
       document.getElementById('aiModalContentBlock').style.display = "none";
+      document.getElementById('reviewModalContent').style.display = "block";
       document.getElementById('mainModal').style.display = 'flex';
     }
 
@@ -1559,6 +1562,7 @@
       
       document.getElementById('queueModalContent').style.display = "block";
       document.getElementById('reviewModalContent').style.display = "none";
+      document.getElementById('bookingModalContentBlock').style.display = "none";
       document.getElementById('aiModalContentBlock').style.display = "none";
       
       renderDoctorQueue();
@@ -1570,26 +1574,19 @@
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
       document.getElementById('modalTitle').innerText = langObj.bentoAiTitle;
-      document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelAi;
       
       document.getElementById('queueModalContent').style.display = "none";
       document.getElementById('reviewModalContent').style.display = "none";
+      document.getElementById('bookingModalContentBlock').style.display = "none";
       document.getElementById('aiModalContentBlock').style.display = "block";
-      document.getElementById('uploadGroup').style.display = "block";
       
-      // Agar foydalanuvchi shifokor bo'lsa, AI Maslahat oynasida keshbekni yechish paneli chiqadi
       if (currentRole === 'doctor') {
         document.getElementById('doctorCashbackPanelInAi').style.display = "block";
       } else {
         document.getElementById('doctorCashbackPanelInAi').style.display = "none";
       }
 
-      document.getElementById('docSelectGroup').style.display = "none";
-      document.getElementById('dateTimeGroup').style.display = "none";
-      document.getElementById('symptomsGroupContainer').style.display = "block";
-      document.getElementById('modalSubmitBtn').style.display = "block";
       document.getElementById('aiResultBox').style.display = "none";
-      document.getElementById('modalSubmitBtn').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + langObj.btnSubmitAi;
       document.getElementById('mainModal').style.display = 'flex';
     }
 
@@ -1615,82 +1612,83 @@
       }
     }
 
-    function handleFormSubmit() {
-      var symptoms = document.getElementById('symptoms').value.toLowerCase();
+    function handleAiSubmit() {
+      var symptoms = document.getElementById('aiSymptoms').value.toLowerCase();
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
-      if (currentMode === "ai") {
-        if (!symptoms && !hasImage) {
-          showCustomAlert("Xatolik", "Iltimos, rasm yuklang yoki simptomlarni yozing!");
-          return;
-        }
-
-        document.getElementById('aiResultBox').style.display = "block";
-        document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> " + langObj.aiAnalyzing;
-
-        setTimeout(function() {
-          var isDental = symptoms.includes('tish') || symptoms.includes('ogriq') || symptoms.includes('karies') || symptoms.includes('stomatolog') || symptoms.includes('зуб') || hasImage;
-          
-          var advice = "";
-          if (isDental) {
-            advice = currentLang === "ru" ? 
-              "<strong>ИИ анализ (" + selectedRegion + "):</strong> Обнаружены признаки кариеса. Рекомендуется консультация: <strong>Dr. Dilshodbek Rahimov (🔥 Top Врач)</strong>." : 
-              "<strong>AI Vizual tahlil (" + selectedRegion + "):</strong> Tish kariesi belgisi aniqlandi. <strong>Dr. Dilshodbek Rahimov (🔥 Top Stomatolog)</strong> ko'rigiga yoziling.";
-          } else {
-            advice = currentLang === "ru" ? 
-              "<strong>ИИ анализ (" + selectedRegion + "):</strong> Рекомендуется консультация <strong>Sarvar Abdullayevich (🔥 Top Врач)</strong>." : 
-              "<strong>AI Vizual tahlil (" + selectedRegion + "):</strong> Mutaxassis tavsiyasi: <strong>Sarvar Abdullayevich (🔥 Top Shifokor)</strong>.";
-          }
-
-          document.getElementById('aiResultText').innerHTML = advice;
-        }, 900);
-
-      } else {
-        var docId = document.getElementById('doctorSelect').value;
-        var rawTime = document.getElementById('appointmentTime').value;
-
-        if (!rawTime) {
-          showCustomAlert("Xatolik", "Iltimos, vaqtni tanlang!");
-          return;
-        }
-
-        var formattedTime = formatCustomDate(rawTime);
-        var nextQueueNum = activeAppointmentsQueue.length + 1;
-
-        var selDoc = null;
-        for (var j = 0; j < allDoctorsData.length; j++) {
-          if (allDoctorsData[j].id === docId) selDoc = allDoctorsData[j];
-        }
-
-        if (selDoc && currentRole !== 'doctor') {
-          document.getElementById('lastVisitDoc').innerText = selDoc.full_name;
-          var specText = langObj[selDoc.spec_key] || selDoc.spec_key;
-          document.getElementById('lastVisitDate').innerText = specText + " • " + formattedTime;
-        }
-
-        var patientNameWithId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "Ulug'bek") + " (ID: " + patientIdCode + ")";
-
-        var newQueueItem = {
-          id: Date.now(),
-          queue_number: nextQueueNum,
-          patient_name: patientNameWithId,
-          doctor_name: selDoc ? selDoc.full_name : "Shifokor",
-          time: formattedTime.split(',')[1] || formattedTime,
-          complaint: symptoms || "Standart qabul",
-          status: "Faol"
-        };
-
-        activeAppointmentsQueue.unshift(newQueueItem);
-        localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
-
-        if (currentRole === 'doctor') {
-          document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
-        }
-
-        closeModal();
-        var okMsg = langObj.successBooking + "\n\n🔢 Sizning navbatingiz: № " + nextQueueNum + "\n🆔 Sizning ID raqamingiz: " + patientIdCode + "\n👨‍⚕️ Shifokor: " + (selDoc ? selDoc.full_name : '') + "\n🕒 Vaqti: " + formattedTime;
-        showCustomAlert("Muvaffaqiyatli", okMsg);
+      if (!symptoms && !hasImage) {
+        showCustomAlert("Xatolik", "Iltimos, rasm yuklang yoki simptomlarni yozing!");
+        return;
       }
+
+      document.getElementById('aiResultBox').style.display = "block";
+      document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> " + langObj.aiAnalyzing;
+
+      setTimeout(function() {
+        var isDental = symptoms.includes('tish') || symptoms.includes('ogriq') || symptoms.includes('karies') || symptoms.includes('stomatolog') || symptoms.includes('зуб') || hasImage;
+        
+        var advice = "";
+        if (isDental) {
+          advice = currentLang === "ru" ? 
+            "<strong>ИИ анализ (" + selectedRegion + "):</strong> Обнаружены признаки кариеса. Рекомендуется консультация: <strong>Dr. Dilshodbek Rahimov (🔥 Top Врач)</strong>." : 
+            "<strong>AI Vizual tahlil (" + selectedRegion + "):</strong> Tish kariesi belgisi aniqlandi. <strong>Dr. Dilshodbek Rahimov (🔥 Top Stomatolog)</strong> ko'rigiga yoziling.";
+        } else {
+          advice = currentLang === "ru" ? 
+            "<strong>ИИ анализ (" + selectedRegion + "):</strong> Рекомендуется консультация <strong>Sarvar Abdullayevich (🔥 Top Врач)</strong>." : 
+            "<strong>AI Vizual tahlil (" + selectedRegion + "):</strong> Mutaxassis tavsiyasi: <strong>Sarvar Abdullayevich (🔥 Top Shifokor)</strong>.";
+        }
+
+        document.getElementById('aiResultText').innerHTML = advice;
+      }, 900);
+    }
+
+    function handleBookingSubmit() {
+      var symptoms = document.getElementById('bookingSymptoms').value.toLowerCase();
+      var docId = document.getElementById('doctorSelect').value;
+      var rawTime = document.getElementById('appointmentTime').value;
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
+
+      if (!rawTime) {
+        showCustomAlert("Xatolik", "Iltimos, qabul vaqtini tanlang!");
+        return;
+      }
+
+      var formattedTime = formatCustomDate(rawTime);
+      var nextQueueNum = activeAppointmentsQueue.length + 1;
+
+      var selDoc = null;
+      for (var j = 0; j < allDoctorsData.length; j++) {
+        if (allDoctorsData[j].id === docId) selDoc = allDoctorsData[j];
+      }
+
+      if (selDoc && currentRole !== 'doctor') {
+        document.getElementById('lastVisitDoc').innerText = selDoc.full_name;
+        var specText = langObj[selDoc.spec_key] || selDoc.spec_key;
+        document.getElementById('lastVisitDate').innerText = specText + " • " + formattedTime;
+      }
+
+      var patientNameWithId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "Ulug'bek") + " (ID: " + patientIdCode + ")";
+
+      var newQueueItem = {
+        id: Date.now(),
+        queue_number: nextQueueNum,
+        patient_name: patientNameWithId,
+        doctor_name: selDoc ? selDoc.full_name : "Shifokor",
+        time: formattedTime.split(',')[1] || formattedTime,
+        complaint: symptoms || "Standart qabul",
+        status: "Faol"
+      };
+
+      activeAppointmentsQueue.unshift(newQueueItem);
+      localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
+
+      if (currentRole === 'doctor') {
+        document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
+      }
+
+      closeModal();
+      var okMsg = langObj.successBooking + "\n\n🔢 Sizning navbatingiz: № " + nextQueueNum + "\n🆔 Sizning ID raqamingiz: " + patientIdCode + "\n👨‍⚕️ Shifokor: " + (selDoc ? selDoc.full_name : '') + "\n🕒 Vaqti: " + formattedTime;
+      showCustomAlert("Muvaffaqiyatli", okMsg);
     }
 
     function switchTab(tabName) {
