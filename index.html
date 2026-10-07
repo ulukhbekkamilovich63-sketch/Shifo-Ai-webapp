@@ -149,7 +149,7 @@
       color: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
     }
 
-    /* Bento Grid */
+    /* Bento Grid (3 ta kichik kvadrat holatda) */
     .bento-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;
     }
@@ -159,7 +159,6 @@
       cursor: pointer; transition: all 0.15s; overflow: hidden;
     }
     .bento-card:active { transform: scale(0.96); background: rgba(52, 211, 153, 0.15); border-color: var(--neon-green); }
-    .bento-card.full-width { grid-column: span 2; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(14, 40, 27, 0.9) 100%); border-color: rgba(52, 211, 153, 0.4); }
     
     .bento-tag {
       position: absolute; top: 12px; right: 12px;
@@ -431,26 +430,27 @@
           </div>
         </div>
 
+        <!-- Bento Grid: 3 ta kichik kvadrat blok (AI Shifo Maslahatisi, Qabulga yozilish, Doktorni baholash) -->
         <div class="bento-grid">
-          <div class="bento-card full-width" onclick="hapticTrigger(); openAiModal()">
-            <span class="bento-tag">AI VISION 2.5</span>
+          <div class="bento-card" onclick="hapticTrigger(); openAiModal()">
+            <span class="bento-tag">AI VISION</span>
             <div class="bento-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-            <div class="bento-title" id="lbl-bento-ai-title">AI Shifo Maslahatisi (Rasm/Matn)</div>
-            <div class="bento-desc" id="lbl-bento-ai-desc">Rasm yuklang yoki simptomlarni yozing, AI darhol tahlil qilib, mutaxassisni aniqlab beradi</div>
+            <div class="bento-title" id="lbl-bento-ai-title">AI Shifo Maslahatisi</div>
+            <div class="bento-desc" id="lbl-bento-ai-desc">Rasm yoki matnli tahlil</div>
           </div>
 
           <div class="bento-card" onclick="hapticTrigger(); openBookingModal()">
             <span class="bento-tag blue" id="lbl-tag-book">QABUL</span>
             <div class="bento-icon" style="color: #60a5fa; background: rgba(59,130,246,0.15);"><i class="fa-regular fa-calendar-check"></i></div>
             <div class="bento-title" id="lbl-bento-book-title">Qabulga Yozilish</div>
-            <div class="bento-desc" id="lbl-bento-book-desc">Shifokor va qulay vaqtni tanlang</div>
+            <div class="bento-desc" id="lbl-bento-book-desc">Shifokor va qulay vaqt</div>
           </div>
 
-          <div class="bento-card" onclick="hapticTrigger(); openReviewModal()">
+          <div class="bento-card full-width" style="grid-column: span 2;" onclick="hapticTrigger(); openReviewModal()">
             <span class="bento-tag" style="background: #10b981;" id="lbl-tag-review">BAXO</span>
             <div class="bento-icon" style="color: #34d399; background: rgba(16,185,129,0.15);"><i class="fa-solid fa-star-half-stroke"></i></div>
             <div class="bento-title" id="lbl-bento-review-title">Doktorni Baholash</div>
-            <div class="bento-desc" id="lbl-bento-review-desc">Yulduzcha va izoh/shikoyat qoldirish</div>
+            <div class="bento-desc" id="lbl-bento-review-desc">Yulduzcha va izoh/shikoyat qoldirish, keshbek olish</div>
           </div>
         </div>
 
@@ -523,7 +523,7 @@
         <div class="section-title"><i class="fa-solid fa-wallet"></i> Keshbek va Chegirma Boshqaruvi</div>
       </div>
       
-      <!-- Bemor uchun keshbek ko'rinishi (Faqat balans va ID, shifokor paneli olib tashlandi) -->
+      <!-- Bemor uchun keshbek ko'rinishi (Faqat balans va ID) -->
       <div id="patientCashbackPane">
         <div class="hero-card">
           <div class="hero-badge">Joriy Balansim</div>
@@ -783,10 +783,12 @@
         greeting: "Assalomu alaykum, ",
         balanceBadge: "Keshbek Balans & ID",
         balanceSub: "Stomatologiya va boshqa qabullarda 10% chegirma",
+        bentoAiTitle: "AI Shifo Maslahatisi",
+        bentoAiDesc: "Rasm yoki matnli tahlil",
         bentoBookTitle: "Qabulga Yozilish",
-        bentoBookDesc: "Shifokor va qulay vaqtni tanlang",
+        bentoBookDesc: "Shifokor va qulay vaqt",
         bentoReviewTitle: "Doktorni Baholash",
-        bentoReviewDesc: "Yulduzcha va izoh/shikoyat qoldirish",
+        bentoReviewDesc: "Yulduzcha va izoh/shikoyat qoldirish, keshbek olish",
         docsTitle: "Hudodingizdagi Shifokorlar (Ismiga bosing)",
         navHome: "Bosh sahifa",
         navBook: "Navbat",
@@ -828,10 +830,12 @@
         greeting: "Ассалому алайкум, ",
         balanceBadge: "Кэшбэк Баланс & ID",
         balanceSub: "Стоматология ва бошқа қабулларда 10% чегирма",
+        bentoAiTitle: "AI Шифо Маслаҳатиси",
+        bentoAiDesc: "Расм ёки матнли таҳлил",
         bentoBookTitle: "Қабулга Ёзилиш",
-        bentoBookDesc: "Шифокор ва қулай вақтни танланг",
+        bentoBookDesc: "Шифокор ва қулай вақт",
         bentoReviewTitle: "Шифокорни Баҳолаш",
-        bentoReviewDesc: "Юлдузча ва изоҳ/шикоят қолдириш",
+        bentoReviewDesc: "Юлдузча ва изоҳ/шикоят қолдириш, кэшбэк олиш",
         docsTitle: "Ҳудудингиздаги Шифокорлар (Исмига босинг)",
         navHome: "Бош саҳифа",
         navBook: "Навбат",
@@ -873,10 +877,12 @@
         greeting: "Здравствуйте, ",
         balanceBadge: "Кэшбэк Баланс & ID",
         balanceSub: "Скидка 10% на стоматологию и другие приемы",
-        bentoBookTitle: "Записаться на прием",
-        bentoBookDesc: "Выберите врача и удобное время",
+        bentoAiTitle: "AI Консультант",
+        bentoAiDesc: "Анализ фото или текста",
+        bentoBookTitle: "Записаться",
+        bentoBookDesc: "Врач и удобное время",
         bentoReviewTitle: "Оценить врача",
-        bentoReviewDesc: "Поставить звездочку и оставить отзыв/жалобу",
+        bentoReviewDesc: "Поставить звездочку, отзыв и получить кэшбэк",
         docsTitle: "Врачи в вашем регионе (Нажмите на имя)",
         navHome: "Главная",
         navBook: "Очередь",
@@ -1266,7 +1272,6 @@
         finishedItem.type = 'completed';
         doctorHistoryList.unshift(finishedItem);
 
-        // Qaysi shifokorga yozilgan bo'lsa, o'sha doktorning ID sini eslab qolamiz
         lastCompletedDoctorId = finishedItem.doctor_id || "3";
         localStorage.setItem('shifo_last_doc_id', lastCompletedDoctorId);
 
@@ -1407,12 +1412,16 @@
       document.getElementById('lbl-balance-badge').innerText = langObj.balanceBadge;
       document.getElementById('lbl-balance-sub').innerText = langObj.balanceSub;
       document.getElementById('lbl-last-visit').innerText = langObj.lastVisit;
+      
+      document.getElementById('lbl-bento-ai-title').innerText = langObj.bentoAiTitle;
+      document.getElementById('lbl-bento-ai-desc').innerText = langObj.bentoAiDesc;
       document.getElementById('lbl-tag-book').innerText = langObj.tagBook;
       document.getElementById('lbl-bento-book-title').innerText = langObj.bentoBookTitle;
       document.getElementById('lbl-bento-book-desc').innerText = langObj.bentoBookDesc;
       document.getElementById('lbl-tag-review').innerText = langObj.tagBook;
       document.getElementById('lbl-bento-review-title').innerText = langObj.bentoReviewTitle;
       document.getElementById('lbl-bento-review-desc').innerText = langObj.bentoReviewDesc;
+      
       document.getElementById('lbl-docs-title').innerText = langObj.docsTitle;
 
       document.getElementById('lbl-nav-home').innerText = langObj.navHome;
@@ -1535,7 +1544,6 @@
       document.getElementById('aiModalContentBlock').style.display = "none";
       document.getElementById('reviewModalContent').style.display = "block";
       
-      // Bemor qaysi shifokorga yozilgan bo'lsa, o'sha doktor avtomatik tanlanadi
       if (lastCompletedDoctorId) {
         document.getElementById('reviewDocSelect').value = lastCompletedDoctorId;
       }
@@ -1632,7 +1640,6 @@
         patientVisitHistory.unshift(visitRecord);
         localStorage.setItem('shifo_patient_visits', JSON.stringify(patientVisitHistory));
         
-        // Hozirgi tanlangan shifokor ID sini eslab qolamiz
         lastCompletedDoctorId = docId;
         localStorage.setItem('shifo_last_doc_id', lastCompletedDoctorId);
       }
