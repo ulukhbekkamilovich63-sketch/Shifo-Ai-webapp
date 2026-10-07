@@ -191,6 +191,16 @@
     .text-break { color: #fbbf24; background: rgba(251, 191, 36, 0.15); }
     .text-offline { color: #f87171; background: rgba(248, 113, 113, 0.15); }
 
+    /* Doctor Queue Panel (Shifokor Kabineti uchun) */
+    .doctor-queue-container {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 20px; padding: 18px; margin-bottom: 20px; backdrop-filter: blur(12px);
+    }
+    .queue-item {
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(52, 211, 153, 0.15);
+      border-radius: 14px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    }
+
     /* Floating Navigation Bar */
     .floating-nav {
       position: fixed; bottom: 20px; left: 16px; right: 16px;
@@ -279,9 +289,24 @@
     </button>
   </div>
 
-  <!-- STEP 2: Region Selection Screen -->
-  <div class="onboard-screen" id="regionScreen">
+  <!-- STEP 2: Role Selection Screen (Bemor / Shifokor) -->
+  <div class="onboard-screen" id="roleScreen">
     <button class="back-btn-top" onclick="backToLanguage()"><i class="fa-solid fa-arrow-left"></i> Orqaga</button>
+    <div class="onboard-logo"><i class="fa-solid fa-user-gear"></i></div>
+    <div class="onboard-title" id="lbl-role-title">Profilingiz turini tanlang</div>
+    <div class="onboard-sub" id="lbl-role-sub">Ilovadan kim sifatida foydalanasiz?</div>
+
+    <button class="onboard-btn" onclick="selectRole('patient')">
+      <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-hospital-user" style="color:var(--neon-green);"></i> Bemor sifatida (Qabulga yozilish)</span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
+    </button>
+    <button class="onboard-btn" onclick="selectRole('doctor')">
+      <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-user-doctor" style="color:var(--accent-blue);"></i> Shifokor sifatida (Kabinet)</span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
+    </button>
+  </div>
+
+  <!-- STEP 3: Region Selection Screen -->
+  <div class="onboard-screen" id="regionScreen">
+    <button class="back-btn-top" onclick="backToRole()"><i class="fa-solid fa-arrow-left"></i> Orqaga</button>
     <div class="onboard-logo"><i class="fa-solid fa-map-location-dot"></i></div>
     <div class="onboard-title" id="lbl-region-title">Viloyatni tanlang</div>
     <div class="onboard-sub" id="lbl-region-sub">Oʻz hududingizni koʻrsating</div>
@@ -289,7 +314,7 @@
     <div id="regionsContainer" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px;"></div>
   </div>
 
-  <!-- STEP 3: District Selection Screen -->
+  <!-- STEP 4: District Selection Screen -->
   <div class="onboard-screen" id="districtScreen">
     <button class="back-btn-top" onclick="backToRegions()"><i class="fa-solid fa-arrow-left"></i> Orqaga</button>
     <div class="onboard-logo"><i class="fa-solid fa-city"></i></div>
@@ -318,61 +343,84 @@
       </div>
     </div>
 
-    <!-- Hero Card (Cashback) -->
-    <div class="hero-card">
-      <div class="hero-badge" id="lbl-balance-badge">Keshbek Balans</div>
-      <div class="hero-val">
-        <span id="u-balance">45,000 UZS</span>
-        <button class="cashback-action-btn" onclick="openCashbackInfo()">Ishlatish</button>
-      </div>
-      <div class="hero-sub" id="lbl-balance-sub">Har bir qabuldan 10% keshbek qaytariladi</div>
-    </div>
-
-    <!-- Last Visit Section -->
-    <div class="last-visit-card" id="lastVisitCard">
-      <div class="last-visit-icon"><i class="fa-solid fa-user-doctor"></i></div>
-      <div style="flex: 1;">
-        <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700;">Oxirgi tashrif</div>
-        <div id="lastVisitDoc" style="font-weight: 800; font-size: 15px; margin: 2px 0;">Dr. Alisher Ahmedov</div>
-        <div id="lastVisitDate" style="font-size: 12px; color: var(--neon-green);">Kardiolog • 12-Mart, 2026</div>
-      </div>
-    </div>
-
-    <!-- Bento Grid Menu -->
-    <div class="bento-grid">
-      <div class="bento-card full-width" onclick="openAiModal()">
-        <span class="bento-tag">AI VISION 2.5</span>
-        <div class="bento-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-        <div class="bento-title" id="lbl-bento-ai-title">AI Shifo Maslahatisi (Rasm/Matn)</div>
-        <div class="bento-desc" id="lbl-bento-ai-desc">Rasm yuklang yoki simptomlarni yozing, AI darhol tahlil qilib, kerakli mutaxassisni aniqlab beradi</div>
+    <!-- BEMOR REJIMI UCHUN ASOSIY QISMLAR -->
+    <div id="patientDashboard">
+      <!-- Hero Card (Cashback) -->
+      <div class="hero-card">
+        <div class="hero-badge" id="lbl-balance-badge">Keshbek Balans</div>
+        <div class="hero-val">
+          <span id="u-balance">45,000 UZS</span>
+          <button class="cashback-action-btn" onclick="openCashbackInfo()">Ishlatish</button>
+        </div>
+        <div class="hero-sub" id="lbl-balance-sub">Har bir qabuldan 10% keshbek qaytariladi</div>
       </div>
 
-      <div class="bento-card" onclick="openBookingModal()">
-        <span class="bento-tag blue">QABUL</span>
-        <div class="bento-icon" style="color: #60a5fa; background: rgba(59,130,246,0.15);"><i class="fa-regular fa-calendar-check"></i></div>
-        <div class="bento-title" id="lbl-bento-book-title">Qabulga Yozilish</div>
-        <div class="bento-desc" id="lbl-bento-book-desc">Shifokor va qulay vaqtni tanlang</div>
+      <!-- Last Visit Card -->
+      <div class="last-visit-card" id="lastVisitCard">
+        <div class="last-visit-icon"><i class="fa-solid fa-user-doctor"></i></div>
+        <div style="flex: 1;">
+          <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700;">Oxirgi tashrif</div>
+          <div id="lastVisitDoc" style="font-weight: 800; font-size: 15px; margin: 2px 0;">Dr. Alisher Ahmedov</div>
+          <div id="lastVisitDate" style="font-size: 12px; color: var(--neon-green);">Kardiolog • 12-Mart, 2026</div>
+        </div>
       </div>
 
-      <div class="bento-card" onclick="openNotifications()">
-        <span class="bento-tag" style="background: #f59e0b;">STATUS</span>
-        <div class="bento-icon" style="color: #f59e0b; background: rgba(245,158,11,0.15);"><i class="fa-solid fa-file-medical"></i></div>
-        <div class="bento-title" id="lbl-bento-status-title">Tibbiy Daftar</div>
-        <div class="bento-desc" id="lbl-bento-status-desc">Tahlillar va retseptlar tarixi</div>
+      <!-- Bento Grid Menu -->
+      <div class="bento-grid">
+        <div class="bento-card full-width" onclick="openAiModal()">
+          <span class="bento-tag">AI VISION 2.5</span>
+          <div class="bento-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+          <div class="bento-title" id="lbl-bento-ai-title">AI Shifo Maslahatisi (Rasm/Matn)</div>
+          <div class="bento-desc" id="lbl-bento-ai-desc">Rasm yuklang yoki simptomlarni yozing, AI darhol tahlil qilib, kerakli mutaxassisni aniqlab beradi</div>
+        </div>
+
+        <div class="bento-card" onclick="openBookingModal()">
+          <span class="bento-tag blue">QABUL</span>
+          <div class="bento-icon" style="color: #60a5fa; background: rgba(59,130,246,0.15);"><i class="fa-regular fa-calendar-check"></i></div>
+          <div class="bento-title" id="lbl-bento-book-title">Qabulga Yozilish</div>
+          <div class="bento-desc" id="lbl-bento-book-desc">Shifokor va qulay vaqtni tanlang</div>
+        </div>
+
+        <div class="bento-card" onclick="openNotifications()">
+          <span class="bento-tag" style="background: #f59e0b;">STATUS</span>
+          <div class="bento-icon" style="color: #f59e0b; background: rgba(245,158,11,0.15);"><i class="fa-solid fa-file-medical"></i></div>
+          <div class="bento-title" id="lbl-bento-status-title">Tibbiy Daftar</div>
+          <div class="bento-desc" id="lbl-bento-status-desc">Tahlillar va retseptlar tarixi</div>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-filter-box">
+        <i class="fa-solid fa-magnifying-glass" style="color: var(--neon-green); margin-left: 4px;"></i>
+        <input type="text" class="search-input" id="doctorSearchInput" placeholder="Shifokor yoki mutaxassislikni qidiring..." oninput="filterDoctors()">
+      </div>
+
+      <!-- Doctors List Header -->
+      <div class="section-header">
+        <div class="section-title" id="lbl-docs-title">Hudodingizdagi Eng Zo‘r Shifokorlar</div>
+      </div>
+      <div id="doctors-container"></div>
+    </div>
+
+    <!-- SHIFOKOR KABINETI REJIMI (Doktor paneli) -->
+    <div id="doctorDashboard" style="display: none;">
+      <div class="hero-card" style="background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);">
+        <div class="hero-badge">Shifokor Kabineti</div>
+        <div class="hero-val">
+          <span id="docActiveQueueCount">3 ta navbat</span>
+          <button class="cashback-action-btn" onclick="refreshDoctorQueue()">Yangilash</button>
+        </div>
+        <div class="hero-sub">Bugungi faol bemorlar va qabullar ro'yxati</div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Bugungi Bemorlar Navbati</div>
+      </div>
+      
+      <div class="doctor-queue-container" id="doctorQueueList">
+        <!-- Dinamik ravishda shifokorning navbatlari chiqadi -->
       </div>
     </div>
-
-    <!-- Search Bar -->
-    <div class="search-filter-box">
-      <i class="fa-solid fa-magnifying-glass" style="color: var(--neon-green); margin-left: 4px;"></i>
-      <input type="text" class="search-input" id="doctorSearchInput" placeholder="Shifokor yoki mutaxassislikni qidiring..." oninput="filterDoctors()">
-    </div>
-
-    <!-- Doctors List Header -->
-    <div class="section-header">
-      <div class="section-title" id="lbl-docs-title">Hudodingizdagi Eng Zo‘r Shifokorlar</div>
-    </div>
-    <div id="doctors-container"></div>
   </div>
 
   <!-- Floating Navigation Bar -->
@@ -402,7 +450,7 @@
 
       <!-- Image Upload Block -->
       <div class="form-group" id="uploadGroup" style="display: none;">
-        <label id="lbl-upload-title">Rasm yuklash (Jarohat / Analiz varaqasi)</label>
+        <label id="lbl-upload-title">Rasm yuklash (Jarohat / Analiz varaqasi / Tish holati)</label>
         <div class="upload-box">
           <div id="uploadPromptArea" onclick="document.getElementById('imgInput').click()">
             <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--neon-green); margin-bottom: 6px;"></i>
@@ -443,68 +491,39 @@
   <script>
     var tg = window.Telegram ? window.Telegram.WebApp : null;
     var currentLang = localStorage.getItem('shifo_lang') || null;
+    var currentRole = localStorage.getItem('shifo_role') || null;
     var selectedRegion = localStorage.getItem('shifo_region') || null;
     var currentMode = "booking";
     var hasImage = false;
     var chosenViloyat = "";
 
+    // Mock Database (Qabullar ro'yxati navbatlar uchun)
+    var activeAppointmentsQueue = [
+      { id: 1, queue_number: 5, patient_name: "Alisher V.", time: "10:45", complaint: "Tish og'rig'i (Karies)", status: "Faol" },
+      { id: 2, queue_number: 6, patient_name: "Malika T.", time: "11:00", complaint: "Plombalash va tozalash", status: "Kutilmoqda" },
+      { id: 3, queue_number: 7, patient_name: "Jasur K.", time: "11:20", complaint: "Profilaktik ko'rik", status: "Kutilmoqda" }
+    ];
+
     var allDoctorsData = [
       { id: "1", full_name: "Dr. Alisher Ahmedov", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
       { id: "2", full_name: "Dr. Malika Zokirova", spec_key: "neurology", clinic_name: "Shifo Med", fee: 120000, cashback: 15, rating: 4.9, status: "online", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" },
-      { id: "3", full_name: "Dr. Gulnora Saidova", spec_key: "pediatrics", clinic_name: "Darmon Clinic", fee: 110000, cashback: 10, rating: 4.8, status: "online", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150" },
-      { id: "4", full_name: "Dr. Jasur Karimov", spec_key: "therapy", clinic_name: "Mediclub Tashkent", fee: 95000, cashback: 10, rating: 4.6, status: "break", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" },
-      { id: "5", full_name: "Dr. Dilshod Normatov", spec_key: "surgery", clinic_name: "Shox Med Center", fee: 180000, cashback: 12, rating: 4.3, status: "offline", img: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150" }
+      { id: "3", full_name: "Dr. Dilshodbek Rahimov", spec_key: "dentistry", clinic_name: "Stoma Dent Plus", fee: 130000, cashback: 10, rating: 4.95, status: "online", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" },
+      { id: "4", full_name: "Dr. Gulnora Saidova", spec_key: "pediatrics", clinic_name: "Darmon Clinic", fee: 110000, cashback: 10, rating: 4.8, status: "online", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150" },
+      { id: "5", full_name: "Dr. Jasur Karimov", spec_key: "therapy", clinic_name: "Mediclub Tashkent", fee: 95000, cashback: 10, rating: 4.6, status: "break", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" }
     ];
 
-    // To'liq kengaytirilgan shahar va tumanlar ma'lumotlar bazasi
     var uzbekistanData = {
       uz_lat: [
         { name: "Toshkent shahri", districts: ["Bektemir", "Chilonzor", "Mirobod", "Mirzo Ulugʻbek", "Olmazor", "Sergeli", "Shayxontohur", "Uchtepa", "Yashnobod", "Yakkasaroy", "Yunusobod", "Yangihayot"] },
-        { name: "Toshkent viloyati", districts: ["Nurafshon sh.", "Angren sh.", "Olmaliq sh.", "Chirchiq sh.", "Bekobod sh.", "Yangiyoʻl sh.", "Ohangaron sh.", "Yangiobod sh.", "Boʻka", "Boʻstonliq", "Chinoz", "Qibray", "Ohangaron", "Oqqoʻrgʻon", "Parkent", "Piskent", "Zangiota", "Taqso", "Yuqori Chirchiq", "Oʻrta Chirchiq", "Piskent"] },
-        { name: "Samarqand viloyati", districts: ["Samarqand sh.", "Kattaqoʻrgʻon sh.", "Bulungʻur", "Ishtixon", "Jomboy", "Narpay", "Nurobod", "Oqdaryo", "Pastdargʻom", "Paxtachi", "Payariq", "Toyloq", "Urgut", "Qoʻshrabot"] },
-        { name: "Fargʻona viloyati", districts: ["Fargʻona sh.", "Qoʻqon sh.", "Margʻilon sh.", "Quvasoy sh.", "Oltiariq", "Bagʻdod", "Beshariq", "Buvayda", "Dangʻara", "Furqat", "Qoʻshtepa", "Quva", "Rishton", "Soʻx", "Toshloq", "Uchkoʻprik", "Yozyovon"] },
-        { name: "Andijon viloyati", districts: ["Andijon sh.", "Xonobod sh.", "Asaka", "Baliqchi", "Buloqboshi", "Boʻston", "Izboskan", "Jalaquduq", "Marhamat", "Paxtaobod", "Qoʻrgʻontepa", "Shahrixon", "Ulugʻnor", "Xoʻjaobod"] },
-        { name: "Namangan viloyati", districts: ["Namangan sh.", "Chortoq", "Chust", "Kosonsoy", "Mingbuloq", "Namangan", "Norin", "Pop", "Toraqoʻrgʻon", "Uychi", "Uchqoʻrgʻon", "Yangiqoʻrgʻon"] },
-        { name: "Buxoro viloyati", districts: ["Buxoro sh.", "Kogon sh.", "Buxoro", "Gʻijduvon", "Jondor", "Kogon", "Olot", "Peshku", "Qorakoʻl", "Qorovulbozor", "Romitan", "Vobkent"] },
-        { name: "Qashqadaryo viloyati", districts: ["Qarshi sh.", "Shahrisabz sh.", "Chiroqchi", "Dehqonobod", "Gʻuzor", "Kasbi", "Kitob", "Koson", "Mirishkor", "Muborak", "Nishon", "Qamashi", "Qarshi", "Yakkabogʻ"] },
-        { name: "Surxondaryo viloyati", districts: ["Termiz sh.", "Angor", "Bandixon", "Boysun", "Denov", "Jarqoʻrgʻon", "Muzrabot", "Oltinsoy", "Qiziriq", "Qumqoʻrgʻon", "Sariosiyo", "Sherobod", "Shoʻrchi", "Termiz", "Uzun"] },
-        { name: "Navoiy viloyati", districts: ["Navoiy sh.", "Zarafshon sh.", "Gʻozgʻon sh.", "Karmana", "Konimex", "Navbahor", "Nurota", "Qiziltepa", "Tomdi", "Uchquduq", "Xatirchi"] },
-        { name: "Jizzax viloyati", districts: ["Jizzax sh.", "Arnasoy", "Baxmal", "Doʻstlik", "Forish", "Gʻallaorol", "Mirzachoʻl", "Paxtakor", "Yangiobod", "Zafarobod", "Zomin"] },
-        { name: "Sirdaryo viloyati", districts: ["Guliston sh.", "Shirin sh.", "Yangiyer sh.", "Boyovut", "Guliston", "Mirzaobod", "Oqoltin", "Sardoba", "Sayxunobod", "Sirdaryo"] },
-        { name: "Xorazm viloyati", districts: ["Urganch sh.", "Xiva sh.", "Bogʻot", "Gurlan", "Qoʻshkoʻpir", "Shovot", "Urganch", "Xanka", "Hazorasp", "Yangiariq", "Yangibozor"] },
-        { name: "Qoraqalpogʻiston Respublikasi", districts: ["Nukus sh.", "Amudaryo", "Beruniy", "Chimboy", "Ellikqal'a", "Kegeyli", "Moʻynoq", "Nukus", "Qanlikoʻl", "Qoraoʻzak", "Qoʻngʻirot", "Shumanay", "Taxtakoʻpir", "Toʻrtkoʻl", "Xoʻjayli"] }
+        { name: "Toshkent viloyati", districts: ["Nurafshon sh.", "Angren sh.", "Olmaliq sh.", "Chirchiq sh.", "Bekobod sh.", "Yangiyoʻl sh.", "Ohangaron sh.", "Boʻka", "Boʻstonliq", "Chinoz", "Qibray", "Ohangaron", "Oqqoʻrgʻon", "Parkent", "Piskent", "Zangiota"] }
       ],
       uz_cyr: [
         { name: "Тошкент шаҳри", districts: ["Бектемир", "Чилонзор", "Миробод", "Мирзо Улуғбек", "Олмазор", "Сергели", "Шайхонтоҳур", "Учтепа", "Яшнобод", "Яккасарой", "Юнусобод", "Янгиҳаёт"] },
-        { name: "Тошкент вилояти", districts: ["Нурафшон ш.", "Ангрен ш.", "Олмалиқ ш.", "Чирчиқ ш.", "Бекобод ш.", "Янгийўл ш.", "Оҳангарон ш.", "Бўка", "Бўстонлиқ", "Чиноз", "Қибрай", "Оҳангарон", "Оққўрғон", "Паркент", "Пискент", "Зангиота"] },
-        { name: "Самарқанд вилояти", districts: ["Самарқанд ш.", "Каттақўрғон ш.", "Булунғур", "Иштихон", "Жомбой", "Нарпай", "Нуробод", "Оқдарё", "Пастдарғом", "Пахтачи", "Паяриқ", "Тойлоқ", "Ургут", "Қўшработ"] },
-        { name: "Фарғона вилояти", districts: ["Фарғона ш.", "Қўқон ш.", "Марғилон ш.", "Қувасой ш.", "Олтиариқ", "Бағдод", "Бешариқ", "Қува", "Риштон", "Тошлоқ", "Учкўприк"] },
-        { name: "Андижон вилояти", districts: ["Андижон ш.", "Хонобод ш.", "Асака", "Балиқчи", "Шаҳрихон", "Хўжаобод", "Қўрғонтепа"] },
-        { name: "Наманган вилояти", districts: ["Наманган ш.", "Чортоқ", "Чуст", "Поп", "Тўрақўрғон", "Уйчи"] },
-        { name: "Бухоро вилояти", districts: ["Бухоро ш.", "Когон ш.", "Ғиждувон", "Жондор", "Олот", "Қоракўл", "Ромитан", "Вобкент"] },
-        { name: "Қашқадарё вилояти", districts: ["Қарши ш.", "Шаҳрисабз ш.", "Китоб", "Косон", "Чироқчи"] },
-        { name: "Сурхондарё вилояти", districts: ["Термиз ш.", "Денов", "Шеробод", "Шўрчи"] },
-        { name: "Навоий вилояти", districts: ["Навоий ш.", "Зарафшон ш.", "Кармана", "Нурота"] },
-        { name: "Жиззах вилояти", districts: ["Жиззах ш.", "Зомин", "Ғаллаорол"] },
-        { name: "Сирдарё вилояти", districts: ["Гулистон ш.", "Ширин ш.", "Янгиер ш."] },
-        { name: "Хоразм вилояти", districts: ["Урганч ш.", "Хива ш.", "Шовот"] },
-        { name: "Қорақалпоғистон Республикаси", districts: ["Нукус ш.", "Беруний", "Қўнғирот", "Тўрткўл"] }
+        { name: "Тошкент вилояти", districts: ["Нурафшон ш.", "Ангрен ш.", "Олмалиқ ш.", "Чирчиқ ш.", "Бекобод ш.", "Янгийўл ш.", "Оҳангарон ш.", "Бўка", "Бўстонлиқ", "Чиноз", "Қибрай"] }
       ],
       ru: [
         { name: "Город Ташкент", districts: ["Бектемирский", "Чиланзарский", "Мирабадский", "Мирзо-Улугбекский", "Алмазарский", "Сергелийский", "Шайхантахурский", "Учтепинский", "Яшнабадский", "Яккасарайский", "Юнусабадский", "Янгихаётский"] },
-        { name: "Ташкентская область", districts: ["Нурафшон", "Ангрен", "Алмалык", "Чирчик", "Бекабад", "Янгиюль", "Букинский", "Бостанлыкский", "Чиназский", "Кибрайский", "Ахангаранский", "Аккурганский", "Паркентский", "Пскентский", "Зангиатинский"] },
-        { name: "Самаркандская область", districts: ["Самарканд", "Каттакурган", "Булунгурский", "Иштыханский", "Джамбайский", "Нарпайский", "Нурабадский", "Акдарьинский", "Пастдаргомский", "Пахтачинский", "Пайарыкский", "Тойлакский", "Ургутский", "Кошрабатский"] },
-        { name: "Ферганская область", districts: ["Фергана", "Коканд", "Маргилан", "Кувасай", "Алтыарыкский", "Багдадский", "Бешарыкский", "Кувинский", "Риштанский", "Ташлакский", "Учкуприкский"] },
-        { name: "Андижанская область", districts: ["Андижан", "Ханабад", "Асака", "Балыкчинский", "Шахриханский", "Ходжаабадский", "Кургантепинский"] },
-        { name: "Наманганская область", districts: ["Наманган", "Чартакский", "Чустский", "Папский", "Туракурганский", "Уйчинский"] },
-        { name: "Бухарская область", districts: ["Бухара", "Каган", "Гиждуванский", "Жондорский", "Алатский", "Каракульский", "Ромитанский", "Вабкентский"] },
-        { name: "Кашкадарьинская область", districts: ["Карши", "Шахрисабз", "Китабский", "Касанский", "Чиракчинский"] },
-        { name: "Сурхандарьинская область", districts: ["Термез", "Денауский", "Шерабадский", "Шурчинский"] },
-        { name: "Навоийская область", districts: ["Навои", "Зарафшан", "Карманинский", "Нуратинский"] },
-        { name: "Джизакская область", districts: ["Джизак", "Заминский", "Галляаральский"] },
-        { name: "Сырдарьинская область", districts: ["Гулистан", "Ширин", "Янгиер"] },
-        { name: "Хорезмская область", districts: ["Ургенч", "Хива", "Шавотский"] },
-        { name: "Республика Каракалпакстан", districts: ["Нукус", "Берунийский", "Кунградский", "Терткульский"] }
+        { name: "Ташкентская область", districts: ["Нурафшон", "Ангрен", "Алмалык", "Чирчик", "Бекабад", "Янгиюль", "Букинский", "Бостанлыкский"] }
       ]
     };
 
@@ -523,6 +542,8 @@
         navHome: "Bosh sahifa",
         navBook: "Navbat",
         navRegion: "Hudud",
+        roleTitle: "Profilingiz turini tanlang",
+        roleSub: "Ilovadan kim sifatida foydalanasiz?",
         regionTitle: "Viloyatni tanlang",
         regionSub: "Oʻz hududingizni koʻrsating",
         districtTitle: "Tuman / Shaharni tanlang",
@@ -540,56 +561,16 @@
         statusOnline: "🟢 Hozir ishda",
         statusBreak: "🟡 Tanaffusda",
         statusOffline: "🔴 Ish vaqti tugagan",
-        aiAnalyzing: "AI rasmni va hududiy ma'lumotlarni tahlil qilmoqda...",
+        aiAnalyzing: "AI rasmni va tish/og'iz bo'shlig'i holatini tahlil qilmoqda...",
         aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Vizual Tahlil Natijasi:",
         successBooking: "Qabulga muvaffaqiyatli yozildingiz!",
         cardiology: "Kardiolog",
         neurology: "Nevrolog",
+        dentistry: "Stomatolog",
         therapy: "Terapevt",
         surgery: "Xirurg",
         pediatrics: "Pediatr",
         topDoctor: "🔥 Top Shifokor"
-      },
-      uz_cyr: {
-        greeting: "Ассалому алайкум, ",
-        balanceBadge: "Кешбек Баланс",
-        balanceSub: "Ҳар бир қабулдан 10% кешбек қайтарилади",
-        bentoAiTitle: "AI Шифо Маслаҳатиси (Расм/Матн)",
-        bentoAiDesc: "Расм юкланг, AI зудлик билан таҳлил қилиб, мутахассисни аниқлайди",
-        bentoBookTitle: "Қабулга Ёзилиш",
-        bentoBookDesc: "Шифокор ва қулай вақтни танланг",
-        bentoStatusTitle: "Тиббий Дафтар",
-        bentoStatusDesc: "Таҳлиллар ва рецептлар тарихи",
-        docsTitle: "Ҳудудингиздаги Энг Зўр Шифокорлар",
-        navHome: "Бош саҳифа",
-        navBook: "Навбат",
-        navRegion: "Ҳудуд",
-        regionTitle: "Вилоятни танланг",
-        regionSub: "Ўз ҳудудингизни кўрсатинг",
-        districtTitle: "Туман / Шаҳарни танланг",
-        districtSub: "Туманни танланг",
-        lblFormDoc: "Шифокорни танланг",
-        lblFormDate: "Қабул санаси ва вақти",
-        symptomsLabelBooking: "Шикоятингиз / Симптомлар",
-        symptomsLabelAi: "Симптомларингизни ёзинг ёки расм бириктиринг",
-        placeholderSymptoms: "Шикоятингизни қисқача ёзинг...",
-        btnSubmitBooking: "Қабулни Тасдиқлаш",
-        btnSubmitAi: "AI Визуал Таҳлил Қилиш",
-        notifMsg: "Кешбек балансингиз: 45,000 UZS.",
-        feeLabel: "Қабул",
-        cashbackLabel: "Кешбек",
-        statusOnline: "🟢 Ҳозир ишда",
-        statusBreak: "🟡 Танаффусда",
-        statusOffline: "🔴 Иш вақти тугаган",
-        aiAnalyzing: "AI расмни ва ҳудудий маълумотларни таҳлил қилмоқда...",
-        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Визуал Таҳлил Натижаси:",
-        successBooking: "Қабулга муваффақиятли ёзилдингиз!",
-        cardiology: "Кардиолог",
-        neurology: "Невролог",
-        therapy: "Терапевт",
-        surgery: "Хирург",
-        pediatrics: "Педиатр",
-        topDoctor: "🔥 Топ Шифокор"
       },
       ru: {
         greeting: "Здравствуйте, ",
@@ -605,6 +586,8 @@
         navHome: "Главная",
         navBook: "Запись",
         navRegion: "Регион",
+        roleTitle: "Выберите тип профиля",
+        roleSub: "Кем вы являетесь в приложении?",
         regionTitle: "Выберите регион",
         regionSub: "Укажите вашу область или город",
         districtTitle: "Выберите район / город",
@@ -622,11 +605,12 @@
         statusOnline: "🟢 На работе",
         statusBreak: "🟡 Перерыв",
         statusOffline: "🔴 Недоступен",
-        aiAnalyzing: "ИИ анализирует изображение и регион...",
+        aiAnalyzing: "ИИ анализирует снимок зубов и состояние...",
         aiHeaderTitle: "<i class='fa-solid fa-brain'></i> Результат визуального анализа ИИ:",
         successBooking: "Вы успешно записались на прием!",
         cardiology: "Кардиолог",
         neurology: "Невролог",
+        dentistry: "Стоматолог",
         therapy: "Терапевт",
         surgery: "Хирург",
         pediatrics: "Педиатр",
@@ -642,6 +626,8 @@
 
       if (!currentLang) {
         document.getElementById('langScreen').classList.add('active');
+      } else if (!currentRole) {
+        document.getElementById('roleScreen').classList.add('active');
       } else if (!selectedRegion) {
         renderRegions();
         document.getElementById('regionScreen').classList.add('active');
@@ -654,19 +640,33 @@
       currentLang = lang;
       localStorage.setItem('shifo_lang', lang);
       document.getElementById('langScreen').classList.remove('active');
+      document.getElementById('roleScreen').classList.add('active');
+    }
+
+    function backToLanguage() {
+      document.getElementById('roleScreen').classList.remove('active');
+      document.getElementById('langScreen').classList.add('active');
+    }
+
+    function selectRole(role) {
+      currentRole = role;
+      localStorage.setItem('shifo_role', role);
+      document.getElementById('roleScreen').classList.remove('active');
       renderRegions();
       document.getElementById('regionScreen').classList.add('active');
     }
 
-    function backToLanguage() {
+    function backToRole() {
       document.getElementById('regionScreen').classList.remove('active');
-      document.getElementById('langScreen').classList.add('active');
+      document.getElementById('roleScreen').classList.add('active');
     }
 
     function resetAndReconfigure() {
       localStorage.removeItem('shifo_lang');
+      localStorage.removeItem('shifo_role');
       localStorage.removeItem('shifo_region');
       currentLang = null;
+      currentRole = null;
       selectedRegion = null;
       document.getElementById('appContent').classList.remove('active');
       document.getElementById('floatingNav').classList.remove('active');
@@ -677,7 +677,7 @@
       var container = document.getElementById('regionsContainer');
       container.innerHTML = "";
       var regions = uzbekistanData[currentLang] || uzbekistanData['uz_lat'];
-      var langObj = dictionary[currentLang];
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
       document.getElementById('lbl-region-title').innerText = langObj.regionTitle;
       document.getElementById('lbl-region-sub').innerText = langObj.regionSub;
@@ -708,7 +708,7 @@
       var container = document.getElementById('districtsContainer');
       container.innerHTML = "";
       var regions = uzbekistanData[currentLang] || uzbekistanData['uz_lat'];
-      var langObj = dictionary[currentLang];
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
       document.getElementById('lbl-district-title').innerText = regionName;
       document.getElementById('lbl-district-sub').innerText = langObj.districtSub;
@@ -741,15 +741,50 @@
       document.getElementById('floatingNav').classList.add('active');
       document.getElementById('headerRegionInfo').innerText = selectedRegion;
 
-      applyTranslations();
+      // Rolga qarab interfeysni ajratish
+      if (currentRole === 'doctor') {
+        document.getElementById('patientDashboard').style.display = 'none';
+        document.getElementById('doctorDashboard').style.display = 'block';
+        renderDoctorQueue();
+      } else {
+        document.getElementById('patientDashboard').style.display = 'block';
+        document.getElementById('doctorDashboard').style.display = 'none';
+        applyTranslations();
+        renderDoctorsList(allDoctorsData);
+      }
+
       setupUserHeader();
-      renderDoctorsList(allDoctorsData);
+    }
+
+    function renderDoctorQueue() {
+      var container = document.getElementById('doctorQueueList');
+      container.innerHTML = "";
+      document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
+
+      for (var i = 0; i < activeAppointmentsQueue.length; i++) {
+        var item = activeAppointmentsQueue[i];
+        container.innerHTML += `
+          <div class="queue-item">
+            <div>
+              <div style="font-weight: 800; font-size: 15px;">№ ${item.queue_number} | Bemor: ${item.patient_name}</div>
+              <div style="font-size: 12px; color: var(--text-sub); margin-top: 2px;">Vaqt: ${item.time} • Shikoyat: ${item.complaint}</div>
+            </div>
+            <div>
+              <span class="badge-status-text text-online">${item.status}</span>
+            </div>
+          </div>`;
+      }
+    }
+
+    function refreshDoctorQueue() {
+      renderDoctorQueue();
+      alert("Navbatlar ro'yxati yangilandi!");
     }
 
     function renderDoctorsList(doctorsArray) {
       var container = document.getElementById('doctors-container');
       var select = document.getElementById('doctorSelect');
-      var langObj = dictionary[currentLang];
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
       container.innerHTML = '';
       select.innerHTML = '';
@@ -793,7 +828,7 @@
 
     function filterDoctors() {
       var query = document.getElementById('doctorSearchInput').value.toLowerCase();
-      var langObj = dictionary[currentLang];
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
       var filtered = allDoctorsData.filter(function(doc) {
         var specName = (langObj[doc.spec_key] || "").toLowerCase();
         return doc.full_name.toLowerCase().includes(query) || doc.clinic_name.toLowerCase().includes(query) || specName.includes(query);
@@ -802,7 +837,7 @@
     }
 
     function applyTranslations() {
-      var langObj = dictionary[currentLang];
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
       document.getElementById('lbl-balance-badge').innerText = langObj.balanceBadge;
       document.getElementById('lbl-balance-sub').innerText = langObj.balanceSub;
       document.getElementById('lbl-bento-ai-title').innerText = langObj.bentoAiTitle;
@@ -824,12 +859,12 @@
     }
 
     function setupUserHeader() {
-      var langObj = dictionary[currentLang];
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
       if (tg) {
         var u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
         if (u) {
           var name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
-          document.getElementById('u-name').innerText = langObj.greeting + name + '!';
+          document.getElementById('u-name').innerText = langObj.greeting + name + '! (' + (currentRole === 'doctor' ? 'Shifokor' : 'Bemor') + ')';
 
           if (u.photo_url) {
             document.getElementById('avatarContainer').innerHTML = '<img src="' + u.photo_url + '" class="avatar-img">';
@@ -864,7 +899,7 @@
 
     function openBookingModal(doctorId) {
       currentMode = "booking";
-      var langObj = dictionary[currentLang];
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
       document.getElementById('modalTitle').innerText = langObj.bentoBookTitle;
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelBooking;
@@ -882,7 +917,7 @@
 
     function openAiModal() {
       currentMode = "ai";
-      var langObj = dictionary[currentLang];
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
       document.getElementById('modalTitle').innerText = langObj.bentoAiTitle;
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelAi;
@@ -899,12 +934,12 @@
     }
 
     function openNotifications() {
-      var msg = dictionary[currentLang].notifMsg;
+      var msg = (dictionary[currentLang] || dictionary['uz_lat']).notifMsg;
       if (tg && tg.showAlert) tg.showAlert(msg); else alert(msg);
     }
 
     function openCashbackInfo() {
-      var msg = dictionary[currentLang].notifMsg;
+      var msg = (dictionary[currentLang] || dictionary['uz_lat']).notifMsg;
       if (tg && tg.showAlert) tg.showAlert(msg); else alert(msg);
     }
 
@@ -920,9 +955,6 @@
       if (currentLang === "ru") {
         var monthsRu = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
         return day + " " + monthsRu[d.getMonth()] + " " + year + " г., " + hours + ":" + minutes;
-      } else if (currentLang === "uz_cyr") {
-        var monthsCyr = ["январ", "феврал", "март", "апрел", "май", "июн", "июл", "август", "сентябр", "октябр", "ноябр", "декабр"];
-        return day + "-" + monthsCyr[d.getMonth()] + ", " + year + "-йил, соат " + hours + ":" + minutes;
       } else {
         var monthsUz = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
         return day + "-" + monthsUz[d.getMonth()] + ", " + year + "-yil, soat " + hours + ":" + minutes;
@@ -930,8 +962,8 @@
     }
 
     function handleFormSubmit() {
-      var symptoms = document.getElementById('symptoms').value;
-      var langObj = dictionary[currentLang];
+      var symptoms = document.getElementById('symptoms').value.toLowerCase();
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
       if (currentMode === "ai") {
         if (!symptoms && !hasImage) {
@@ -943,9 +975,18 @@
         document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> " + langObj.aiAnalyzing;
 
         setTimeout(function() {
-          var advice = currentLang === "ru" ? 
-            "<strong>ИИ анализ (" + selectedRegion + "):</strong> Успешно обработано. Рекомендуется консультация лучшего специалиста <strong>Dr. Alisher Ahmedov (🔥 Top Врач)</strong>." : 
-            "<strong>AI Vizual tahlil (" + selectedRegion + "):</strong> Murojaatingiz ko'rib chiqildi. Ayni paytda eng yuqori reytingli <strong>Dr. Alisher Ahmedov (🔥 Top Shifokor)</strong> ko'rigiga borish tavsiya etiladi.";
+          var isDental = symptoms.includes('tish') || symptoms.includes('ogriq') || symptoms.includes('karies') || symptoms.includes('stomatolog') || symptoms.includes('зуб') || hasImage;
+          
+          var advice = "";
+          if (isDental) {
+            advice = currentLang === "ru" ? 
+              "<strong>ИИ анализ (" + selectedRegion + "):</strong> Обнаружены признаки кариеса или проблемы с зубами. Рекомендуется консультация квалифицированного стоматолога: <strong>Dr. Dilshodbek Rahimov (🔥 Top Врач)</strong>." : 
+              "<strong>AI Vizual tahlil (" + selectedRegion + "):</strong> Tish kariesi yoki og'iz bo'shlig'i muammosi aniqlandi. Sizga eng yaqin va yuqori reytingli <strong>Dr. Dilshodbek Rahimov (🔥 Top Stomatolog)</strong> ko'rigiga yozilish tavsiya etiladi.";
+          } else {
+            advice = currentLang === "ru" ? 
+              "<strong>ИИ анализ (" + selectedRegion + "):</strong> Успешно обработано. Рекомендуется консультация специалиста <strong>Dr. Alisher Ahmedov (🔥 Top Врач)</strong>." : 
+              "<strong>AI Vizual tahlil (" + selectedRegion + "):</strong> Murojaatingiz tahlil qilindi. Mutaxassis tavsiyasi: <strong>Dr. Alisher Ahmedov (🔥 Top Shifokor)</strong>.";
+          }
 
           document.getElementById('aiResultText').innerHTML = advice;
         }, 900);
@@ -960,24 +1001,36 @@
         }
 
         var formattedTime = formatCustomDate(rawTime);
+        var nextQueueNum = activeAppointmentsQueue.length + 5; // Avtomatik navbat raqami generatsiyasi
 
         var selDoc = null;
         for (var j = 0; j < allDoctorsData.length; j++) {
           if (allDoctorsData[j].id === docId) selDoc = allDoctorsData[j];
         }
 
-        // Oxirgi tashrifni yangilash
         if (selDoc) {
           document.getElementById('lastVisitDoc').innerText = selDoc.full_name;
           var specText = langObj[selDoc.spec_key] || selDoc.spec_key;
           document.getElementById('lastVisitDate').innerText = specText + " • " + formattedTime;
         }
 
+        // Yangi qabulni navbatga qo'shish
+        activeAppointmentsQueue.push({
+          id: activeAppointmentsQueue.length + 1,
+          queue_number: nextQueueNum,
+          patient_name: "Siz (Bemor)",
+          time: formattedTime.split(',')[1] || formattedTime,
+          complaint: symptoms || "Standart qabul",
+          status: "Faol"
+        });
+
         var payload = {
           type: "appointment",
           lang: currentLang,
+          role: currentRole,
           region: selectedRegion,
           doctor_name: selDoc ? selDoc.full_name : "",
+          queue_number: nextQueueNum,
           appointment_time: formattedTime,
           symptoms: symptoms
         };
@@ -987,7 +1040,7 @@
         }
 
         closeModal();
-        var okMsg = langObj.successBooking + "\n\n" + (currentLang === "ru" ? "Регион: " : "Hudud: ") + selectedRegion + "\n" + (currentLang === "ru" ? "Врач: " : "Shifokor: ") + (selDoc ? selDoc.full_name : '') + "\n" + (currentLang === "ru" ? "Время: " : "Vaqti: ") + formattedTime;
+        var okMsg = langObj.successBooking + "\n\n🔢 Sizning navbatingiz: № " + nextQueueNum + "\n📍 Hudud: " + selectedRegion + "\n👨‍⚕️ Shifokor: " + (selDoc ? selDoc.full_name : '') + "\n🕒 Vaqti: " + formattedTime;
         if (tg && tg.showAlert) tg.showAlert(okMsg); else alert(okMsg);
       }
     }
