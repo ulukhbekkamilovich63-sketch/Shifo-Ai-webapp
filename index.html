@@ -191,7 +191,7 @@
     .text-break { color: #fbbf24; background: rgba(251, 191, 36, 0.15); }
     .text-offline { color: #f87171; background: rgba(248, 113, 113, 0.15); }
 
-    /* Doctor Queue Panel */
+    /* Doctor Queue & Cashback Panel */
     .doctor-queue-container {
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: 20px; padding: 18px; margin-bottom: 20px; backdrop-filter: blur(12px);
@@ -289,7 +289,7 @@
     </button>
   </div>
 
-  <!-- STEP 2: Region Selection Screen (Moved before Role per user specification) -->
+  <!-- STEP 2: Region Selection Screen -->
   <div class="onboard-screen" id="regionScreen">
     <button class="back-btn-top" onclick="backToLanguage()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn">Orqaga</span></button>
     <div class="onboard-logo"><i class="fa-solid fa-map-location-dot"></i></div>
@@ -348,9 +348,9 @@
         <div class="hero-badge" id="lbl-balance-badge">Keshbek Balans</div>
         <div class="hero-val">
           <span id="u-balance">45,000 UZS</span>
-          <button class="cashback-action-btn" id="lbl-cashback-btn" onclick="openCashbackModal()">Yechish / Ishlatish</button>
+          <button class="cashback-action-btn" id="lbl-cashback-btn" onclick="openCashbackModal()">Qanday ishlatiladi?</button>
         </div>
-        <div class="hero-sub" id="lbl-balance-sub">Har bir qabuldan 10% keshbek qaytariladi</div>
+        <div class="hero-sub" id="lbl-balance-sub">Stomatologiya va boshqa qabullarda 10% chegirma</div>
       </div>
 
       <div class="last-visit-card" id="lastVisitCard">
@@ -396,7 +396,7 @@
       <div id="doctors-container"></div>
     </div>
 
-    <!-- DOCTOR DASHBOARD (Shifokorning shaxsiy kabineti) -->
+    <!-- DOCTOR DASHBOARD (Shifokorning shaxsiy kabineti va keshbek tasdiqlash paneli) -->
     <div id="doctorDashboard" style="display: none;">
       <div class="hero-card" style="background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);">
         <div class="hero-badge" id="lbl-doc-hero-badge">Shifokor Kabineti</div>
@@ -404,7 +404,21 @@
           <span id="docActiveQueueCount">3 ta navbat</span>
           <button class="cashback-action-btn" id="lbl-doc-refresh" onclick="refreshDoctorQueue()">Yangilash</button>
         </div>
-        <div class="hero-sub" id="lbl-doc-hero-sub">Faqat sizga yozilgan bemorlar ro'yxati</div>
+        <div class="hero-sub" id="lbl-doc-hero-sub">Sizning qabulingizdagi bemorlar va keshbekni yechish paneli</div>
+      </div>
+
+      <!-- Keshbekni Tasdiqlash / Chegirma berish bloki (Faqat shifokor uchun) -->
+      <div class="doctor-queue-container" style="border-color: rgba(59, 130, 246, 0.4); margin-bottom: 20px;">
+        <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--accent-blue);" id="lbl-doc-cashback-title">
+          <i class="fa-solid fa-ticket"></i> Bemor Keshbekini Chegirma sifatida Yechish
+        </div>
+        <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 12px;" id="lbl-doc-cashback-sub">
+          Bemor taqdim etgan keshbek balansini ushbu qabul uchun chegirma sifatida tasdiqlang:
+        </p>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" class="form-control" id="patientCodeInput" placeholder="Bemor ID raqami (masalan: 777)" style="flex: 1;">
+          <button class="btn-submit" style="margin-top: 0; width: auto; padding: 0 20px;" onclick="doctorApproveCashback()">Tasdiqlash</button>
+        </div>
       </div>
 
       <div class="section-header">
@@ -440,12 +454,11 @@
         <i class="fa-solid fa-xmark" style="font-size: 22px; cursor: pointer; color: var(--text-sub);" onclick="closeModal()"></i>
       </div>
 
-      <!-- Cashback Info Content -->
+      <!-- Cashback Info Content (Bemor uchun ko'rsatma) -->
       <div id="cashbackModalContent" style="display: none;">
         <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 16px; line-height: 1.5;" id="cashbackModalText">
-          Sizda <strong style="color:var(--neon-green)">45,000 UZS</strong> keshbek mavjud. Bu mablag'ni shifokor ko'rigi uchun to'lov qilishda chegirma sifatida yechib olishingiz mumkin.
+          Sizda <strong style="color:var(--neon-green)">45,000 UZS</strong> keshbek mavjud. Bu mablag'ni istalgan mutaxassis (jumladan, Stomatologiya yoki boshqa yo'nalishlar) qabulida chegirma sifatida ishlatishingiz mumkin. Buning uchun shifokor qabuliga borganingizda shaxsiy keshbek kodingizni shifokorga ko'rsating va uning kabineti orqali balansdan yechdirib, to'lovni kamaytiring.
         </p>
-        <button class="btn-submit" id="lbl-cashback-submit" onclick="withdrawCashback()"><i class="fa-solid fa-wallet"></i> Balansga o'tkazish / Chegirma qilish</button>
       </div>
 
       <!-- Image Upload Block -->
@@ -522,7 +535,7 @@
         { name: "Namangan viloyati", districts: ["Namangan sh.", "Kosonsoy", "Mingbuloq", "Namangan t.", "Norin", "Pop", "Toʻraqoʻrgʻon", "Uychi", "Uchqoʻrgʻon", "Chortoq", "Chust", "Yangiqoʻrgʻon"] },
         { name: "Navoiy viloyati", districts: ["Navoiy sh.", "Zarafshon sh.", "Konimex", "Qiziltepa", "Navbahor", "Nurota", "Tomdi", "Uchquduq", "Xatirchi"] },
         { name: "Qashqadaryo viloyati", districts: ["Qarshi sh.", "Shahrisabz sh.", "Gʻuzor", "Dehqonobod", "Qamashi", "Qarshi t.", "Kasbi", "Kitob", "Mirishkor", "Muborak", "Nishon", "Chiroqchi", "Shahrisabz t.", "Yakkabogʻ"] },
-        { name: "Samarqand viloyati", districts: ["Samarqand sh.", "Kattaqoʻrgʻon sh.", "Bulungʻur", "Jomboy", "Ishtixon", "Kattaqoʻrgʻon t.", "Qoʻshrabot", "Narpay", "Nurobod", "Payariq", "Pastdargʻom", "Paxtachi", "Samarqand t.", "Toyloq", "Urgut"] },
+        { name: "Samarqand viloyati", districts: ["Samarqand sh.", "Kattaqoʻrgʻon sh.", "Bulungʻur", "Jomboy", "Ishtixon", "Kattaqoʻrgʻon t.", "Қоʻşrabot", "Narpay", "Nurobod", "Payariq", "Pastdargʻom", "Paxtachi", "Samarqand t.", "Toyloq", "Urgut"] },
         { name: "Sirdaryo viloyati", districts: ["Guliston sh.", "Shirin sh.", "Yangiyer sh.", "Oqoltin", "Boyovut", "Guliston t.", "Mirzaobod", "Sardoba", "Sayxunobod", "Sirdaryo t."] },
         { name: "Surxondaryo viloyati", districts: ["Termiz sh.", "Angor", "Boysun", "Denov", "Jarqoʻrgʻon", "Qiziriq", "Qumqoʻrgʻon", "Muzrabot", "Sariosiyo", "Termiz t.", "Uzun", "Sherobod", "Shoʻrchi"] },
         { name: "Xorazm viloyati", districts: ["Urganch sh.", "Xiva sh.", "Bogʻot", "Gurlan", "Qoʻshkoʻpir", "Urganch t.", "Xazorasp", "Xiva t.", "Xonqa", "Shovot", "Yangiariq", "Yangibozor"] },
@@ -546,7 +559,7 @@
       uz_lat: {
         greeting: "Assalomu alaykum, ",
         balanceBadge: "Keshbek Balans",
-        balanceSub: "Har bir qabuldan 10% keshbek qaytariladi",
+        balanceSub: "Stomatologiya va boshqa qabullarda 10% chegirma",
         bentoAiTitle: "AI Shifo Maslahatisi (Rasm/Matn)",
         bentoAiDesc: "Rasm yuklang, AI darhol tahlil qilib, mutaxassisni aniqlab beradi",
         bentoBookTitle: "Qabulga Yozilish",
@@ -581,14 +594,16 @@
         aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Vizual Tahlil Natijasi:",
         successBooking: "Qabulga muvaffaqiyatli yozildingiz!",
         backText: "Orqaga",
-        cashbackBtn: "Yechish / Ishlatish",
+        cashbackBtn: "Qanday ishlatiladi?",
         lastVisit: "Oxirgi tashrif",
         tagBook: "QABUL",
         tagStatus: "STATUS",
         docHeroBadge: "Shifokor Kabineti",
         docRefresh: "Yangilash",
-        docHeroSub: "Faqat sizga yozilgan bemorlar ro'yxati",
-        docQueueTitle: "Sizning Qabulingizdagi Bemorlar",
+        docHeroSub: "Sizning qabulingizdagi bemorlar va keshbekni yechish paneli",
+        docQueueTitle: "Sizning Қабулингиzdagi Bemorlar",
+        docCashbackTitle: "Bemor Keshbekini Chegirma sifatida Yechish",
+        docCashbackSub: "Bemor taqdim etgan keshbek balansini ushbu qabul uchun chegirma sifatida tasdiqlang:",
         cardiology: "Kardiolog",
         neurology: "Nevrolog",
         dentistry: "Stomatolog",
@@ -599,7 +614,7 @@
       uz_cyr: {
         greeting: "Ассалому алайкум, ",
         balanceBadge: "Кэшбэк Баланс",
-        balanceSub: "Ҳар бир қабулдан 10% кэшбэк қайтарилади",
+        balanceSub: "Стоматология ва бошқа қабулларда 10% чегирма",
         bentoAiTitle: "AI Шифо Маслаҳатчиси (Расм/Матн)",
         bentoAiDesc: "Расм юкланг, AI дарҳол таҳлил қилиб, мутахассисни аниқлаб беради",
         bentoBookTitle: "Қабулга Ёзилиш",
@@ -634,14 +649,16 @@
         aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Визуал Таҳлил Натижаси:",
         successBooking: "Қабулга муваффақиятли ёзилдингиз!",
         backText: "Орқага",
-        cashbackBtn: "Ечиish / Ишлатиш",
+        cashbackBtn: "Қандай ишлатилади?",
         lastVisit: "Охирги ташриф",
         tagBook: "ҚАБУЛ",
         tagStatus: "СТАТУС",
         docHeroBadge: "Шифокор Кабинети",
         docRefresh: "Янгилаш",
-        docHeroSub: "Фақат сизга ёзилган беморлар рўйхати",
+        docHeroSub: "Сизнинг қабулингиздаги беморлар ва кэшбэкни ечиш панели",
         docQueueTitle: "Сизнинг Қабулингиздаги Беморлар",
+        docCashbackTitle: "Бемор Кэшбэкини Чегирма сифатида Ечиш",
+        docCashbackSub: "Бемор тақдим этган кэшбэк балансини ушбу қабул учун чегирма сифатида тасдиқланг:",
         cardiology: "Кардиолог",
         neurology: "Невролог",
         dentistry: "Стоматолог",
@@ -652,7 +669,7 @@
       ru: {
         greeting: "Здравствуйте, ",
         balanceBadge: "Кэшбэк Баланс",
-        balanceSub: "10% кэшбэк возвращается с каждого приема",
+        balanceSub: "Скидка 10% на стоматологию и другие приемы",
         bentoAiTitle: "AI Консультант Shifo (Фото/Текст)",
         bentoAiDesc: "Загрузите фото, ИИ мгновенно проведет анализ и определит врача",
         bentoBookTitle: "Записаться на прием",
@@ -687,14 +704,16 @@
         aiHeaderTitle: "<i class='fa-solid fa-brain'></i> Результат визуального анализа ИИ:",
         successBooking: "Вы успешно записались на прием!",
         backText: "Назад",
-        cashbackBtn: "Использовать",
+        cashbackBtn: "Как использовать?",
         lastVisit: "Последний визит",
         tagBook: "ПРИЕМ",
         tagStatus: "СТАТУС",
         docHeroBadge: "Кабинет врача",
         docRefresh: "Обновить",
-        docHeroSub: "Список пациентов, записанных именно к вам",
+        docHeroSub: "Пациенты на приеме и панель списания кэшбэка",
         docQueueTitle: "Пациенты на вашем приеме",
+        docCashbackTitle: "Списание кэшбэка пациету в качестве скидки",
+        docCashbackSub: "Подтвердите баланс кэшбэка пациента для скидки на этот прием:",
         cardiology: "Кардиолог",
         neurology: "Невролог",
         dentistry: "Стоматолог",
@@ -711,7 +730,6 @@
         tg.expand();
       }
 
-      // Yangi ketma-ketlik: Til ➔ Viloyat ➔ Tuman ➔ Rol ➔ Asosiy sahifa
       if (!currentLang) {
         document.getElementById('langScreen').classList.add('active');
       } else if (!selectedRegion) {
@@ -805,7 +823,6 @@
 
     function backToDistricts() {
       document.getElementById('roleScreen').classList.remove('active');
-      // Oxirgi tanlangan viloyatni qayta tiklab tumanlarga qaytish
       var parts = selectedRegion ? selectedRegion.split(',') : ["Toshkent shahri"];
       renderDistricts(parts[0].trim());
       document.getElementById('districtScreen').classList.add('active');
@@ -881,6 +898,23 @@
     function refreshDoctorQueue() {
       renderDoctorQueue();
       alert("Navbatlar ro'yxati yangilandi!");
+    }
+
+    // Shifokor tomonidan bemor keshbekini chegirma sifatida tasdiqlab yechish funksiyasi
+    function doctorApproveCashback() {
+      var code = document.getElementById('patientCodeInput').value.trim();
+      if (!code) {
+        alert("Iltimos, bemor ID yoki keshbek kodini kiriting!");
+        return;
+      }
+      if (userBalance <= 0) {
+        alert("Bemorning balansida yechiladigan keshbek qolmadi!");
+        return;
+      }
+      var usedAmount = userBalance;
+      userBalance = 0;
+      document.getElementById('patientCodeInput').value = "";
+      alert("Muvaffaqiyatli! Bemorning " + usedAmount.toLocaleString('uz-UZ') + " UZS miqdoridagi keshbeki ushbu qabul uchun chegirma sifatida hisobdan yechildi va tasdiqlandi.");
     }
 
     function renderDoctorsList(doctorsArray) {
@@ -962,6 +996,8 @@
       document.getElementById('lbl-doc-refresh').innerText = langObj.docRefresh;
       document.getElementById('lbl-doc-hero-sub').innerText = langObj.docHeroSub;
       document.getElementById('lbl-doc-queue-title').innerText = langObj.docQueueTitle;
+      document.getElementById('lbl-doc-cashback-title').innerHTML = `<i class="fa-solid fa-ticket"></i> ` + langObj.docCashbackTitle;
+      document.getElementById('lbl-doc-cashback-sub').innerText = langObj.docCashbackSub;
 
       document.getElementById('lbl-form-doc').innerText = langObj.lblFormDoc;
       document.getElementById('lbl-form-date').innerText = langObj.lblFormDate;
@@ -1043,17 +1079,6 @@
       document.getElementById('modalSubmitBtn').style.display = "none";
       document.getElementById('aiResultBox').style.display = "none";
       document.getElementById('mainModal').style.display = 'flex';
-    }
-
-    function withdrawCashback() {
-      if (userBalance <= 0) {
-        alert("Balansingizda keshbek qolmadi!");
-        return;
-      }
-      userBalance = 0;
-      document.getElementById('u-balance').innerText = "0 UZS";
-      closeModal();
-      alert("Keshbek muvaffaqiyatli yechildi va keyingi qabul uchun chegirma sifatida faollashtirildi!");
     }
 
     function openAiModal() {
