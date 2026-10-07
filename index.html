@@ -54,6 +54,12 @@
     }
     .onboard-btn:active { transform: scale(0.97); background: rgba(52, 211, 153, 0.25); border-color: var(--neon-green); }
 
+    .back-btn-top {
+      align-self: flex-start; background: rgba(255,255,255,0.06); border: 1px solid rgba(52, 211, 153, 0.2);
+      color: var(--text-sub); padding: 8px 14px; border-radius: 12px; font-size: 13px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+    }
+
     /* Main App Container */
     .app-content { display: none; }
     .app-content.active { display: block; }
@@ -88,10 +94,27 @@
       display: inline-block; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
       padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px;
     }
-    .hero-val { font-size: 32px; font-weight: 900; margin-bottom: 4px; }
-    .hero-sub { font-size: 13px; opacity: 0.95; color: #a7f3d0; }
+    .hero-val { font-size: 32px; font-weight: 900; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+    .hero-sub { font-size: 13px; opacity: 0.95; color: #a7f3d0; margin-bottom: 12px; }
+    
+    .cashback-action-btn {
+      background: rgba(255, 255, 255, 0.25); border: none; padding: 6px 14px; border-radius: 10px;
+      color: white; font-size: 12px; font-weight: 700; cursor: pointer; backdrop-filter: blur(5px);
+    }
+    .cashback-action-btn:active { background: rgba(255, 255, 255, 0.4); }
 
-    /* Bento Grid (Numeo Style Architecture) */
+    /* Last Visit Card */
+    .last-visit-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 20px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px;
+      backdrop-filter: blur(12px);
+    }
+    .last-visit-icon {
+      width: 44px; height: 44px; border-radius: 14px; background: rgba(59, 130, 246, 0.15);
+      color: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+    }
+
+    /* Bento Grid */
     .bento-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;
     }
@@ -168,7 +191,7 @@
     .text-break { color: #fbbf24; background: rgba(251, 191, 36, 0.15); }
     .text-offline { color: #f87171; background: rgba(248, 113, 113, 0.15); }
 
-    /* Floating Navigation Bar (Numeo Style Bottom Dock) */
+    /* Floating Navigation Bar */
     .floating-nav {
       position: fixed; bottom: 20px; left: 16px; right: 16px;
       background: rgba(9, 30, 20, 0.94); backdrop-filter: blur(20px);
@@ -258,6 +281,7 @@
 
   <!-- STEP 2: Region Selection Screen -->
   <div class="onboard-screen" id="regionScreen">
+    <button class="back-btn-top" onclick="backToLanguage()"><i class="fa-solid fa-arrow-left"></i> Orqaga</button>
     <div class="onboard-logo"><i class="fa-solid fa-map-location-dot"></i></div>
     <div class="onboard-title" id="lbl-region-title">Viloyatni tanlang</div>
     <div class="onboard-sub" id="lbl-region-sub">Oʻz hududingizni koʻrsating</div>
@@ -267,14 +291,12 @@
 
   <!-- STEP 3: District Selection Screen -->
   <div class="onboard-screen" id="districtScreen">
+    <button class="back-btn-top" onclick="backToRegions()"><i class="fa-solid fa-arrow-left"></i> Orqaga</button>
     <div class="onboard-logo"><i class="fa-solid fa-city"></i></div>
     <div class="onboard-title" id="lbl-district-title">Tuman / Shaharni tanlang</div>
     <div class="onboard-sub" id="lbl-district-sub">Tumaningizni tanlang</div>
 
     <div id="districtsContainer" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px;"></div>
-    <button class="onboard-btn" style="background: rgba(255,255,255,0.08); justify-content: center; margin-top: 10px;" onclick="backToRegions()">
-      <i class="fa-solid fa-arrow-left"></i> Orqaga / Назад
-    </button>
   </div>
 
   <!-- Main App Content -->
@@ -296,14 +318,27 @@
       </div>
     </div>
 
-    <!-- Hero Card -->
+    <!-- Hero Card (Cashback) -->
     <div class="hero-card">
       <div class="hero-badge" id="lbl-balance-badge">Keshbek Balans</div>
-      <div class="hero-val" id="u-balance">45,000 UZS</div>
+      <div class="hero-val">
+        <span id="u-balance">45,000 UZS</span>
+        <button class="cashback-action-btn" onclick="openCashbackInfo()">Ishlatish</button>
+      </div>
       <div class="hero-sub" id="lbl-balance-sub">Har bir qabuldan 10% keshbek qaytariladi</div>
     </div>
 
-    <!-- Bento Grid Menu (Numeo Style Architecture) -->
+    <!-- Last Visit Section -->
+    <div class="last-visit-card" id="lastVisitCard">
+      <div class="last-visit-icon"><i class="fa-solid fa-user-doctor"></i></div>
+      <div style="flex: 1;">
+        <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700;">Oxirgi tashrif</div>
+        <div id="lastVisitDoc" style="font-weight: 800; font-size: 15px; margin: 2px 0;">Dr. Alisher Ahmedov</div>
+        <div id="lastVisitDate" style="font-size: 12px; color: var(--neon-green);">Kardiolog • 12-Mart, 2026</div>
+      </div>
+    </div>
+
+    <!-- Bento Grid Menu -->
     <div class="bento-grid">
       <div class="bento-card full-width" onclick="openAiModal()">
         <span class="bento-tag">AI VISION 2.5</span>
@@ -421,26 +456,27 @@
       { id: "5", full_name: "Dr. Dilshod Normatov", spec_key: "surgery", clinic_name: "Shox Med Center", fee: 180000, cashback: 12, rating: 4.3, status: "offline", img: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150" }
     ];
 
+    // To'liq kengaytirilgan shahar va tumanlar ma'lumotlar bazasi
     var uzbekistanData = {
       uz_lat: [
         { name: "Toshkent shahri", districts: ["Bektemir", "Chilonzor", "Mirobod", "Mirzo Ulugʻbek", "Olmazor", "Sergeli", "Shayxontohur", "Uchtepa", "Yashnobod", "Yakkasaroy", "Yunusobod", "Yangihayot"] },
-        { name: "Toshkent viloyati", districts: ["Nurafshon sh.", "Angren sh.", "Olmaliq sh.", "Chirchiq sh.", "Bekobod sh.", "Yangiyoʻl sh.", "Boʻka", "Boʻstonliq", "Chinoz", "Qibray", "Ohangaron", "Oqqoʻrgʻon", "Parkent", "Piskent", "Zangiota"] },
+        { name: "Toshkent viloyati", districts: ["Nurafshon sh.", "Angren sh.", "Olmaliq sh.", "Chirchiq sh.", "Bekobod sh.", "Yangiyoʻl sh.", "Ohangaron sh.", "Yangiobod sh.", "Boʻka", "Boʻstonliq", "Chinoz", "Qibray", "Ohangaron", "Oqqoʻrgʻon", "Parkent", "Piskent", "Zangiota", "Taqso", "Yuqori Chirchiq", "Oʻrta Chirchiq", "Piskent"] },
         { name: "Samarqand viloyati", districts: ["Samarqand sh.", "Kattaqoʻrgʻon sh.", "Bulungʻur", "Ishtixon", "Jomboy", "Narpay", "Nurobod", "Oqdaryo", "Pastdargʻom", "Paxtachi", "Payariq", "Toyloq", "Urgut", "Qoʻshrabot"] },
-        { name: "Fargʻona viloyati", districts: ["Fargʻona sh.", "Qoʻqon sh.", "Margʻilon sh.", "Quvasoy sh.", "Oltiariq", "Bagʻdod", "Beshariq", "Quva", "Rishton", "Toshloq", "Uchkoʻprik"] },
-        { name: "Andijon viloyati", districts: ["Andijon sh.", "Xonobod sh.", "Asaka", "Baliqchi", "Shahrixon", "Xoʻjaobod", "Qoʻrgʻontepa"] },
-        { name: "Namangan viloyati", districts: ["Namangan sh.", "Chortoq", "Chust", "Pop", "Toʻraqoʻrgʻon", "Uychi"] },
-        { name: "Buxoro viloyati", districts: ["Buxoro sh.", "Kogon sh.", "Gʻijduvon", "Jondor", "Olot", "Qorakoʻl", "Romitan", "Vobkent"] },
-        { name: "Qashqadaryo viloyati", districts: ["Qarshi sh.", "Shahrisabz sh.", "Kitob", "Koson", "Chiroqchi"] },
-        { name: "Surxondaryo viloyati", districts: ["Termiz sh.", "Denov", "Sherobod", "Shoʻrchi"] },
-        { name: "Navoiy viloyati", districts: ["Navoiy sh.", "Zarafshon sh.", "Karmana", "Nurota"] },
-        { name: "Jizzax viloyati", districts: ["Jizzax sh.", "Zomin", "Gʻallaorol"] },
-        { name: "Sirdaryo viloyati", districts: ["Guliston sh.", "Shirin sh.", "Yangiyer sh."] },
-        { name: "Xorazm viloyati", districts: ["Urganch sh.", "Xiva sh.", "Shovot"] },
-        { name: "Qoraqalpogʻiston Respublikasi", districts: ["Nukus sh.", "Beruniy", "Qoʻngʻirot", "Toʻrtkoʻl"] }
+        { name: "Fargʻona viloyati", districts: ["Fargʻona sh.", "Qoʻqon sh.", "Margʻilon sh.", "Quvasoy sh.", "Oltiariq", "Bagʻdod", "Beshariq", "Buvayda", "Dangʻara", "Furqat", "Qoʻshtepa", "Quva", "Rishton", "Soʻx", "Toshloq", "Uchkoʻprik", "Yozyovon"] },
+        { name: "Andijon viloyati", districts: ["Andijon sh.", "Xonobod sh.", "Asaka", "Baliqchi", "Buloqboshi", "Boʻston", "Izboskan", "Jalaquduq", "Marhamat", "Paxtaobod", "Qoʻrgʻontepa", "Shahrixon", "Ulugʻnor", "Xoʻjaobod"] },
+        { name: "Namangan viloyati", districts: ["Namangan sh.", "Chortoq", "Chust", "Kosonsoy", "Mingbuloq", "Namangan", "Norin", "Pop", "Toraqoʻrgʻon", "Uychi", "Uchqoʻrgʻon", "Yangiqoʻrgʻon"] },
+        { name: "Buxoro viloyati", districts: ["Buxoro sh.", "Kogon sh.", "Buxoro", "Gʻijduvon", "Jondor", "Kogon", "Olot", "Peshku", "Qorakoʻl", "Qorovulbozor", "Romitan", "Vobkent"] },
+        { name: "Qashqadaryo viloyati", districts: ["Qarshi sh.", "Shahrisabz sh.", "Chiroqchi", "Dehqonobod", "Gʻuzor", "Kasbi", "Kitob", "Koson", "Mirishkor", "Muborak", "Nishon", "Qamashi", "Qarshi", "Yakkabogʻ"] },
+        { name: "Surxondaryo viloyati", districts: ["Termiz sh.", "Angor", "Bandixon", "Boysun", "Denov", "Jarqoʻrgʻon", "Muzrabot", "Oltinsoy", "Qiziriq", "Qumqoʻrgʻon", "Sariosiyo", "Sherobod", "Shoʻrchi", "Termiz", "Uzun"] },
+        { name: "Navoiy viloyati", districts: ["Navoiy sh.", "Zarafshon sh.", "Gʻozgʻon sh.", "Karmana", "Konimex", "Navbahor", "Nurota", "Qiziltepa", "Tomdi", "Uchquduq", "Xatirchi"] },
+        { name: "Jizzax viloyati", districts: ["Jizzax sh.", "Arnasoy", "Baxmal", "Doʻstlik", "Forish", "Gʻallaorol", "Mirzachoʻl", "Paxtakor", "Yangiobod", "Zafarobod", "Zomin"] },
+        { name: "Sirdaryo viloyati", districts: ["Guliston sh.", "Shirin sh.", "Yangiyer sh.", "Boyovut", "Guliston", "Mirzaobod", "Oqoltin", "Sardoba", "Sayxunobod", "Sirdaryo"] },
+        { name: "Xorazm viloyati", districts: ["Urganch sh.", "Xiva sh.", "Bogʻot", "Gurlan", "Qoʻshkoʻpir", "Shovot", "Urganch", "Xanka", "Hazorasp", "Yangiariq", "Yangibozor"] },
+        { name: "Qoraqalpogʻiston Respublikasi", districts: ["Nukus sh.", "Amudaryo", "Beruniy", "Chimboy", "Ellikqal'a", "Kegeyli", "Moʻynoq", "Nukus", "Qanlikoʻl", "Qoraoʻzak", "Qoʻngʻirot", "Shumanay", "Taxtakoʻpir", "Toʻrtkoʻl", "Xoʻjayli"] }
       ],
       uz_cyr: [
         { name: "Тошкент шаҳри", districts: ["Бектемир", "Чилонзор", "Миробод", "Мирзо Улуғбек", "Олмазор", "Сергели", "Шайхонтоҳур", "Учтепа", "Яшнобод", "Яккасарой", "Юнусобод", "Янгиҳаёт"] },
-        { name: "Тошкент вилояти", districts: ["Нурафшон ш.", "Ангрен ш.", "Олмалиқ ш.", "Чирчиқ ш.", "Бекобод ш.", "Янгийўл ш.", "Бўка", "Бўстонлиқ", "Чиноз", "Қибрай", "Оҳангарон", "Оққўрғон", "Паркент", "Пискент", "Зангиота"] },
+        { name: "Тошкент вилояти", districts: ["Нурафшон ш.", "Ангрен ш.", "Олмалиқ ш.", "Чирчиқ ш.", "Бекобод ш.", "Янгийўл ш.", "Оҳангарон ш.", "Бўка", "Бўстонлиқ", "Чиноз", "Қибрай", "Оҳангарон", "Оққўрғон", "Паркент", "Пискент", "Зангиота"] },
         { name: "Самарқанд вилояти", districts: ["Самарқанд ш.", "Каттақўрғон ш.", "Булунғур", "Иштихон", "Жомбой", "Нарпай", "Нуробод", "Оқдарё", "Пастдарғом", "Пахтачи", "Паяриқ", "Тойлоқ", "Ургут", "Қўшработ"] },
         { name: "Фарғона вилояти", districts: ["Фарғона ш.", "Қўқон ш.", "Марғилон ш.", "Қувасой ш.", "Олтиариқ", "Бағдод", "Бешариқ", "Қува", "Риштон", "Тошлоқ", "Учкўприк"] },
         { name: "Андижон вилояти", districts: ["Андижон ш.", "Хонобод ш.", "Асака", "Балиқчи", "Шаҳрихон", "Хўжаобод", "Қўрғонтепа"] },
@@ -498,7 +534,7 @@
         placeholderSymptoms: "Shikoyatingizni qisqacha yozing...",
         btnSubmitBooking: "Qabulni Tasdiqlash",
         btnSubmitAi: "AI Vizual Tahlil Qilish",
-        notifMsg: "Tibbiy daftarcha va bildirishnomalar:\n• Tizimga xush kelibsiz!\n• Oxirgi tahlillar: Normal holatda.\n• Keshbek hisobingiz faol.",
+        notifMsg: "Keshbek balansingiz: 45,000 UZS.\nBu mablag'ni shifokor ko'rigi uchun to'lov qilishda chegirma sifatida ishlatishingiz mumkin!",
         feeLabel: "Qabul",
         cashbackLabel: "Keshbek",
         statusOnline: "🟢 Hozir ishda",
@@ -539,7 +575,7 @@
         placeholderSymptoms: "Шикоятингизни қисқача ёзинг...",
         btnSubmitBooking: "Қабулни Тасдиқлаш",
         btnSubmitAi: "AI Визуал Таҳлил Қилиш",
-        notifMsg: "Тиббий дафтарча:\n• Тизимга хуш келибсиз!\n• Охирги таҳлиллар: Нормал.\n• Кешбек балансингиз фаол.",
+        notifMsg: "Кешбек балансингиз: 45,000 UZS.",
         feeLabel: "Қабул",
         cashbackLabel: "Кешбек",
         statusOnline: "🟢 Ҳозир ишда",
@@ -580,7 +616,7 @@
         placeholderSymptoms: "Кратко опишите ваши жалобы...",
         btnSubmitBooking: "Подтвердить запись",
         btnSubmitAi: "Визуальный анализ ИИ",
-        notifMsg: "Медицинская книжка:\n• Добро пожаловать!\n• Последние анализы: В норме.\n• Кэшбэк активен.",
+        notifMsg: "Кэшбэк баланс: 45,000 UZS.",
         feeLabel: "Прием",
         cashbackLabel: "Кэшбэк",
         statusOnline: "🟢 На работе",
@@ -620,6 +656,11 @@
       document.getElementById('langScreen').classList.remove('active');
       renderRegions();
       document.getElementById('regionScreen').classList.add('active');
+    }
+
+    function backToLanguage() {
+      document.getElementById('regionScreen').classList.remove('active');
+      document.getElementById('langScreen').classList.add('active');
     }
 
     function resetAndReconfigure() {
@@ -862,6 +903,11 @@
       if (tg && tg.showAlert) tg.showAlert(msg); else alert(msg);
     }
 
+    function openCashbackInfo() {
+      var msg = dictionary[currentLang].notifMsg;
+      if (tg && tg.showAlert) tg.showAlert(msg); else alert(msg);
+    }
+
     function formatCustomDate(dateStr) {
       var d = new Date(dateStr);
       if (isNaN(d.getTime())) return dateStr;
@@ -918,6 +964,13 @@
         var selDoc = null;
         for (var j = 0; j < allDoctorsData.length; j++) {
           if (allDoctorsData[j].id === docId) selDoc = allDoctorsData[j];
+        }
+
+        // Oxirgi tashrifni yangilash
+        if (selDoc) {
+          document.getElementById('lastVisitDoc').innerText = selDoc.full_name;
+          var specText = langObj[selDoc.spec_key] || selDoc.spec_key;
+          document.getElementById('lastVisitDate').innerText = specText + " • " + formattedTime;
         }
 
         var payload = {
