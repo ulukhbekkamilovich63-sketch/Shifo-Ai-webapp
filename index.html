@@ -138,7 +138,7 @@
       color: white; font-size: 12px; font-weight: 700; cursor: pointer; backdrop-filter: blur(5px);
     }
 
-    /* Bento Grid (2 ta kichik kvadrat blok yonma-yon) */
+    /* Bento Grid */
     .bento-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;
     }
@@ -333,7 +333,7 @@
     </button>
   </div>
 
-  <!-- STEP 2: Role Selection Screen (Til tanlangach chiqadi) -->
+  <!-- STEP 2: Role Selection Screen -->
   <div class="onboard-screen" id="roleScreen">
     <button class="back-btn-top" onclick="backToLanguage()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn">Orqaga</span></button>
     <div class="onboard-logo"><i class="fa-solid fa-user-gear"></i></div>
@@ -351,7 +351,7 @@
     </button>
   </div>
 
-  <!-- STEP 3: Region Selection Screen (Faqat Bemor uchun) -->
+  <!-- STEP 3: Region Selection Screen -->
   <div class="onboard-screen" id="regionScreen">
     <button class="back-btn-top" onclick="backToRole()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn-reg">Orqaga</span></button>
     <div class="onboard-logo"><i class="fa-solid fa-map-location-dot"></i></div>
@@ -361,7 +361,7 @@
     <div id="regionsContainer" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px;"></div>
   </div>
 
-  <!-- STEP 4: District Selection Screen (Faqat Bemor uchun) -->
+  <!-- STEP 4: District Selection Screen -->
   <div class="onboard-screen" id="districtScreen">
     <button class="back-btn-top" onclick="backToRegions()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn-dist">Orqaga</span></button>
     <div class="onboard-logo"><i class="fa-solid fa-city"></i></div>
@@ -401,7 +401,6 @@
           <div class="hero-sub" id="lbl-balance-sub">Stomatologiya va boshqa qabullarda 10% chegirma</div>
         </div>
 
-        <!-- Bento Grid: 2 ta kichik kvadrat blok (AI Shifo Maslahatisi va Qabulga yozilish) -->
         <div class="bento-grid">
           <div class="bento-card" onclick="hapticTrigger(); openAiModal()">
             <span class="bento-tag">AI VISION</span>
@@ -470,24 +469,23 @@
       </div>
     </div>
 
-    <!-- TAB 2: QUEUE (Navbat - Full Page) -->
+    <!-- TAB 2: QUEUE -->
     <div class="tab-pane" id="tabQueue">
       <div class="section-header">
         <div class="section-title"><i class="fa-regular fa-calendar-days"></i> Qabul Navbati Boshqaruvi</div>
       </div>
       <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 14px; background: rgba(59,130,246,0.1); padding: 12px; border-radius: 12px; border: 1px solid rgba(59,130,246,0.3);">
-        <i class="fa-solid fa-circle-info" style="color: #60a5fa;"></i> Bemor kelgach "Yakunlash" tugmasini bosing. Shunda qabul avtomatik tarixga o'tadi va bemorga keshbek beriladi.
+        <i class="fa-solid fa-circle-info" style="color: #60a5fa;"></i> Bemor kelgach "Yakunlash" tugmasini bosing. Shunda qabul avtomatik tarixga o'tadi va bemorning keshbek balansiga +10,000 UZS qo'shiladi.
       </div>
       <div id="fullPageQueueList"></div>
     </div>
 
-    <!-- TAB 3: CASHBACK (Keshbek bo'limi) -->
+    <!-- TAB 3: CASHBACK -->
     <div class="tab-pane" id="tabCashback">
       <div class="section-header">
         <div class="section-title"><i class="fa-solid fa-wallet"></i> Keshbek va Chegirma Boshqaruvi</div>
       </div>
       
-      <!-- Bemor uchun keshbek ko'rinishi -->
       <div id="patientCashbackPane">
         <div class="hero-card">
           <div class="hero-badge">Joriy Balansim</div>
@@ -495,19 +493,16 @@
             <span id="tabUserBalance">40,000 UZS</span>
             <span class="cashback-action-btn">ID: <span id="tabPatientId">78237</span></span>
           </div>
-          <div class="hero-sub">Shifokor qabullarida ushbu balansdan 10% gacha chegirma sifatida foydalanishingiz mumkin. Har bir yakunlangan qabul va baholash uchun +10,000 UZS keshbek qo'shiladi.</div>
+          <div class="hero-sub">Shifokor qabullarida ushbu balansdan 10% gacha chegirma sifatida foydalanishingiz mumkin. Har bir yakunlangan qabul uchun +10,000 UZS keshbek qo'shiladi.</div>
         </div>
         <div class="doctor-queue-container" style="border-color: rgba(52, 211, 153, 0.4);">
           <div style="font-weight: 800; font-size: 15px; margin-bottom: 10px; color: var(--neon-green);">Keshbek Tarixi</div>
           <div style="font-size: 13px; color: var(--text-sub); line-height: 1.6;">
-            • Stomatologiya qabuli uchun keshbek: <b>+10,000 UZS</b><br>
-            • Kardiolog qabuli uchun keshbek: <b>+10,000 UZS</b><br>
-            • Taklif qilingan do'st uchun: <b>+20,000 UZS</b>
+            • Qabullar va vaucher keshbeklari avtomatik qo'shiladi.
           </div>
         </div>
       </div>
 
-      <!-- Shifokor uchun keshbekni yechish paneli -->
       <div id="doctorCashbackPane" style="display: none;">
         <div class="doctor-queue-container" style="border-color: rgba(59, 130, 246, 0.4); margin-bottom: 20px;">
           <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--accent-blue);">
@@ -525,7 +520,7 @@
       </div>
     </div>
 
-    <!-- TAB 4: HISTORY (Tarix - Full Page) -->
+    <!-- TAB 4: HISTORY -->
     <div class="tab-pane" id="tabHistory">
       <div class="section-header">
         <div class="section-title" id="historyPageTitle"><i class="fa-solid fa-clock-rotate-left"></i> Qabul Tarixi</div>
@@ -745,7 +740,7 @@
         statusOnline: "🟢 Hozir ishda",
         statusBreak: "🟡 Tanaffusda",
         statusOffline: "🔴 Ish vaqti tugagan",
-        successBooking: "Qabulga muvaffaqiyatli yozildingiz!",
+        successBooking: "Qabulga muvaffaqiyatli yozildingiz! Shifokorga xabar yuborildi.",
         backText: "Orqaga",
         tagBook: "QABUL",
         docHeroBadge: "Shifokor Kabineti",
@@ -789,7 +784,7 @@
         statusOnline: "🟢 Ҳозир ишда",
         statusBreak: "🟡 Танаффусда",
         statusOffline: "🔴 Иш вақти тугаган",
-        successBooking: "Қабулга муваффақиятли ёзилдингиз!",
+        successBooking: "Қабулга муваффақиятли ёзилдингиз! Шифокорга хабар юборилди.",
         backText: "Орқақа",
         tagBook: "ҚАБУЛ",
         docHeroBadge: "Шифокор Кабинети",
@@ -833,7 +828,7 @@
         statusOnline: "🟢 На работе",
         statusBreak: "🟡 Перерыв",
         statusOffline: "🔴 Недоступен",
-        successBooking: "Вы успешно записались на прием!",
+        successBooking: "Вы успешно записались на прием! Врач уведомлен.",
         backText: "Назад",
         tagBook: "ПРИЕМ",
         docHeroBadge: "Кабинет врача",
@@ -901,10 +896,8 @@
       document.getElementById('roleScreen').classList.remove('active');
 
       if (role === 'doctor' || role === 'admin') {
-        // Shifokor yoki admin uchun viloyat shart emas, srazu kabinetga o'tadi
         launchMainApp();
       } else {
-        // Bemor uchun viloyatlar ro'yxatini chiqaramiz
         renderRegions();
         document.getElementById('regionScreen').classList.add('active');
       }
@@ -1084,14 +1077,19 @@
 
         for (var p = 0; p < patientVisitHistory.length; p++) {
           var visit = patientVisitHistory[p];
+          var starsHtml = '';
+          for (var s = 0; s < (visit.rating || 5); s++) {
+            starsHtml += `<i class="fa-solid fa-star" style="color: #facc15; font-size: 12px;"></i>`;
+          }
+
           container.innerHTML += `
             <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-bottom: 12px; backdrop-filter: blur(12px);">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                 <span style="font-weight: 800; font-size: 15px; color: var(--neon-green);"><i class="fa-solid fa-user-doctor"></i> ${visit.doctor_name}</span>
-                <span style="font-size: 11px; padding: 3px 8px; border-radius: 6px; background: rgba(52,211,153,0.15); color: var(--neon-green); font-weight: 700;">Tashrif</span>
+                <div>${starsHtml}</div>
               </div>
-              <div style="font-size: 13px; color: var(--text-sub); margin-bottom: 4px;">Mutaxassislik: <b>${visit.specialty}</b></div>
-              <div style="font-size: 12px; color: var(--text-sub); opacity: 0.8;">Sana va vaqt: ${visit.date}</div>
+              <div style="font-size: 13px; color: var(--text-sub); margin-bottom: 4px;">Shikoyat/Ariza: <b>${visit.complaint}</b></div>
+              <div style="font-size: 12px; color: var(--text-sub); opacity: 0.8;">Sana va vaqt: ${visit.date} • Keshbek: <b style="color:var(--neon-green);">+10,000 UZS</b></div>
             </div>`;
         }
         return;
@@ -1198,13 +1196,28 @@
         finishedItem.type = 'completed';
         doctorHistoryList.unshift(finishedItem);
 
+        // Bemor keshbek balansiga 10 000 so'm qo'shish va tashriflar tarixiga yozish
+        userBalance += 10000;
+        localStorage.setItem('shifo_balance', userBalance);
+        document.getElementById('u-balance').innerText = userBalance.toLocaleString('uz-UZ') + " UZS";
+        document.getElementById('tabUserBalance').innerText = userBalance.toLocaleString('uz-UZ') + " UZS";
+
+        patientVisitHistory.unshift({
+          doctor_name: finishedItem.doctor_name || "Shifokor",
+          specialty: "Stomatologiya / Umumiy qabul",
+          complaint: finishedItem.complaint,
+          date: new Date().toLocaleDateString() + " " + finishedItem.time,
+          rating: 5
+        });
+        localStorage.setItem('shifo_patient_visits', JSON.stringify(patientVisitHistory));
+
         localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
         localStorage.setItem('shifo_history', JSON.stringify(doctorHistoryList));
 
         document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
         renderFullPageQueue();
         renderFullPageHistory();
-        showCustomAlert("Qabul Yakunlandi", "Mijoz bilan qabul yakunlandi va tarixga o'tkazildi!");
+        showCustomAlert("Qabul Yakunlandi", "Mijoz qabuli yakunlandi va bemorning keshbek balansiga +10,000 UZS vaucher keshbek qo'shildi!");
       }
     }
 
@@ -1232,7 +1245,7 @@
       for (var i = 0; i < activeAppointmentsQueue.length; i++) {
         var item = activeAppointmentsQueue[i];
 
-        var actionButtons = currentRole === 'doctor' ? 
+        var actionButtons = (currentRole === 'doctor' || currentRole === 'admin') ? 
           `<div style="display:flex; gap:6px; align-items:center;">
              <button class="finish-session-btn" onclick="hapticTrigger(); finishSession(${item.id})"><i class="fa-solid fa-check"></i> Yakunlash</button>
              <button class="remove-queue-btn" onclick="hapticTrigger(); removeQueueItem(${item.id})"><i class="fa-solid fa-xmark"></i></button>
@@ -1242,9 +1255,10 @@
         container.innerHTML += `
           <div class="queue-item">
             <div>
-              <div style="font-weight: 800; font-size: 15px;">№ ${item.queue_number} | Bemor: ${item.patient_name}</div>
+              <div style="font-weight: 800; font-size: 15px;">Shifokor: <span style="color: var(--neon-green);">${item.doctor_name || 'Shifokor'}</span></div>
+              <div style="font-size: 13px; font-weight: 700; margin-top: 2px;">Bemor: ${item.patient_name}</div>
               <div style="font-size: 12px; color: var(--text-sub); margin-top: 2px;">Vaqti: ${item.time}</div>
-              <div style="font-size: 12px; color: var(--neon-green); margin-top: 2px;">Shikoyat: ${item.complaint}</div>
+              <div style="font-size: 12px; color: var(--accent-blue); margin-top: 2px;">Shikoyat / Ariza: ${item.complaint}</div>
             </div>
             <div>${actionButtons}</div>
           </div>`;
@@ -1310,7 +1324,7 @@
             </div>
           </div>`;
 
-        select.innerHTML += `<option value="${doc.id}">${doc.full_name} (${specText})</option>`;
+        select.innerHTML += `<option value="${doc.id}" data-name="${doc.full_name}">${doc.full_name} (${specText})</option>`;
       }
     }
 
@@ -1336,56 +1350,107 @@
       document.getElementById('lbl-bento-book-desc').innerText = langObj.bentoBookDesc;
       
       document.getElementById('lbl-docs-title').innerText = langObj.docsTitle;
-
       document.getElementById('lbl-nav-home').innerText = langObj.navHome;
       document.getElementById('lbl-nav-book').innerText = langObj.navBook;
 
       document.getElementById('lbl-doc-hero-badge').innerText = langObj.docHeroBadge;
       document.getElementById('lbl-doc-refresh').innerText = langObj.docRefresh;
       document.getElementById('lbl-doc-hero-sub').innerText = langObj.docHeroSub;
-
-      document.getElementById('lbl-form-doc').innerText = langObj.lblFormDoc;
-      document.getElementById('lbl-form-date').innerText = langObj.lblFormDate;
-      document.getElementById('bookingSymptoms').placeholder = langObj.placeholderSymptoms;
     }
 
     function setupUserHeader() {
-      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
-      if (tg) {
-        var u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-        if (u) {
-          var name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
-          var roleText = currentRole === 'doctor' ? 'Shifokor' : (currentRole === 'admin' ? 'Admin' : 'Bemor');
-          document.getElementById('u-name').innerText = langObj.greeting + name + '! (' + roleText + ')';
+      var userName = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.first_name : "Ulug'bek";
+      document.getElementById('u-name').innerText = (dictionary[currentLang] || dictionary['uz_lat']).greeting + userName + "!";
+      document.getElementById('u-avatar').innerText = userName.charAt(0).toUpperCase();
+    }
 
-          if (u.photo_url) {
-            document.getElementById('avatarContainer').innerHTML = '<img src="' + u.photo_url + '" class="avatar-img">';
-          } else {
-            document.getElementById('u-avatar').innerText = u.first_name.charAt(0);
-          }
-        }
+    function switchTab(tabId) {
+      hapticTrigger();
+      var panes = document.getElementsByClassName('tab-pane');
+      for (var i = 0; i < panes.length; i++) {
+        panes[i].classList.remove('active');
+      }
+
+      var items = document.getElementsByClassName('nav-item');
+      for (var j = 0; j < items.length; j++) {
+        items[j].classList.remove('active');
+      }
+
+      if (tabId === 'home') {
+        document.getElementById('tabHome').classList.add('active');
+        items[0].classList.add('active');
+      } else if (tabId === 'queue') {
+        document.getElementById('tabQueue').classList.add('active');
+        items[1].classList.add('active');
+        renderFullPageQueue();
+      } else if (tabId === 'cashback') {
+        document.getElementById('tabCashback').classList.add('active');
+        items[2].classList.add('active');
+      } else if (tabId === 'history') {
+        document.getElementById('tabHistory').classList.add('active');
+        items[3].classList.add('active');
+        renderFullPageHistory();
       }
     }
 
-    function openBookingModal(doctorId) {
+    function openBookingModal(preSelectedDocId) {
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
       document.getElementById('modalTitle').innerText = langObj.bentoBookTitle;
-      
-      document.getElementById('aiModalContentBlock').style.display = "none";
-      document.getElementById('bookingModalContentBlock').style.display = "block";
-      
-      if (doctorId) {
-        document.getElementById('doctorSelect').value = doctorId;
+      document.getElementById('bookingModalContentBlock').style.display = 'block';
+      document.getElementById('aiModalContentBlock').style.display = 'none';
+
+      if (preSelectedDocId) {
+        var sel = document.getElementById('doctorSelect');
+        sel.value = preSelectedDocId;
       }
+
       document.getElementById('mainModal').style.display = 'flex';
     }
 
     function openAiModal() {
-      document.getElementById('modalTitle').innerText = "AI Vizual Tahlil";
-      document.getElementById('bookingModalContentBlock').style.display = "none";
-      document.getElementById('aiModalContentBlock').style.display = "block";
-      document.getElementById('aiResultBox').style.display = "none";
+      document.getElementById('modalTitle').innerText = "AI Shifo Maslahatisi & Vizual Tahlil";
+      document.getElementById('bookingModalContentBlock').style.display = 'none';
+      document.getElementById('aiModalContentBlock').style.display = 'block';
       document.getElementById('mainModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('mainModal').style.display = 'none';
+    }
+
+    function handleBookingSubmit() {
+      var symptoms = document.getElementById('bookingSymptoms').value.trim();
+      var docSelect = document.getElementById('doctorSelect');
+      var docId = docSelect.value;
+      var docOption = docSelect.options[docSelect.selectedIndex];
+      var docName = docOption ? docOption.text.split('(')[0].trim() : "Shifokor";
+      var timeVal = document.getElementById('appointmentTime').value || "11:00";
+
+      if (!symptoms) {
+        showCustomAlert("Xatolik", "Iltimos, shikoyatingizni kiriting!");
+        return;
+      }
+
+      var newQueueItem = {
+        id: Date.now(),
+        queue_number: activeAppointmentsQueue.length + 1,
+        patient_name: "Ulug'bek Kamilovich (ID: " + patientIdCode + ")",
+        patient_id: patientIdCode,
+        time: timeVal.split('T')[1] || "11:00",
+        complaint: symptoms,
+        status: "Faol",
+        doctor_id: docId,
+        doctor_name: docName
+      };
+
+      activeAppointmentsQueue.push(newQueueItem);
+      localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
+
+      closeModal();
+      document.getElementById('bookingSymptoms').value = "";
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
+      showCustomAlert("Muvaffaqiyatli", langObj.successBooking);
+      renderFullPageQueue();
     }
 
     function previewSelectedImage(input) {
@@ -1394,124 +1459,36 @@
         reader.onload = function(e) {
           document.getElementById('imgPreview').src = e.target.result;
           document.getElementById('uploadPromptArea').style.display = 'none';
-          document.getElementById('previewContainer').style.display = 'block';
+          document.getElementById('previewContainer').style.display = 'inline-block';
           hasImage = true;
-        }
+        };
         reader.readAsDataURL(input.files[0]);
       }
     }
 
     function removeSelectedImage(e) {
       e.stopPropagation();
+      hasImage = false;
       document.getElementById('imgInput').value = "";
-      document.getElementById('imgPreview').src = "";
       document.getElementById('previewContainer').style.display = 'none';
       document.getElementById('uploadPromptArea').style.display = 'block';
-      hasImage = false;
     }
 
     function handleAiSubmit() {
-      document.getElementById('aiResultBox').style.display = "block";
-      document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> AI rasmni tahlil qilmoqda...";
-
-      setTimeout(function() {
-        var advice = "<strong>AI Vizual tahlil natijasi:</strong> Tish yoki tana qismida yallig'lanish belgisi sezildi. Sizga <strong>Dr. Dilshodbek Rahimov (Stomatolog)</strong> yoki <strong>Sarvar Abdullayevich (Kardiolog)</strong> ko'rigiga yozilish tavsiya etiladi.";
-        document.getElementById('aiResultText').innerHTML = advice;
-      }, 1000);
-    }
-
-    function closeModal() {
-      document.getElementById('mainModal').style.display = 'none';
-    }
-
-    function formatCustomDate(dateStr) {
-      var d = new Date(dateStr);
-      if (isNaN(d.getTime())) return dateStr;
-      var day = d.getDate();
-      var hours = String(d.getHours()).padStart(2, '0');
-      var minutes = String(d.getMinutes()).padStart(2, '0');
-      var year = d.getFullYear();
-      var monthsUz = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
-      return day + "-" + monthsUz[d.getMonth()] + ", " + year + "-yil, soat " + hours + ":" + minutes;
-    }
-
-    function handleBookingSubmit() {
-      var symptoms = document.getElementById('bookingSymptoms').value.toLowerCase();
-      var docId = document.getElementById('doctorSelect').value;
-      var rawTime = document.getElementById('appointmentTime').value;
-      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
-
-      if (!rawTime) {
-        showCustomAlert("Xatolik", "Iltimos, qabul vaqtini tanlang!");
+      var text = document.getElementById('aiSymptoms').value.trim();
+      if (!text && !hasImage) {
+        showCustomAlert("Diqqat", "Iltimos, rasm yuklang yoki shikoyatingizni yozing!");
         return;
       }
 
-      var formattedTime = formatCustomDate(rawTime);
-      var nextQueueNum = activeAppointmentsQueue.length + 1;
+      var resultBox = document.getElementById('aiResultBox');
+      var resultText = document.getElementById('aiResultText');
+      resultBox.style.display = 'block';
+      resultText.innerHTML = "Tahlil qilinmoqda...";
 
-      var selDoc = null;
-      for (var j = 0; j < allDoctorsData.length; j++) {
-        if (allDoctorsData[j].id === docId) selDoc = allDoctorsData[j];
-      }
-
-      if (selDoc && currentRole !== 'doctor') {
-        var specText = langObj[selDoc.spec_key] || selDoc.spec_key;
-
-        var visitRecord = {
-          doctor_name: selDoc.full_name,
-          specialty: specText,
-          date: formattedTime
-        };
-        patientVisitHistory.unshift(visitRecord);
-        localStorage.setItem('shifo_patient_visits', JSON.stringify(patientVisitHistory));
-      }
-
-      var patientNameWithId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "Ulug'bek") + " (ID: " + patientIdCode + ")";
-
-      var newQueueItem = {
-        id: Date.now(),
-        queue_number: nextQueueNum,
-        patient_name: patientNameWithId,
-        patient_id: patientIdCode,
-        doctor_id: docId,
-        doctor_name: selDoc ? selDoc.full_name : "Shifokor",
-        time: formattedTime.split(',')[1] || formattedTime,
-        complaint: symptoms || "Standart qabul",
-        status: "Faol"
-      };
-
-      activeAppointmentsQueue.unshift(newQueueItem);
-      localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
-
-      renderFullPageQueue();
-      closeModal();
-      showCustomAlert("Muvaffaqiyatli", langObj.successBooking + "\n\n🔢 Sizning navbatingiz: № " + nextQueueNum + "\n🆔 Sizning ID raqamingiz: " + patientIdCode);
-    }
-
-    function switchTab(tabName) {
-      var items = document.querySelectorAll('.floating-nav .nav-item');
-      items.forEach(function(el) { el.classList.remove('active'); });
-      
-      document.getElementById('tabHome').classList.remove('active');
-      document.getElementById('tabQueue').classList.remove('active');
-      document.getElementById('tabCashback').classList.remove('active');
-      document.getElementById('tabHistory').classList.remove('active');
-
-      if (tabName === 'home') {
-        document.getElementById('tabHome').classList.add('active');
-        items[0].classList.add('active');
-      } else if (tabName === 'queue') {
-        document.getElementById('tabQueue').classList.add('active');
-        items[1].classList.add('active');
-        renderFullPageQueue();
-      } else if (tabName === 'cashback') {
-        document.getElementById('tabCashback').classList.add('active');
-        items[2].classList.add('active');
-      } else if (tabName === 'history') {
-        document.getElementById('tabHistory').classList.add('active');
-        items[3].classList.add('active');
-        renderFullPageHistory();
-      }
+      setTimeout(function() {
+        resultText.innerHTML = "<b>Dastlabki xulosa:</b> Belgilarga ko'ra yallig'lanish alomatlari mavjud. Stomatolog yoki terapevt huzuriga borish tavsiya etiladi. 10,000 UZS vaucher keshbek imkoniyati faollashdi.";
+      }, 1200);
     }
   </script>
 </body>
