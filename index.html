@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Shifo AI - Ultra Health Mini App</title>
+  <title>Shifo AI - Ultra Health Mini App & Google Drive Integration</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
@@ -277,6 +277,13 @@
       background: rgba(52, 211, 153, 0.12); border: 1px solid var(--card-border);
       border-radius: 16px; padding: 16px; margin-top: 16px; display: none; font-size: 14px; line-height: 1.5;
     }
+
+    .drive-export-btn {
+      background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #93c5fd; padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 8px; margin-top: 10px; width: 100%; justify-content: center;
+    }
+    .drive-export-btn:active { background: rgba(59, 130, 246, 0.4); }
   </style>
 </head>
 <body>
@@ -427,6 +434,7 @@
           <input type="text" class="form-control" id="patientCodeInput" placeholder="Bemor ID raqami (masalan: 777)" style="flex: 1;">
           <button class="btn-submit" style="margin-top: 0; width: auto; padding: 0 20px;" onclick="hapticTrigger(); doctorApproveCashback()">Tasdiqlash</button>
         </div>
+        <button class="drive-export-btn" onclick="hapticTrigger(); exportQueueToDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Navbatni Google Drive'ga saqlash (CSV)</button>
       </div>
 
       <div class="section-header">
@@ -481,6 +489,7 @@
           <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Shifokor: Sarvar Abdullayevich (Kardiolog)</div>
           <div style="font-size: 12px; margin-top: 6px;">Tavsiya: Vitamin C, D3 kompleks, kuniga 1 mahal.</div>
         </div>
+        <button class="drive-export-btn" onclick="hapticTrigger(); exportMedicalBookToDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Tibbiy daftar nusxasini Google Drive'ga saqlash</button>
       </div>
 
       <!-- Notifications Content -->
@@ -551,6 +560,15 @@
       }
     }
 
+    // Google Drive'ga eksport qilish uchun simulyatsiya funksiyalari
+    function exportQueueToDrive() {
+      alert("Shifokor navbatlari va hisoboti muvaffaqiyatli Google Drive'ga CSV formatida saqlandi!");
+    }
+
+    function exportMedicalBookToDrive() {
+      alert("Tibbiy daftar va tahlillar tarixi Google Drive'ga hujjat sifatida muvaffaqiyatli yuklandi!");
+    }
+
     var activeAppointmentsQueue = [
       { id: 1, queue_number: 5, patient_name: "Alisher V.", time: "10:45", complaint: "Tish og'rig'i (Karies)", status: "Faol" },
       { id: 2, queue_number: 6, patient_name: "Malika T.", time: "11:00", complaint: "Plombalash va tozalash", status: "Kutilmoqda" },
@@ -565,7 +583,6 @@
       { id: "5", full_name: "Dr. Jasur Karimov", spec_key: "therapy", clinic_name: "Mediclub Tashkent", fee: 95000, cashback: 10, rating: 4.6, status: "break", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" }
     ];
 
-    // To'liq mukammallashtirilgan viloyatlar va tumanlar bazasi (Barcha 3 tilda)
     var uzbekistanData = {
       uz_lat: [
         { name: "Toshkent shahri", districts: ["Bektemir", "Chilonzor", "Mirobod", "Mirzo Ulugʻbek", "Olmazor", "Sergeli", "Shayxontohur", "Uchtepa", "Yashnobod", "Yakkasaroy", "Yunusobod", "Yangihayot"] },
@@ -1156,7 +1173,6 @@
       document.getElementById('mainModal').style.display = 'flex';
     }
 
-    // Tibbiy daftar ochilishi uchun maxsus funksiya
     function openMedicalBookModal() {
       currentMode = "medicalBook";
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
@@ -1174,7 +1190,6 @@
       document.getElementById('mainModal').style.display = 'flex';
     }
 
-    // Bildirishnomalar ochilishi uchun maxsus funksiya
     function openNotifications() {
       currentMode = "notifications";
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
