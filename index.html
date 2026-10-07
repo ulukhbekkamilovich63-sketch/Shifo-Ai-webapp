@@ -50,15 +50,21 @@
       border: 1px solid rgba(52, 211, 153, 0.25); color: var(--text-main);
       padding: 16px 20px; border-radius: 18px; font-size: 15px; font-weight: 700;
       margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-      backdrop-filter: blur(12px); transition: all 0.2s ease;
+      backdrop-filter: blur(12px); transition: all 0.15s ease;
     }
-    .onboard-btn:active { transform: scale(0.97); background: rgba(52, 211, 153, 0.25); border-color: var(--neon-green); }
+    .onboard-btn:active, .onboard-btn.clicked {
+      transform: scale(0.96);
+      background: rgba(52, 211, 153, 0.3) !important;
+      border-color: var(--neon-green) !important;
+      box-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
+    }
 
     .back-btn-top {
       align-self: flex-start; background: rgba(255,255,255,0.06); border: 1px solid rgba(52, 211, 153, 0.2);
       color: var(--text-sub); padding: 8px 14px; border-radius: 12px; font-size: 13px; font-weight: 600;
       cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-shrink: 0;
     }
+    .back-btn-top:active { background: rgba(52, 211, 153, 0.2); }
 
     /* Main App Container */
     .app-content { display: none; }
@@ -79,9 +85,9 @@
     .icon-btn {
       width: 42px; height: 42px; border-radius: 14px; background: rgba(16, 185, 129, 0.1);
       border: 1px solid rgba(52, 211, 153, 0.25); display: flex; align-items: center; justify-content: center;
-      color: var(--neon-green); font-size: 18px; cursor: pointer; transition: 0.2s;
+      color: var(--neon-green); font-size: 18px; cursor: pointer; transition: 0.15s;
     }
-    .icon-btn:active { transform: scale(0.95); }
+    .icon-btn:active { transform: scale(0.92); background: rgba(52, 211, 153, 0.25); }
 
     /* Hero Card */
     .hero-card {
@@ -121,9 +127,9 @@
     .bento-card {
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: 20px; padding: 16px; position: relative; backdrop-filter: blur(12px);
-      cursor: pointer; transition: all 0.2s; overflow: hidden;
+      cursor: pointer; transition: all 0.15s; overflow: hidden;
     }
-    .bento-card:active { transform: scale(0.97); }
+    .bento-card:active { transform: scale(0.96); background: rgba(52, 211, 153, 0.15); border-color: var(--neon-green); }
     .bento-card.full-width { grid-column: span 2; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(14, 40, 27, 0.9) 100%); border-color: rgba(52, 211, 153, 0.4); }
     
     .bento-tag {
@@ -160,9 +166,9 @@
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: 20px; padding: 16px; margin-bottom: 12px;
       display: flex; gap: 14px; align-items: center; backdrop-filter: blur(12px);
-      cursor: pointer; position: relative; transition: transform 0.2s;
+      cursor: pointer; position: relative; transition: transform 0.15s;
     }
-    .doc-card:active { transform: scale(0.98); }
+    .doc-card:active { transform: scale(0.98); background: rgba(52, 211, 153, 0.12); }
     .doc-img-wrap { position: relative; }
     .doc-img { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; }
     
@@ -214,18 +220,19 @@
     .nav-item {
       display: flex; flex-direction: column; align-items: center; gap: 4px;
       color: var(--text-sub); font-size: 11px; font-weight: 600; text-decoration: none;
-      padding: 6px 12px; border-radius: 16px; cursor: pointer; transition: 0.2s;
+      padding: 6px 12px; border-radius: 16px; cursor: pointer; transition: 0.15s;
     }
     .nav-item.active { color: var(--neon-green); background: rgba(52, 211, 153, 0.18); }
+    .nav-item:active { transform: scale(0.92); }
     .nav-item i { font-size: 18px; }
 
     .fab-ai {
       width: 52px; height: 52px; border-radius: 50%;
       background: linear-gradient(135deg, #10b981, #047857); color: white;
       border: none; font-size: 22px; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); cursor: pointer; transition: transform 0.2s;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); cursor: pointer; transition: transform 0.15s;
     }
-    .fab-ai:active { transform: scale(0.92); }
+    .fab-ai:active { transform: scale(0.9); }
 
     /* Upload Box */
     .upload-box {
@@ -262,7 +269,9 @@
       width: 100%; background: linear-gradient(135deg, #10b981, #047857); color: white;
       border: none; padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 800;
       cursor: pointer; margin-top: 10px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+      transition: transform 0.15s;
     }
+    .btn-submit:active { transform: scale(0.97); }
 
     .ai-result-box {
       background: rgba(52, 211, 153, 0.12); border: 1px solid var(--card-border);
@@ -337,8 +346,8 @@
         </div>
       </div>
       <div style="display: flex; gap: 10px;">
-        <div class="icon-btn" onclick="resetAndReconfigure()" title="Hudud va tilni o'zgartirish"><i class="fa-solid fa-globe"></i></div>
-        <div class="icon-btn" onclick="openNotifications()" title="Bildirishnomalar"><i class="fa-regular fa-bell"></i></div>
+        <div class="icon-btn" onclick="hapticTrigger(); resetAndReconfigure();" title="Hudud va tilni o'zgartirish"><i class="fa-solid fa-globe"></i></div>
+        <div class="icon-btn" onclick="hapticTrigger(); openNotifications();" title="Bildirishnomalar"><i class="fa-regular fa-bell"></i></div>
       </div>
     </div>
 
@@ -348,7 +357,7 @@
         <div class="hero-badge" id="lbl-balance-badge">Keshbek Balans</div>
         <div class="hero-val">
           <span id="u-balance">45,000 UZS</span>
-          <button class="cashback-action-btn" id="lbl-cashback-btn" onclick="openCashbackModal()">Qanday ishlatiladi?</button>
+          <button class="cashback-action-btn" id="lbl-cashback-btn" onclick="hapticTrigger(); openCashbackModal()">Qanday ishlatiladi?</button>
         </div>
         <div class="hero-sub" id="lbl-balance-sub">Stomatologiya va boshqa qabullarda 10% chegirma</div>
       </div>
@@ -363,21 +372,21 @@
       </div>
 
       <div class="bento-grid">
-        <div class="bento-card full-width" onclick="openAiModal()">
+        <div class="bento-card full-width" onclick="hapticTrigger(); openAiModal()">
           <span class="bento-tag">AI VISION 2.5</span>
           <div class="bento-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
           <div class="bento-title" id="lbl-bento-ai-title">AI Shifo Maslahatisi (Rasm/Matn)</div>
           <div class="bento-desc" id="lbl-bento-ai-desc">Rasm yuklang yoki simptomlarni yozing, AI darhol tahlil qilib, mutaxassisni aniqlab beradi</div>
         </div>
 
-        <div class="bento-card" onclick="openBookingModal()">
+        <div class="bento-card" onclick="hapticTrigger(); openBookingModal()">
           <span class="bento-tag blue" id="lbl-tag-book">QABUL</span>
           <div class="bento-icon" style="color: #60a5fa; background: rgba(59,130,246,0.15);"><i class="fa-regular fa-calendar-check"></i></div>
           <div class="bento-title" id="lbl-bento-book-title">Qabulga Yozilish</div>
           <div class="bento-desc" id="lbl-bento-book-desc">Shifokor va qulay vaqtni tanlang</div>
         </div>
 
-        <div class="bento-card" onclick="openNotifications()">
+        <div class="bento-card" onclick="hapticTrigger(); openMedicalBookModal()">
           <span class="bento-tag" style="background: #f59e0b;" id="lbl-tag-status">STATUS</span>
           <div class="bento-icon" style="color: #f59e0b; background: rgba(245,158,11,0.15);"><i class="fa-solid fa-file-medical"></i></div>
           <div class="bento-title" id="lbl-bento-status-title">Tibbiy Daftar</div>
@@ -396,18 +405,17 @@
       <div id="doctors-container"></div>
     </div>
 
-    <!-- DOCTOR DASHBOARD (Shifokorning shaxsiy kabineti va keshbek tasdiqlash paneli) -->
+    <!-- DOCTOR DASHBOARD -->
     <div id="doctorDashboard" style="display: none;">
       <div class="hero-card" style="background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);">
         <div class="hero-badge" id="lbl-doc-hero-badge">Shifokor Kabineti</div>
         <div class="hero-val">
           <span id="docActiveQueueCount">3 ta navbat</span>
-          <button class="cashback-action-btn" id="lbl-doc-refresh" onclick="refreshDoctorQueue()">Yangilash</button>
+          <button class="cashback-action-btn" id="lbl-doc-refresh" onclick="hapticTrigger(); refreshDoctorQueue()">Yangilash</button>
         </div>
         <div class="hero-sub" id="lbl-doc-hero-sub">Sizning qabulingizdagi bemorlar va keshbekni yechish paneli</div>
       </div>
 
-      <!-- Keshbekni Tasdiqlash / Chegirma berish bloki (Faqat shifokor uchun) -->
       <div class="doctor-queue-container" style="border-color: rgba(59, 130, 246, 0.4); margin-bottom: 20px;">
         <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--accent-blue);" id="lbl-doc-cashback-title">
           <i class="fa-solid fa-ticket"></i> Bemor Keshbekini Chegirma sifatida Yechish
@@ -417,7 +425,7 @@
         </p>
         <div style="display: flex; gap: 10px;">
           <input type="text" class="form-control" id="patientCodeInput" placeholder="Bemor ID raqami (masalan: 777)" style="flex: 1;">
-          <button class="btn-submit" style="margin-top: 0; width: auto; padding: 0 20px;" onclick="doctorApproveCashback()">Tasdiqlash</button>
+          <button class="btn-submit" style="margin-top: 0; width: auto; padding: 0 20px;" onclick="hapticTrigger(); doctorApproveCashback()">Tasdiqlash</button>
         </div>
       </div>
 
@@ -431,19 +439,19 @@
 
   <!-- Floating Navigation Bar -->
   <div class="floating-nav" id="floatingNav">
-    <div class="nav-item active" onclick="switchTab('home')">
+    <div class="nav-item active" onclick="hapticTrigger(); switchTab('home')">
       <i class="fa-solid fa-house"></i>
       <span id="lbl-nav-home">Bosh sahifa</span>
     </div>
-    <div class="nav-item" onclick="openBookingModal()">
+    <div class="nav-item" onclick="hapticTrigger(); openBookingModal()">
       <i class="fa-regular fa-calendar-days"></i>
       <span id="lbl-nav-book">Navbat</span>
     </div>
-    <div class="nav-item" onclick="resetAndReconfigure()">
+    <div class="nav-item" onclick="hapticTrigger(); resetAndReconfigure()">
       <i class="fa-solid fa-map-pin"></i>
       <span id="lbl-nav-region">Hudud</span>
     </div>
-    <button class="fab-ai" onclick="openAiModal()"><i class="fa-solid fa-camera"></i></button>
+    <button class="fab-ai" onclick="hapticTrigger(); openAiModal()"><i class="fa-solid fa-camera"></i></button>
   </div>
 
   <!-- Modal Sheet -->
@@ -451,27 +459,53 @@
     <div class="modal-sheet">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3 style="font-size: 20px; font-weight: 800;" id="modalTitle">Qabulga yozilish</h3>
-        <i class="fa-solid fa-xmark" style="font-size: 22px; cursor: pointer; color: var(--text-sub);" onclick="closeModal()"></i>
+        <i class="fa-solid fa-xmark" style="font-size: 22px; cursor: pointer; color: var(--text-sub);" onclick="hapticTrigger(); closeModal()"></i>
       </div>
 
-      <!-- Cashback Info Content (Bemor uchun ko'rsatma) -->
+      <!-- Cashback Info Content -->
       <div id="cashbackModalContent" style="display: none;">
         <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 16px; line-height: 1.5;" id="cashbackModalText">
           Sizda <strong style="color:var(--neon-green)">45,000 UZS</strong> keshbek mavjud. Bu mablag'ni istalgan mutaxassis (jumladan, Stomatologiya yoki boshqa yo'nalishlar) qabulida chegirma sifatida ishlatishingiz mumkin. Buning uchun shifokor qabuliga borganingizda shaxsiy keshbek kodingizni shifokorga ko'rsating va uning kabineti orqali balansdan yechdirib, to'lovni kamaytiring.
         </p>
       </div>
 
+      <!-- Medical Book Content -->
+      <div id="medicalBookContent" style="display: none;">
+        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(52,211,153,0.2); border-radius: 14px; padding: 14px; margin-bottom: 10px;">
+          <div style="font-weight: 800; font-size: 14px; color: var(--neon-green);">📋 Umumiy qon tahlili (CBC)</div>
+          <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Sana: 10-Mart, 2026 • Laboratoriya: Shifo Lab</div>
+          <div style="font-size: 12px; margin-top: 6px;">Holati: Normal (Gemoglobin: 135 g/l)</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(52,211,153,0.2); border-radius: 14px; padding: 14px; margin-bottom: 10px;">
+          <div style="font-weight: 800; font-size: 14px; color: var(--accent-blue);">💊 Shifokor Retsepti</div>
+          <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Shifokor: Sarvar Abdullayevich (Kardiolog)</div>
+          <div style="font-size: 12px; margin-top: 6px;">Tavsiya: Vitamin C, D3 kompleks, kuniga 1 mahal.</div>
+        </div>
+      </div>
+
+      <!-- Notifications Content -->
+      <div id="notificationsContent" style="display: none;">
+        <div style="background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); border-radius: 14px; padding: 14px; margin-bottom: 10px;">
+          <div style="font-weight: 800; font-size: 14px; color: var(--accent-blue);">🔔 Xushxabar!</div>
+          <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Sizning keshbek balansingizga 10% qo'shildi. Umumiy miqdor: 45,000 UZS.</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(52,211,153,0.2); border-radius: 14px; padding: 14px; margin-bottom: 10px;">
+          <div style="font-weight: 800; font-size: 14px; color: var(--neon-green);">🏥 Yangi filial ochildi</div>
+          <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Hudodingizda yangi zamonaviy stomatologiya markazi ish boshladi.</div>
+        </div>
+      </div>
+
       <!-- Image Upload Block -->
       <div class="form-group" id="uploadGroup" style="display: none;">
         <label id="lbl-upload-title">Rasm yuklash (Jarohat / Analiz varaqasi / Tish holati)</label>
-        <div class="upload-box">
-          <div id="uploadPromptArea" onclick="document.getElementById('imgInput').click()">
+        <div class="upload-box" onclick="hapticTrigger(); document.getElementById('imgInput').click()">
+          <div id="uploadPromptArea">
             <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--neon-green); margin-bottom: 6px;"></i>
             <p style="font-size: 13px; color: var(--text-sub);" id="lbl-upload-sub">Rasmni tanlang yoki bu yerga bosing</p>
           </div>
           <div id="previewContainer" class="upload-preview-container" style="display: none;">
             <img id="imgPreview" class="upload-preview">
-            <button class="remove-img-btn" onclick="removeSelectedImage(event)"><i class="fa-solid fa-xmark"></i></button>
+            <button class="remove-img-btn" onclick="hapticTrigger(); removeSelectedImage(event)"><i class="fa-solid fa-xmark"></i></button>
           </div>
         </div>
         <input type="file" id="imgInput" accept="image/*" style="display: none;" onchange="previewSelectedImage(this)">
@@ -492,7 +526,7 @@
         <textarea class="form-control" id="symptoms" rows="3" placeholder="..."></textarea>
       </div>
 
-      <button class="btn-submit" id="modalSubmitBtn" onclick="handleFormSubmit()"><i class="fa-solid fa-check"></i> Tasdiqlash</button>
+      <button class="btn-submit" id="modalSubmitBtn" onclick="hapticTrigger(); handleFormSubmit()"><i class="fa-solid fa-check"></i> Tasdiqlash</button>
 
       <div class="ai-result-box" id="aiResultBox">
         <strong style="display: block; margin-bottom: 6px; color: var(--neon-green);" id="aiHeaderTitle"><i class="fa-solid fa-brain"></i> AI Tahlil Natijasi:</strong>
@@ -510,6 +544,13 @@
     var hasImage = false;
     var userBalance = 45000;
 
+    // Haptik vibratsiya funksiyasi
+    function hapticTrigger() {
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('medium');
+      }
+    }
+
     var activeAppointmentsQueue = [
       { id: 1, queue_number: 5, patient_name: "Alisher V.", time: "10:45", complaint: "Tish og'rig'i (Karies)", status: "Faol" },
       { id: 2, queue_number: 6, patient_name: "Malika T.", time: "11:00", complaint: "Plombalash va tozalash", status: "Kutilmoqda" },
@@ -524,6 +565,7 @@
       { id: "5", full_name: "Dr. Jasur Karimov", spec_key: "therapy", clinic_name: "Mediclub Tashkent", fee: 95000, cashback: 10, rating: 4.6, status: "break", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" }
     ];
 
+    // To'liq mukammallashtirilgan viloyatlar va tumanlar bazasi (Barcha 3 tilda)
     var uzbekistanData = {
       uz_lat: [
         { name: "Toshkent shahri", districts: ["Bektemir", "Chilonzor", "Mirobod", "Mirzo Ulugʻbek", "Olmazor", "Sergeli", "Shayxontohur", "Uchtepa", "Yashnobod", "Yakkasaroy", "Yunusobod", "Yangihayot"] },
@@ -535,7 +577,7 @@
         { name: "Namangan viloyati", districts: ["Namangan sh.", "Kosonsoy", "Mingbuloq", "Namangan t.", "Norin", "Pop", "Toʻraqoʻrgʻon", "Uychi", "Uchqoʻrgʻon", "Chortoq", "Chust", "Yangiqoʻrgʻon"] },
         { name: "Navoiy viloyati", districts: ["Navoiy sh.", "Zarafshon sh.", "Konimex", "Qiziltepa", "Navbahor", "Nurota", "Tomdi", "Uchquduq", "Xatirchi"] },
         { name: "Qashqadaryo viloyati", districts: ["Qarshi sh.", "Shahrisabz sh.", "Gʻuzor", "Dehqonobod", "Qamashi", "Qarshi t.", "Kasbi", "Kitob", "Mirishkor", "Muborak", "Nishon", "Chiroqchi", "Shahrisabz t.", "Yakkabogʻ"] },
-        { name: "Samarqand viloyati", districts: ["Samarqand sh.", "Kattaqoʻrgʻon sh.", "Bulungʻur", "Jomboy", "Ishtixon", "Kattaqoʻrgʻon t.", "Қоʻşrabot", "Narpay", "Nurobod", "Payariq", "Pastdargʻom", "Paxtachi", "Samarqand t.", "Toyloq", "Urgut"] },
+        { name: "Samarqand viloyati", districts: ["Samarqand sh.", "Kattaqoʻrgʻon sh.", "Bulungʻur", "Jomboy", "Ishtixon", "Kattaqoʻrgʻon t.", "Qoʻşrabot", "Narpay", "Nurobod", "Payariq", "Pastdargʻom", "Paxtachi", "Samarqand t.", "Toyloq", "Urgut"] },
         { name: "Sirdaryo viloyati", districts: ["Guliston sh.", "Shirin sh.", "Yangiyer sh.", "Oqoltin", "Boyovut", "Guliston t.", "Mirzaobod", "Sardoba", "Sayxunobod", "Sirdaryo t."] },
         { name: "Surxondaryo viloyati", districts: ["Termiz sh.", "Angor", "Boysun", "Denov", "Jarqoʻrgʻon", "Qiziriq", "Qumqoʻrgʻon", "Muzrabot", "Sariosiyo", "Termiz t.", "Uzun", "Sherobod", "Shoʻrchi"] },
         { name: "Xorazm viloyati", districts: ["Urganch sh.", "Xiva sh.", "Bogʻot", "Gurlan", "Qoʻshkoʻpir", "Urganch t.", "Xazorasp", "Xiva t.", "Xonqa", "Shovot", "Yangiariq", "Yangibozor"] },
@@ -545,13 +587,33 @@
         { name: "Тошкент шаҳри", districts: ["Бектемир", "Чилонзор", "Миробод", "Мирзо Улуғбек", "Олмазор", "Сергели", "Шайхонтоҳур", "Учтепа", "Яшнобод", "Яккасарой", "Юнусобод", "Янгиҳаёт"] },
         { name: "Тошкент вилояти", districts: ["Нурафшон ш.", "Ангрен ш.", "Олмалиқ ш.", "Чирчиқ ш.", "Бекобод ш.", "Янги‐йўл ш.", "Оҳангарон ш.", "Бўка", "Бўстонлиқ", "Чиноз", "Қибрай", "Оҳангарон", "Оққўрғон", "Паркент", "Пискент", "Зангиота"] },
         { name: "Андижон вилояти", districts: ["Андижон ш.", "Хонобод ш.", "Асака", "Балиқчи", "Булоқбоши", "Бўз", "Жалақудуқ", "Избоскан", "Марҳамат", "Олтинкўл", "Пахтаобод", "Қўрғонтепа", "Улуғнор", "Хўжаобод", "Шаҳрихон"] },
-        { name: "Самарқанд вилояти", districts: ["Самарқанд ш.", "Каттақўрғон ш.", "Булунғур", "Жомбой", "Иштихон", "Каттақўрғон т.", "Қўшработ", "Нарпай", "Нуробод", "Паяриқ", "Пастдарғом", "Пахтачи", "Самарқанд т.", "Тойлоқ", "Ургут"] }
+        { name: "Бухоро вилояти", districts: ["Бухоро ш.", "Когон ш.", "Олот", "Бухоро т.", "Вобкент", "Ғиждувон", "Жондор", "Когон т.", "Қоракўл", "Қоровулбозор", "Пешку", "Ромитан", "Шофиркон"] },
+        { name: "Фарғона вилояти", districts: ["Фарғона ш.", "Қўқон ш.", "Марғилон ш.", "Қува ш.", "Бағдод", "Бешариқ", "Бувайда", "Данғара", "Ёзёвон", "Қува", "Қувасой", "Риштон", "Сўх", "Тошлоқ", "Ўзбекистон", "Учкўприк", "Фарғона т.", "Фурқат"] },
+        { name: "Жиззах вилояти", districts: ["Жиззах ш.", "Арнасой", "Бахмал", "Ғаллаорол", "Дўстлик", "Зафаробод", "Зарбдор", "Мирзачўл", "Пахтакор", "Фориш", "Янгиобод"] },
+        { name: "Наманган вилояти", districts: ["Наманган ш.", "Косонсой", "Мингбулоқ", "Наманган т.", "Норин", "Поп", "Тўрақўрғон", "Уйчи", "Учқўрғон", "Чортоқ", "Чуст", "Янгиқўрғон"] },
+        { name: "Навоий вилояти", districts: ["Навоий ш.", "Зарафшон ш.", "Конимех", "Қизилтепа", "Навбаҳор", "Нурота", "Томди", "Учқудуқ", "Хатирчи"] },
+        { name: "Қашқадарё вилояти", districts: ["Қарши ш.", "Шаҳрисабз ш.", "Ғузор", "Деҳқонобод", "Қамаши", "Қарши т.", "Касби", "Китоб", "Миришкор", "Муборак", "Нишон", "Чироқчи", "Шаҳрисабз т.", "Яккабоғ"] },
+        { name: "Самарқанд вилояти", districts: ["Самарқанд ш.", "Каттақўрғон ш.", "Булунғур", "Жомбой", "Иштихон", "Каттақўрғон т.", "Қўшработ", "Нарпай", "Нуробод", "Паяриқ", "Пастдарғом", "Пахтачи", "Самарқанд т.", "Тойлоқ", "Ургут"] },
+        { name: "Сирдарё вилояти", districts: ["Гулистон ш.", "Ширин ш.", "Янгиер ш.", "Оқолтин", "Боёвут", "Гулистон т.", "Мирзаобод", "Сардоба", "Сайхунобод", "Сирдарё т."] },
+        { name: "Сурхондарё вилояти", districts: ["Термиз ш.", "Ангор", "Бойсун", "Денов", "Жарқўрғон", "Қизириқ", "Қумқўрғон", "Музработ", "Сариосиё", "Термиз т.", "Узун", "Шеробод", "Шўрчи"] },
+        { name: "Хоразм вилояти", districts: ["Урганч ш.", "Хива ш.", "Боғот", "Гурлан", "Қўшкўпир", "Урганч т.", "Ҳазорасп", "Хива т.", "Хонқа", "Шовот", "Янгиариқ", "Янгибозор"] },
+        { name: "Қорақалпоғистон Республикаси", districts: ["Нукус ш.", "Амударё", "Беруний", "Кегейли", "Қонлиқўл", "Қораўзак", "Қўнғирот", "Мўйноқ", "Нукус т.", "Тахтакўпир", "Тўрткўл", "Хўжайли", "Чимбой", "Шуманай", "Элликқалъа"] }
       ],
       ru: [
         { name: "Город Ташкент", districts: ["Бектемирский", "Чиланзарский", "Мирабадский", "Мирзо-Улугбекский", "Алмазарский", "Сергелийский", "Шайхантахурский", "Учтепинский", "Яшнабадский", "Яккасарайский", "Юнусабадский", "Янгихаётский"] },
-        { name: "Ташкентская область", districts: ["Нурафшон", "Ангрен", "Алмалык", "Чирчик", "Бекабад", "Янгиюль", "Букинский", "Бостанлыкский"] },
-        { name: "Андижанская область", districts: ["Андижан", "Ханабад", "Асака", "Балыкчи", "Булакбаши", "Избаскан", "Мархамат", "Пахтаабад", "Шахрихан"] },
-        { name: "Самаркандская область", districts: ["Самарканд", "Каттакурган", "Ургут", "Пайарык", "Тайлак", "Иштыхан"] }
+        { name: "Ташкентская область", districts: ["Нурафшон", "Ангрен", "Алмалык", "Чирчик", "Бекабад", "Янгиюль", "Ангренский р-н", "Букинский", "Бостанлыкский", "Чиназский", "Кибрайский", "Паркентский", "Пскентский", "Зангиатинский"] },
+        { name: "Андижанская область", districts: ["Андижан", "Ханабад", "Асака", "Балыкчи", "Булакбаши", "Избаскан", "Мархамат", "Пахтаабад", "Шахрихан", "Кургантепа", "Хужаабад"] },
+        { name: "Бухарская область", districts: ["Бухара", "Каган", "Алат", "Вобкент", "Гиждуван", "Жондор", "Каганский р-н", "Каракуль", "Пешку", "Ромитан", "Шафиркан"] },
+        { name: "Ферганская область", districts: ["Фергана", "Коканд", "Маргилан", "Кувасай", "Бешарык", "Бувайда", "Дангара", "Риштан", "Узбекистан", "Учкуприк", "Ферганский р-н"] },
+        { name: "Джизакская область", districts: ["Джизак", "Арнасай", "Бахмал", "Галляарал", "Дустлик", "Заамин", "Зарбдор", "Пахтакор", "Фориш"] },
+        { name: "Наманганская область", districts: ["Наманган", "Касансай", "Мингбулак", "Нарынский", "Пап", "Туракурган", "Уйчи", "Учкурган", "Чартак", "Чуст", "Янгикурган"] },
+        { name: "Навоийская область", districts: ["Навои", "Зарафшан", "Канимех", "Кизилтепа", "Навбахор", "Нурата", "Томди", "Учкудук", "Хатырчи"] },
+        { name: "Кашкадарьинская область", districts: ["Карши", "Шахрисабз", "Гузар", "Дехканабад", "Камаши", "Касби", "Китаб", "Миришкор", "Мубарек", "Нишан", "Чиракчи", "Яккабаг"] },
+        { name: "Самаркандская область", districts: ["Самарканд", "Каттакурган", "Ургут", "Пайарык", "Тайлак", "Иштыхан", "Булунгур", "Джамбай", "Нарпай", "Нурабад", "Пастдаргом", "Пахтачи"] },
+        { name: "Сырдарьинская область", districts: ["Гулистан", "Ширин", "Янгиер", "Акалтын", "Баявут", "Мирзаабад", "Сардоба", "Сайхунабад", "Сырдарьинский р-н"] },
+        { name: "Сурхандарьинская область", districts: ["Термез", "Ангор", "Байсун", "Денау", "Джаркурган", "Кизирик", "Кумкурган", "Музрабат", "Сариасия", "Узун", "Шерабад", "Шурчи"] },
+        { name: "Хорезмская область", districts: ["Ургенч", "Хива", "Багат", "Гурлен", "Кошкупир", "Хазарасп", "Ханка", "Шават", "Янгиарык", "Янгибазар"] },
+        { name: "Республика Каракалпакстан", districts: ["Нукус", "Амударья", "Беруни", "Кегейли", "Кунград", "Муйнак", "Тахтакупыр", "Турткуль", "Ходжейли", "Чимбай", "Шуманай", "Элликкала"] }
       ]
     };
 
@@ -585,7 +647,8 @@
         placeholderSymptoms: "Shikoyatingizni qisqacha yozing...",
         btnSubmitBooking: "Qabulni Tasdiqlash",
         btnSubmitAi: "AI Vizual Tahlil Qilish",
-        notifMsg: "Keshbek balansingiz: 45,000 UZS.",
+        notifTitle: "Bildirishnomalar",
+        medicalBookTitle: "Tibbiy Daftar va Tarix",
         feeLabel: "Qabul",
         statusOnline: "🟢 Hozir ishda",
         statusBreak: "🟡 Tanaffusda",
@@ -601,7 +664,7 @@
         docHeroBadge: "Shifokor Kabineti",
         docRefresh: "Yangilash",
         docHeroSub: "Sizning qabulingizdagi bemorlar va keshbekni yechish paneli",
-        docQueueTitle: "Sizning Қабулингиzdagi Bemorlar",
+        docQueueTitle: "Sizning Qabulingizdagi Bemorlar",
         docCashbackTitle: "Bemor Keshbekini Chegirma sifatida Yechish",
         docCashbackSub: "Bemor taqdim etgan keshbek balansini ushbu qabul uchun chegirma sifatida tasdiqlang:",
         cardiology: "Kardiolog",
@@ -640,7 +703,8 @@
         placeholderSymptoms: "Шикоятингизни қисқача ёзинг...",
         btnSubmitBooking: "Қабулни Тасдиқлаш",
         btnSubmitAi: "AI Визуал Таҳлил Қилиш",
-        notifMsg: "Кэшбэк балансингиз: 45,000 UZS.",
+        notifTitle: "Билдиришномалар",
+        medicalBookTitle: "Тиббий Дафтар ва Тарих",
         feeLabel: "Қабул",
         statusOnline: "🟢 Ҳозир ишда",
         statusBreak: "🟡 Танаффусда",
@@ -695,7 +759,8 @@
         placeholderSymptoms: "Кратко опишите ваши жалобы...",
         btnSubmitBooking: "Подтвердить запись",
         btnSubmitAi: "Визуальный анализ ИИ",
-        notifMsg: "Кэшбэк баланс: 45,000 UZS.",
+        notifTitle: "Уведомления",
+        medicalBookTitle: "Медицинская книжка и история",
         feeLabel: "Прием",
         statusOnline: "🟢 На работе",
         statusBreak: "🟡 Перерыв",
@@ -718,7 +783,6 @@
         neurology: "Невролог",
         dentistry: "Стоматолог",
         therapy: "Терапевт",
-        surgery: "Хирург",
         pediatrics: "Педиатр",
         topDoctor: "🔥 Top Врач"
       }
@@ -744,6 +808,7 @@
     };
 
     function selectLanguage(lang) {
+      hapticTrigger();
       currentLang = lang;
       localStorage.setItem('shifo_lang', lang);
       document.getElementById('langScreen').classList.remove('active');
@@ -752,6 +817,7 @@
     }
 
     function backToLanguage() {
+      hapticTrigger();
       document.getElementById('regionScreen').classList.remove('active');
       document.getElementById('langScreen').classList.add('active');
     }
@@ -776,12 +842,14 @@
     }
 
     function selectRegion(regionName) {
+      hapticTrigger();
       document.getElementById('regionScreen').classList.remove('active');
       renderDistricts(regionName);
       document.getElementById('districtScreen').classList.add('active');
     }
 
     function backToRegions() {
+      hapticTrigger();
       document.getElementById('districtScreen').classList.remove('active');
       renderRegions();
       document.getElementById('regionScreen').classList.add('active');
@@ -814,6 +882,7 @@
     }
 
     function finalizeRegion(viloyat, tuman) {
+      hapticTrigger();
       selectedRegion = viloyat + ", " + tuman;
       localStorage.setItem('shifo_region', selectedRegion);
       document.getElementById('districtScreen').classList.remove('active');
@@ -822,6 +891,7 @@
     }
 
     function backToDistricts() {
+      hapticTrigger();
       document.getElementById('roleScreen').classList.remove('active');
       var parts = selectedRegion ? selectedRegion.split(',') : ["Toshkent shahri"];
       renderDistricts(parts[0].trim());
@@ -838,6 +908,7 @@
     }
 
     function selectRole(role) {
+      hapticTrigger();
       currentRole = role;
       localStorage.setItem('shifo_role', role);
       document.getElementById('roleScreen').classList.remove('active');
@@ -900,7 +971,6 @@
       alert("Navbatlar ro'yxati yangilandi!");
     }
 
-    // Shifokor tomonidan bemor keshbekini chegirma sifatida tasdiqlab yechish funksiyasi
     function doctorApproveCashback() {
       var code = document.getElementById('patientCodeInput').value.trim();
       if (!code) {
@@ -940,7 +1010,7 @@
         var topBadge = doc.rating >= 4.8 ? `<span class="badge-top">${langObj.topDoctor}</span>` : '';
 
         container.innerHTML += `
-          <div class="doc-card" onclick="openBookingModal('${doc.id}')">
+          <div class="doc-card" onclick="hapticTrigger(); openBookingModal('${doc.id}')">
             <div class="doc-img-wrap">
               <img src="${doc.img}" class="doc-img">
               <div class="status-badge ${statusClass}"></div>
@@ -1053,6 +1123,8 @@
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelBooking;
       
       document.getElementById('cashbackModalContent').style.display = "none";
+      document.getElementById('medicalBookContent').style.display = "none";
+      document.getElementById('notificationsContent').style.display = "none";
       document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "block";
       document.getElementById('dateTimeGroup').style.display = "block";
@@ -1071,7 +1143,46 @@
       currentMode = "cashback";
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
       document.getElementById('modalTitle').innerText = langObj.balanceBadge;
+      
       document.getElementById('cashbackModalContent').style.display = "block";
+      document.getElementById('medicalBookContent').style.display = "none";
+      document.getElementById('notificationsContent').style.display = "none";
+      document.getElementById('uploadGroup').style.display = "none";
+      document.getElementById('docSelectGroup').style.display = "none";
+      document.getElementById('dateTimeGroup').style.display = "none";
+      document.getElementById('symptomsGroupContainer').style.display = "none";
+      document.getElementById('modalSubmitBtn').style.display = "none";
+      document.getElementById('aiResultBox').style.display = "none";
+      document.getElementById('mainModal').style.display = 'flex';
+    }
+
+    // Tibbiy daftar ochilishi uchun maxsus funksiya
+    function openMedicalBookModal() {
+      currentMode = "medicalBook";
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
+      document.getElementById('modalTitle').innerText = langObj.medicalBookTitle;
+      
+      document.getElementById('cashbackModalContent').style.display = "none";
+      document.getElementById('medicalBookContent').style.display = "block";
+      document.getElementById('notificationsContent').style.display = "none";
+      document.getElementById('uploadGroup').style.display = "none";
+      document.getElementById('docSelectGroup').style.display = "none";
+      document.getElementById('dateTimeGroup').style.display = "none";
+      document.getElementById('symptomsGroupContainer').style.display = "none";
+      document.getElementById('modalSubmitBtn').style.display = "none";
+      document.getElementById('aiResultBox').style.display = "none";
+      document.getElementById('mainModal').style.display = 'flex';
+    }
+
+    // Bildirishnomalar ochilishi uchun maxsus funksiya
+    function openNotifications() {
+      currentMode = "notifications";
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
+      document.getElementById('modalTitle').innerText = langObj.notifTitle;
+      
+      document.getElementById('cashbackModalContent').style.display = "none";
+      document.getElementById('medicalBookContent').style.display = "none";
+      document.getElementById('notificationsContent').style.display = "block";
       document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
@@ -1089,6 +1200,8 @@
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelAi;
       
       document.getElementById('cashbackModalContent').style.display = "none";
+      document.getElementById('medicalBookContent').style.display = "none";
+      document.getElementById('notificationsContent').style.display = "none";
       document.getElementById('uploadGroup').style.display = "block";
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
@@ -1101,11 +1214,6 @@
 
     function closeModal() {
       document.getElementById('mainModal').style.display = 'none';
-    }
-
-    function openNotifications() {
-      var msg = (dictionary[currentLang] || dictionary['uz_lat']).notifMsg;
-      if (tg && tg.showAlert) tg.showAlert(msg); else alert(msg);
     }
 
     function formatCustomDate(dateStr) {
