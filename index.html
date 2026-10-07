@@ -423,6 +423,59 @@
         <div class="hero-sub" id="lbl-doc-hero-sub">Sizning qabulingizdagi bemorlar va keshbekni yechish paneli</div>
       </div>
 
+      <!-- SHIFOKORNI O'ZINI RO'YXATDAN O'TKAZISH FORMASI (SIGN-UP / PROFILE REGISTRATION) -->
+      <div class="doctor-queue-container" style="border-color: rgba(52, 211, 153, 0.4); margin-bottom: 20px;">
+        <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--neon-green);">
+          <i class="fa-solid fa-user-doctor"></i> Shifokor Profilini Qoʻshish (Sign-up)
+        </div>
+        <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 14px;">
+          Ism-familiyangiz, mutaxassisligingiz va rasmingizni kiriting. Tizimga qoʻshilgach, bemorlar sizni qabulga tanlashlari mumkin boʻladi:
+        </p>
+
+        <div class="form-group">
+          <label>F.I.O. (Ism va Familiya)</label>
+          <input type="text" class="form-control" id="newDocName" placeholder="Masalan: Dr. Alisher Umarov">
+        </div>
+
+        <div class="form-group">
+          <label>Mutaxassislik yo'nalishi</label>
+          <select class="form-control" id="newDocSpec">
+            <option value="cardiology">Kardiolog</option>
+            <option value="dentistry">Stomatolog</option>
+            <option value="neurology">Nevrolog</option>
+            <option value="pediatrics">Pediatr</option>
+            <option value="therapy">Terapevt</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Klinika nomi</label>
+          <input type="text" class="form-control" id="newDocClinic" placeholder="Masalan: Shifo Med Center">
+        </div>
+
+        <div class="form-group">
+          <label>Qabul narxi (UZS)</label>
+          <input type="number" class="form-control" id="newDocFee" placeholder="150000">
+        </div>
+
+        <div class="form-group">
+          <label>Shaxsiy rasm yuklash (Avatar)</label>
+          <div class="upload-box" onclick="hapticTrigger(); document.getElementById('docImgInput').click()">
+            <div id="docUploadPromptArea">
+              <i class="fa-solid fa-camera" style="font-size: 26px; color: var(--neon-green); margin-bottom: 6px;"></i>
+              <p style="font-size: 13px; color: var(--text-sub);">Shifokor rasmini tanlash uchun bosing</p>
+            </div>
+            <div id="docPreviewContainer" class="upload-preview-container" style="display: none;">
+              <img id="docImgPreview" class="upload-preview">
+              <button class="remove-img-btn" onclick="hapticTrigger(); removeDocImage(event)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
+          <input type="file" id="docImgInput" accept="image/*" style="display: none;" onchange="previewDocImage(this)">
+        </div>
+
+        <button class="btn-submit" onclick="hapticTrigger(); registerNewDoctor()">Profilni Saqlash va E'lon Qilish</button>
+      </div>
+
       <div class="doctor-queue-container" style="border-color: rgba(59, 130, 246, 0.4); margin-bottom: 20px;">
         <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--accent-blue);" id="lbl-doc-cashback-title">
           <i class="fa-solid fa-ticket"></i> Bemor Keshbekini Chegirma sifatida Yechish
@@ -552,15 +605,14 @@
     var currentMode = "booking";
     var hasImage = false;
     var userBalance = 45000;
+    var uploadedDoctorImageTemp = "";
 
-    // Haptik vibratsiya funksiyasi
     function hapticTrigger() {
       if (tg && tg.HapticFeedback) {
         tg.HapticFeedback.impactOccurred('medium');
       }
     }
 
-    // Google Drive'ga eksport qilish uchun simulyatsiya funksiyalari
     function exportQueueToDrive() {
       alert("Shifokor navbatlari va hisoboti muvaffaqiyatli Google Drive'ga CSV formatida saqlandi!");
     }
@@ -586,42 +638,42 @@
     var uzbekistanData = {
       uz_lat: [
         { name: "Toshkent shahri", districts: ["Bektemir", "Chilonzor", "Mirobod", "Mirzo Ulugʻbek", "Olmazor", "Sergeli", "Shayxontohur", "Uchtepa", "Yashnobod", "Yakkasaroy", "Yunusobod", "Yangihayot"] },
-        { name: "Toshkent viloyati", districts: ["Nurafshon sh.", "Angren sh.", "Olmaliq sh.", "Chirchiq sh.", "Bekobod sh.", "Yangiyoʻl sh.", "Ohangaron sh.", "Boʻka", "Boʻstonliq", "Chinoz", "Qibray", "Ohangaron", "Oqqoʻrgʻon", "Parkent", "Piskent", "Zangiota"] },
+        { name: "Toshkent viloyati", districts: ["Nurafshon sh.", "Angren sh.", "Olmaliq sh.", "Chirchiq sh.", "Bekobod sh.", "Yangiyoʻl sh.", "Ohangaron sh.", "Boʻka", "Boʻstonliq", "Chinoz", "Qibray", "Parkent", "Piskent", "Zangiota"] },
         { name: "Andijon viloyati", districts: ["Andijon sh.", "Xonabod sh.", "Asaka", "Baliqchi", "Buloqboshi", "Boʻz", "Jalaquduq", "Izboskan", "Marhamat", "Oltinkoʻl", "Paxtaobod", "Qoʻrgʻontepa", "Ulugʻnor", "Xoʻjaobod", "Shahrixon"] },
-        { name: "Buxoro viloyati", districts: ["Buxoro sh.", "Kogon sh.", "Olot", "Buxoro t.", "Vobkent", "Gʻijduvon", "Jondor", "Kogon t.", "Qorakoʻl", "Qorovulbozor", "Peshku", "Romitan", "Shofirkon"] },
-        { name: "Fargʻona viloyati", districts: ["Fargʻona sh.", "Qoʻqon sh.", "Margʻilon sh.", "Quva sh.", "Bagʻdod", "Beshariq", "Buvayda", "Dangʻara", "Yozyovon", "Quva", "Quvasoy", "Rishton", "Soʻx", "Toshloq", "Oʻzbekiston", "Uchkoʻprik", "Fargʻona t.", "Furqat"] },
+        { name: "Buxoro viloyati", districts: ["Buxoro sh.", "Kogon sh.", "Olot", "Vobkent", "Gʻijduvon", "Jondor", "Qorakoʻl", "Qorovulbozor", "Peshku", "Romitan", "Shofirkon"] },
+        { name: "Fargʻona viloyati", districts: ["Fargʻona sh.", "Qoʻqon sh.", "Margʻilon sh.", "Quva sh.", "Bagʻdod", "Beshariq", "Buvayda", "Dangʻara", "Yozyovon", "Rishton", "Soʻx", "Toshloq", "Uchkoʻprik"] },
         { name: "Jizzax viloyati", districts: ["Jizzax sh.", "Arnasoy", "Baxmal", "Gʻallaorol", "Doʻstlik", "Zafarobod", "Zarbdor", "Mirzachoʻl", "Paxtakor", "Forish", "Yangiobod"] },
-        { name: "Namangan viloyati", districts: ["Namangan sh.", "Kosonsoy", "Mingbuloq", "Namangan t.", "Norin", "Pop", "Toʻraqoʻrgʻon", "Uychi", "Uchqoʻrgʻon", "Chortoq", "Chust", "Yangiqoʻrgʻon"] },
+        { name: "Namangan viloyati", districts: ["Namangan sh.", "Kosonsoy", "Mingbuloq", "Norin", "Pop", "Toʻraqoʻrgʻon", "Uychi", "Uchqoʻrgʻon", "Chortoq", "Chust", "Yangiqoʻrgʻon"] },
         { name: "Navoiy viloyati", districts: ["Navoiy sh.", "Zarafshon sh.", "Konimex", "Qiziltepa", "Navbahor", "Nurota", "Tomdi", "Uchquduq", "Xatirchi"] },
-        { name: "Qashqadaryo viloyati", districts: ["Qarshi sh.", "Shahrisabz sh.", "Gʻuzor", "Dehqonobod", "Qamashi", "Qarshi t.", "Kasbi", "Kitob", "Mirishkor", "Muborak", "Nishon", "Chiroqchi", "Shahrisabz t.", "Yakkabogʻ"] },
-        { name: "Samarqand viloyati", districts: ["Samarqand sh.", "Kattaqoʻrgʻon sh.", "Bulungʻur", "Jomboy", "Ishtixon", "Kattaqoʻrgʻon t.", "Qoʻşrabot", "Narpay", "Nurobod", "Payariq", "Pastdargʻom", "Paxtachi", "Samarqand t.", "Toyloq", "Urgut"] },
-        { name: "Sirdaryo viloyati", districts: ["Guliston sh.", "Shirin sh.", "Yangiyer sh.", "Oqoltin", "Boyovut", "Guliston t.", "Mirzaobod", "Sardoba", "Sayxunobod", "Sirdaryo t."] },
-        { name: "Surxondaryo viloyati", districts: ["Termiz sh.", "Angor", "Boysun", "Denov", "Jarqoʻrgʻon", "Qiziriq", "Qumqoʻrgʻon", "Muzrabot", "Sariosiyo", "Termiz t.", "Uzun", "Sherobod", "Shoʻrchi"] },
-        { name: "Xorazm viloyati", districts: ["Urganch sh.", "Xiva sh.", "Bogʻot", "Gurlan", "Qoʻshkoʻpir", "Urganch t.", "Xazorasp", "Xiva t.", "Xonqa", "Shovot", "Yangiariq", "Yangibozor"] },
-        { name: "Qoraqalpogʻiston Respublikasi", districts: ["Nukus sh.", "Amudaryo", "Beruniy", "Kegeyli", "Qonlikoʻl", "Qoraoʻzak", "Qoʻngʻirot", "Moʻynoq", "Nukus t.", "Taxtakoʻpir", "Toʻrtkoʻl", "Xoʻjayli", "Chimboy", "Shumanay", "Ellikqal’a"] }
+        { name: "Qashqadaryo viloyati", districts: ["Qarshi sh.", "Shahrisabz sh.", "Gʻuzor", "Dehqonobod", "Qamashi", "Kasbi", "Kitob", "Mirishkor", "Muborak", "Nishon", "Chiroqchi", "Yakkabogʻ"] },
+        { name: "Samarqand viloyati", districts: ["Samarqand sh.", "Kattaqoʻrgʻon sh.", "Bulungʻur", "Jomboy", "Ishtixon", "Qoʻşrabot", "Narpay", "Nurobod", "Payariq", "Pastdargʻom", "Paxtachi", "Toyloq", "Urgut"] },
+        { name: "Sirdaryo viloyati", districts: ["Guliston sh.", "Shirin sh.", "Yangiyer sh.", "Oqoltin", "Boyovut", "Mirzaobod", "Sardoba", "Sayxunobod", "Sirdaryo t."] },
+        { name: "Surxondaryo viloyati", districts: ["Termiz sh.", "Angor", "Boysun", "Denov", "Jarqoʻrgʻon", "Qiziriq", "Qumqoʻrgʻon", "Muzrabot", "Sariosiyo", "Uzun", "Sherobod", "Shoʻrchi"] },
+        { name: "Xorazm viloyati", districts: ["Urganch sh.", "Xiva sh.", "Bogʻot", "Gurlan", "Qoʻshkoʻpir", "Xazorasp", "Xonqa", "Shovot", "Yangiariq", "Yangibozor"] },
+        { name: "Qoraqalpogʻiston Respublikasi", districts: ["Nukus sh.", "Amudaryo", "Beruniy", "Kegeyli", "Qonlikoʻl", "Qoraoʻzak", "Qoʻngʻirot", "Moʻynoq", "Taxtakoʻpir", "Toʻrtkoʻl", "Xoʻjayli", "Chimboy", "Shumanay", "Ellikqal’a"] }
       ],
       uz_cyr: [
         { name: "Тошкент шаҳри", districts: ["Бектемир", "Чилонзор", "Миробод", "Мирзо Улуғбек", "Олмазор", "Сергели", "Шайхонтоҳур", "Учтепа", "Яшнобод", "Яккасарой", "Юнусобод", "Янгиҳаёт"] },
-        { name: "Тошкент вилояти", districts: ["Нурафшон ш.", "Ангрен ш.", "Олмалиқ ш.", "Чирчиқ ш.", "Бекобод ш.", "Янги‐йўл ш.", "Оҳангарон ш.", "Бўка", "Бўстонлиқ", "Чиноз", "Қибрай", "Оҳангарон", "Оққўрғон", "Паркент", "Пискент", "Зангиота"] },
+        { name: "Тошкент вилояти", districts: ["Нурафшон ш.", "Ангрен ш.", "Олмалиқ ш.", "Чирчиқ ш.", "Бекобод ш.", "Янгиобод", "Бўка", "Бўстонлиқ", "Чиноз", "Қибрай", "Паркент", "Пискент", "Зангиота"] },
         { name: "Андижон вилояти", districts: ["Андижон ш.", "Хонобод ш.", "Асака", "Балиқчи", "Булоқбоши", "Бўз", "Жалақудуқ", "Избоскан", "Марҳамат", "Олтинкўл", "Пахтаобод", "Қўрғонтепа", "Улуғнор", "Хўжаобод", "Шаҳрихон"] },
-        { name: "Бухоро вилояти", districts: ["Бухоро ш.", "Когон ш.", "Олот", "Бухоро т.", "Вобкент", "Ғиждувон", "Жондор", "Когон т.", "Қоракўл", "Қоровулбозор", "Пешку", "Ромитан", "Шофиркон"] },
-        { name: "Фарғона вилояти", districts: ["Фарғона ш.", "Қўқон ш.", "Марғилон ш.", "Қува ш.", "Бағдод", "Бешариқ", "Бувайда", "Данғара", "Ёзёвон", "Қува", "Қувасой", "Риштон", "Сўх", "Тошлоқ", "Ўзбекистон", "Учкўприк", "Фарғона т.", "Фурқат"] },
+        { name: "Бухоро вилояти", districts: ["Бухоро ш.", "Когон ш.", "Олот", "Вобкент", "Ғиждувон", "Жондор", "Қоракўл", "Қоровулбозор", "Пешку", "Ромитан", "Шофиркон"] },
+        { name: "Фарғона вилояти", districts: ["Фарғона ш.", "Қўқон ш.", "Марғилон ш.", "Қува ш.", "Бағдод", "Бешариқ", "Бувайда", "Данғара", "Ёзёвон", "Риштон", "Сўх", "Тошлоқ", "Учкўприк"] },
         { name: "Жиззах вилояти", districts: ["Жиззах ш.", "Арнасой", "Бахмал", "Ғаллаорол", "Дўстлик", "Зафаробод", "Зарбдор", "Мирзачўл", "Пахтакор", "Фориш", "Янгиобод"] },
-        { name: "Наманган вилояти", districts: ["Наманган ш.", "Косонсой", "Мингбулоқ", "Наманган т.", "Норин", "Поп", "Тўрақўрғон", "Уйчи", "Учқўрғон", "Чортоқ", "Чуст", "Янгиқўрғон"] },
+        { name: "Наманган вилояти", districts: ["Наманган ш.", "Косонсой", "Мингбулоқ", "Норин", "Поп", "Тўрақўрғон", "Уйчи", "Учқўрғон", "Чортоқ", "Чуст", "Янгиқўрғон"] },
         { name: "Навоий вилояти", districts: ["Навоий ш.", "Зарафшон ш.", "Конимех", "Қизилтепа", "Навбаҳор", "Нурота", "Томди", "Учқудуқ", "Хатирчи"] },
-        { name: "Қашқадарё вилояти", districts: ["Қарши ш.", "Шаҳрисабз ш.", "Ғузор", "Деҳқонобод", "Қамаши", "Қарши т.", "Касби", "Китоб", "Миришкор", "Муборак", "Нишон", "Чироқчи", "Шаҳрисабз т.", "Яккабоғ"] },
-        { name: "Самарқанд вилояти", districts: ["Самарқанд ш.", "Каттақўрғон ш.", "Булунғур", "Жомбой", "Иштихон", "Каттақўрғон т.", "Қўшработ", "Нарпай", "Нуробод", "Паяриқ", "Пастдарғом", "Пахтачи", "Самарқанд т.", "Тойлоқ", "Ургут"] },
-        { name: "Сирдарё вилояти", districts: ["Гулистон ш.", "Ширин ш.", "Янгиер ш.", "Оқолтин", "Боёвут", "Гулистон т.", "Мирзаобод", "Сардоба", "Сайхунобод", "Сирдарё т."] },
-        { name: "Сурхондарё вилояти", districts: ["Термиз ш.", "Ангор", "Бойсун", "Денов", "Жарқўрғон", "Қизириқ", "Қумқўрғон", "Музработ", "Сариосиё", "Термиз т.", "Узун", "Шеробод", "Шўрчи"] },
-        { name: "Хоразм вилояти", districts: ["Урганч ш.", "Хива ш.", "Боғот", "Гурлан", "Қўшкўпир", "Урганч т.", "Ҳазорасп", "Хива т.", "Хонқа", "Шовот", "Янгиариқ", "Янгибозор"] },
-        { name: "Қорақалпоғистон Республикаси", districts: ["Нукус ш.", "Амударё", "Беруний", "Кегейли", "Қонлиқўл", "Қораўзак", "Қўнғирот", "Мўйноқ", "Нукус т.", "Тахтакўпир", "Тўрткўл", "Хўжайли", "Чимбой", "Шуманай", "Элликқалъа"] }
+        { name: "Қашқадарё вилояти", districts: ["Қарши ш.", "Шаҳрисабз ш.", "Ғузор", "Деҳқонобод", "Қамаши", "Касби", "Китоб", "Миришкор", "Муборак", "Нишон", "Чироқчи", "Яккабоғ"] },
+        { name: "Самарқанд вилояти", districts: ["Самарқанд ш.", "Каттақўрғон ш.", "Булунғур", "Жомбой", "Иштихон", "Қўшработ", "Нарпай", "Нуробод", "Паяриқ", "Пастдарғом", "Пахтачи", "Тойлоқ", "Ургут"] },
+        { name: "Сирдарё вилояти", districts: ["Гулистон ш.", "Ширин ш.", "Янгиер ш.", "Оқолтин", "Боёвут", "Мирзаобод", "Сардоба", "Сайхунобод", "Сирдарё т."] },
+        { name: "Сурхондарё вилояти", districts: ["Термиз ш.", "Ангор", "Бойсун", "Денов", "Жарқўрғон", "Қизириқ", "Қумқўрғон", "Музработ", "Сариосиё", "Узун", "Шеробод", "Шўрчи"] },
+        { name: "Хоразм вилояти", districts: ["Урганч ш.", "Хива ш.", "Боғот", "Гурлан", "Қўшкўпир", "Ҳазорасп", "Хонқа", "Шовот", "Янгиариқ", "Янгибозор"] },
+        { name: "Қорақалпоғистон Республикаси", districts: ["Нукус ш.", "Амударё", "Беруний", "Кегейли", "Қонлиқўл", "Қораўзак", "Қўнғирот", "Мўйноқ", "Тахтакўпир", "Тўрткўл", "Хўжайли", "Чимбой", "Шуманай", "Элликқалъа"] }
       ],
       ru: [
         { name: "Город Ташкент", districts: ["Бектемирский", "Чиланзарский", "Мирабадский", "Мирзо-Улугбекский", "Алмазарский", "Сергелийский", "Шайхантахурский", "Учтепинский", "Яшнабадский", "Яккасарайский", "Юнусабадский", "Янгихаётский"] },
-        { name: "Ташкентская область", districts: ["Нурафшон", "Ангрен", "Алмалык", "Чирчик", "Бекабад", "Янгиюль", "Ангренский р-н", "Букинский", "Бостанлыкский", "Чиназский", "Кибрайский", "Паркентский", "Пскентский", "Зангиатинский"] },
+        { name: "Ташкентская область", districts: ["Нурафшон", "Ангрен", "Алмалык", "Чирчик", "Бекабад", "Янгиюль", "Букинский", "Бостанлыкский", "Чиназский", "Кибрайский", "Паркентский", "Пскентский", "Зангиатинский"] },
         { name: "Андижанская область", districts: ["Андижан", "Ханабад", "Асака", "Балыкчи", "Булакбаши", "Избаскан", "Мархамат", "Пахтаабад", "Шахрихан", "Кургантепа", "Хужаабад"] },
-        { name: "Бухарская область", districts: ["Бухара", "Каган", "Алат", "Вобкент", "Гиждуван", "Жондор", "Каганский р-н", "Каракуль", "Пешку", "Ромитан", "Шафиркан"] },
-        { name: "Ферганская область", districts: ["Фергана", "Коканд", "Маргилан", "Кувасай", "Бешарык", "Бувайда", "Дангара", "Риштан", "Узбекистан", "Учкуприк", "Ферганский р-н"] },
+        { name: "Бухарская область", districts: ["Бухара", "Каган", "Алат", "Вобкент", "Гиждуван", "Жондор", "Каракуль", "Пешку", "Ромитан", "Шафиркан"] },
+        { name: "Ферганская область", districts: ["Фергана", "Коканд", "Маргилан", "Кувасай", "Бешарык", "Бувайда", "Дангара", "Риштан", "Узбекистан", "Учкуприк"] },
         { name: "Джизакская область", districts: ["Джизак", "Арнасай", "Бахмал", "Галляарал", "Дустлик", "Заамин", "Зарбдор", "Пахтакор", "Фориш"] },
         { name: "Наманганская область", districts: ["Наманган", "Касансай", "Мингбулак", "Нарынский", "Пап", "Туракурган", "Уйчи", "Учкурган", "Чартак", "Чуст", "Янгикурган"] },
         { name: "Навоийская область", districts: ["Навои", "Зарафшан", "Канимех", "Кизилтепа", "Навбахор", "Нурата", "Томди", "Учкудук", "Хатырчи"] },
@@ -729,7 +781,7 @@
         aiAnalyzing: "AI расмни ва тиш/оғиз бўшлиғи ҳолатини таҳлил қилмоқда...",
         aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Визуал Таҳлил Натижаси:",
         successBooking: "Қабулга муваффақиятли ёзилдингиз!",
-        backText: "Орқага",
+        backText: "Орқақа",
         cashbackBtn: "Қандай ишлатилади?",
         lastVisit: "Охирги ташриф",
         tagBook: "ҚАБУЛ",
@@ -986,6 +1038,60 @@
     function refreshDoctorQueue() {
       renderDoctorQueue();
       alert("Navbatlar ro'yxati yangilandi!");
+    }
+
+    function previewDocImage(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedDoctorImageTemp = e.target.result;
+          document.getElementById('docImgPreview').src = e.target.result;
+          document.getElementById('docUploadPromptArea').style.display = 'none';
+          document.getElementById('docPreviewContainer').style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function removeDocImage(e) {
+      e.stopPropagation();
+      document.getElementById('docImgInput').value = "";
+      uploadedDoctorImageTemp = "";
+      document.getElementById('docImgPreview').src = "";
+      document.getElementById('docPreviewContainer').style.display = 'none';
+      document.getElementById('docUploadPromptArea').style.display = 'block';
+    }
+
+    function registerNewDoctor() {
+      var name = document.getElementById('newDocName').value.trim();
+      var spec = document.getElementById('newDocSpec').value;
+      var clinic = document.getElementById('newDocClinic').value.trim();
+      var fee = document.getElementById('newDocFee').value.trim();
+
+      if (!name || !clinic || !fee) {
+        alert("Iltimos, barcha maydonlarni to'ldiring!");
+        return;
+      }
+
+      var newDocObj = {
+        id: String(allDoctorsData.length + 1),
+        full_name: name,
+        spec_key: spec,
+        clinic_name: clinic,
+        fee: Number(fee),
+        cashback: 10,
+        rating: 5.0,
+        status: "online",
+        img: uploadedDoctorImageTemp || "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150"
+      };
+
+      allDoctorsData.unshift(newDocObj);
+      alert("Tabriklaymiz! Shifokor profili muvaffaqiyatli yaratildi va umumiy bazaga qo'shildi.");
+      
+      document.getElementById('newDocName').value = "";
+      document.getElementById('newDocClinic').value = "";
+      document.getElementById('newDocFee').value = "";
+      removeDocImage({ stopPropagation: function(){} });
     }
 
     function doctorApproveCashback() {
@@ -1319,4 +1425,3 @@
   </script>
 </body>
 </html>
-
