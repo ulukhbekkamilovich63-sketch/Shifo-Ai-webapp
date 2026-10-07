@@ -66,7 +66,7 @@
     }
     .back-btn-top:active { background: rgba(52, 211, 153, 0.2); }
 
-    /* Main App Container */
+    /* Main App Content */
     .app-content { display: none; }
     .app-content.active { display: block; }
 
@@ -297,6 +297,11 @@
       cursor: pointer; display: flex; align-items: center; gap: 8px; margin-top: 10px; width: 100%; justify-content: center;
     }
     .drive-export-btn:active { background: rgba(59, 130, 246, 0.4); }
+
+    /* Star Rating Widget style */
+    .star-rating-box {
+      display: flex; gap: 8px; font-size: 24px; color: #f59e0b; cursor: pointer; margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -410,11 +415,11 @@
           <div class="bento-desc" id="lbl-bento-book-desc">Shifokor va qulay vaqtni tanlang</div>
         </div>
 
-        <div class="bento-card" onclick="hapticTrigger(); openMedicalBookModal()">
-          <span class="bento-tag" style="background: #f59e0b;" id="lbl-tag-status">STATUS</span>
-          <div class="bento-icon" style="color: #f59e0b; background: rgba(245,158,11,0.15);"><i class="fa-solid fa-file-medical"></i></div>
-          <div class="bento-title" id="lbl-bento-status-title">Tibbiy Daftar</div>
-          <div class="bento-desc" id="lbl-bento-status-desc">Tahlillar va retseptlar tarixi</div>
+        <div class="bento-card" onclick="hapticTrigger(); openReviewModal()">
+          <span class="bento-tag" style="background: #10b981;" id="lbl-tag-review">BAXO</span>
+          <div class="bento-icon" style="color: #34d399; background: rgba(16,185,129,0.15);"><i class="fa-solid fa-star-half-stroke"></i></div>
+          <div class="bento-title" id="lbl-bento-review-title">Doktorni Baholash</div>
+          <div class="bento-desc" id="lbl-bento-review-desc">Yulduzcha va izoh/shikoyat qoldirish</div>
         </div>
       </div>
 
@@ -440,6 +445,16 @@
         <div class="hero-sub" id="lbl-doc-hero-sub">Sizning qabulingizdagi bemorlar va keshbekni yechish paneli</div>
       </div>
 
+      <!-- Bemorlar tomonidan qoldirilgan izohlar va shikoyatlar bo'limi -->
+      <div class="doctor-queue-container" style="border-color: rgba(59, 130, 246, 0.4); margin-bottom: 20px;">
+        <div style="font-weight: 800; font-size: 16px; margin-bottom: 10px; color: var(--accent-blue);">
+          <i class="fa-solid fa-comments"></i> Bemorlarning Fikr va Shikoyatlari
+        </div>
+        <div id="doctorReviewsContainer" style="max-height: 200px; overflow-y: auto;">
+          <!-- Dinamik izohlar -->
+        </div>
+      </div>
+
       <!-- Shifokorning Ish Holatini (Status) O'zgartirish Paneli -->
       <div class="doctor-queue-container" style="border-color: rgba(52, 211, 153, 0.4); margin-bottom: 20px;">
         <div style="font-weight: 800; font-size: 15px; margin-bottom: 8px; color: var(--neon-green);">
@@ -455,7 +470,7 @@
         </div>
       </div>
 
-      <!-- SHIFOKORNI O'ZINI RO'YXATDAN O'TKAZISH FORMASI (SIGN-UP / PROFILE REGISTRATION) -->
+      <!-- SHIFOKORNI O'ZINI RO'YXATDAN O'TKAZISH FORMASI -->
       <div class="doctor-queue-container" style="border-color: rgba(52, 211, 153, 0.4); margin-bottom: 20px;">
         <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--neon-green);">
           <i class="fa-solid fa-user-doctor"></i> Shifokor Profilini Yuborish (Sign-up)
@@ -573,7 +588,7 @@
 
       <!-- Cashback Info Content -->
       <div id="cashbackModalContent" style="display: none;">
-        <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 16px; line-height: 1.5;" id="cashbackModalText">
+        <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 16px; line-height: 1.5;">
           Sizda <strong style="color:var(--neon-green)">45,000 UZS</strong> keshbek mavjud. Bu mablag'ni istalgan mutaxassis qabulida chegirma sifatida ishlatishingiz mumkin.
         </p>
       </div>
@@ -594,6 +609,30 @@
           <div style="font-weight: 800; font-size: 14px; color: var(--accent-blue);">🔔 Xushxabar!</div>
           <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Sizning keshbek balansingizga 10% qo'shildi. Umumiy miqdor: 45,000 UZS.</div>
         </div>
+      </div>
+
+      <!-- BEMORLAR UCHUN DOKTORNI BAHOLASH VA SHIKOYAT/TAQRIZ QOLDIRISH MODALI -->
+      <div id="reviewModalContent" style="display: none;">
+        <div class="form-group">
+          <label>Baholanayotgan Shifokor</label>
+          <select class="form-control" id="reviewDocSelect"></select>
+        </div>
+        <div class="form-group">
+          <label>Bahongiz (Yulduzcha)</label>
+          <div class="star-rating-box" id="starRatingContainer">
+            <i class="fa-solid fa-star" data-value="1" onclick="setStarRating(1)"></i>
+            <i class="fa-solid fa-star" data-value="2" onclick="setStarRating(2)"></i>
+            <i class="fa-solid fa-star" data-value="3" onclick="setStarRating(3)"></i>
+            <i class="fa-solid fa-star" data-value="4" onclick="setStarRating(4)"></i>
+            <i class="fa-solid fa-star" data-value="5" onclick="setStarRating(5)"></i>
+          </div>
+          <input type="hidden" id="selectedStarValue" value="5">
+        </div>
+        <div class="form-group">
+          <label>Izoh, Maqtov yoki Shikoyatingiz</label>
+          <textarea class="form-control" id="patientReviewText" rows="3" placeholder="Shifokor haqida fikringiz, maqtov yoki shikoyatingizni yozing (masalan: Juda malakali shifokor, vaqtida qabul qildi...)"></textarea>
+        </div>
+        <button class="btn-submit" onclick="hapticTrigger(); submitPatientReview()">Bahoni va Fikrni Yuborish</button>
       </div>
 
       <!-- Image Upload Block -->
@@ -667,16 +706,21 @@
       { id: 3, queue_number: 7, patient_name: "Jasur K.", time: "11:20", complaint: "Profilaktik ko'rik", status: "Kutilmoqda" }
     ];
 
+    // Doktorlar va ularning baholari, izohlari bazasi
     var defaultDoctors = [
-      { id: "1", full_name: "Sarvar Abdullayevich", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
-      { id: "2", full_name: "Dr. Malika Zokirova", spec_key: "neurology", clinic_name: "Shifo Med", fee: 120000, cashback: 15, rating: 4.9, status: "online", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" },
-      { id: "3", full_name: "Dr. Dilshodbek Rahimov", spec_key: "dentistry", clinic_name: "Stoma Dent Plus", fee: 130000, cashback: 10, rating: 4.95, status: "online", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" },
-      { id: "4", full_name: "Dr. Gulnora Saidova", spec_key: "pediatrics", clinic_name: "Darmon Clinic", fee: 110000, cashback: 10, rating: 4.8, status: "online", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150" },
-      { id: "5", full_name: "Dr. Jasur Karimov", spec_key: "therapy", clinic_name: "Mediclub Tashkent", fee: 95000, cashback: 10, rating: 4.6, status: "break", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" }
+      { id: "1", full_name: "Sarvar Abdullayevich", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, reviewsCount: 12, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
+      { id: "2", full_name: "Dr. Malika Zokirova", spec_key: "neurology", clinic_name: "Shifo Med", fee: 120000, cashback: 15, rating: 4.9, reviewsCount: 9, status: "online", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" },
+      { id: "3", full_name: "Dr. Dilshodbek Rahimov", spec_key: "dentistry", clinic_name: "Stoma Dent Plus", fee: 130000, cashback: 10, rating: 4.95, reviewsCount: 20, status: "online", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" },
+      { id: "4", full_name: "Dr. Gulnora Saidova", spec_key: "pediatrics", clinic_name: "Darmon Clinic", fee: 110000, cashback: 10, rating: 4.8, reviewsCount: 7, status: "online", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150" },
+      { id: "5", full_name: "Dr. Jasur Karimov", spec_key: "therapy", clinic_name: "Mediclub Tashkent", fee: 95000, cashback: 10, rating: 4.6, reviewsCount: 5, status: "break", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" }
     ];
 
     var allDoctorsData = JSON.parse(localStorage.getItem('shifo_doctors')) || defaultDoctors;
     var pendingDoctorsData = JSON.parse(localStorage.getItem('shifo_pending_doctors')) || [];
+    var doctorReviewsList = JSON.parse(localStorage.getItem('shifo_reviews')) || [
+      { docId: "1", patient: "Alisher V.", rating: 5, text: "Juda ajoyib kardiolog, tavsiya qilaman!", date: "10-Mart" },
+      { docId: "3", patient: "Malika K.", rating: 5, text: "Og'riqsiz davolashdi, rahmat!", date: "11-Mart" }
+    ];
 
     var uzbekistanData = {
       uz_lat: [
@@ -738,8 +782,8 @@
         bentoAiDesc: "Rasm yuklang, AI darhol tahlil qilib, mutaxassisni aniqlab beradi",
         bentoBookTitle: "Qabulga Yozilish",
         bentoBookDesc: "Shifokor va qulay vaqtni tanlang",
-        bentoStatusTitle: "Tibbiy Daftar",
-        bentoStatusDesc: "Tahlillar va retseptlar tarixi",
+        bentoReviewTitle: "Doktorni Baholash",
+        bentoReviewDesc: "Yulduzcha va izoh/shikoyat qoldirish",
         docsTitle: "Hudodingizdagi Shifokorlar (Ismiga bosing)",
         navHome: "Bosh sahifa",
         navBook: "Navbat",
@@ -794,8 +838,8 @@
         bentoAiDesc: "Расм юкланг, AI дарҳол таҳлил қилиб, мутахассисни аниқлаб беради",
         bentoBookTitle: "Қабулга Ёзилиш",
         bentoBookDesc: "Шифокор ва қулай вақтни танланг",
-        bentoStatusTitle: "Тиббий Дафтар",
-        bentoStatusDesc: "Таҳлиллар ва рецептлар тарихи",
+        bentoReviewTitle: "Шифокорни Баҳолаш",
+        bentoReviewDesc: "Юлдузча ва изоҳ/шикоят қолдириш",
         docsTitle: "Ҳудудингиздаги Шифокорлар (Исмига босинг)",
         navHome: "Бош саҳифа",
         navBook: "Навбат",
@@ -850,8 +894,8 @@
         bentoAiDesc: "Загрузите фото, ИИ мгновенно проведет анализ и определит врача",
         bentoBookTitle: "Записаться на прием",
         bentoBookDesc: "Выберите врача и удобное время",
-        bentoStatusTitle: "Мед. Книжка",
-        bentoStatusDesc: "История анализов и рецептов",
+        bentoReviewTitle: "Оценить врача",
+        bentoReviewDesc: "Поставить звездочку и оставить отзыв/жалобу",
         docsTitle: "Врачи в вашем регионе (Нажмите на имя)",
         navHome: "Главная",
         navBook: "Запись",
@@ -1052,6 +1096,7 @@
       if (currentRole === 'doctor') {
         document.getElementById('doctorDashboard').style.display = 'block';
         document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
+        renderDoctorReviews();
       } else if (currentRole === 'admin') {
         document.getElementById('adminDashboard').style.display = 'block';
         renderAdminPanelRequests();
@@ -1061,6 +1106,35 @@
       }
 
       setupUserHeader();
+    }
+
+    // Shifokor kabinetida bemorlar izohlari va shikoyatlarini chiqarish
+    function renderDoctorReviews() {
+      var container = document.getElementById('doctorReviewsContainer');
+      container.innerHTML = "";
+      
+      var currentDocId = allDoctorsData.length > 0 ? allDoctorsData[0].id : "1";
+      var myReviews = doctorReviewsList.filter(function(r) { return r.docId === currentDocId; });
+
+      if (myReviews.length === 0) {
+        container.innerHTML = `<div style="font-size: 13px; color: var(--text-sub); text-align: center; padding: 10px;">Hozircha fikrlar va shikoyatlar yo'q.</div>`;
+        return;
+      }
+
+      for (var i = 0; i < myReviews.length; i++) {
+        var rev = myReviews[i];
+        var starsHtml = "";
+        for (var s = 0; s < rev.rating; s++) { starsHtml += '<i class="fa-solid fa-star" style="color: #f59e0b; font-size: 11px;"></i>'; }
+
+        container.innerHTML += `
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(52,211,153,0.15); border-radius: 12px; padding: 10px; margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-weight: 700; font-size: 13px;">${rev.patient}</span>
+              <div>${starsHtml} <span style="font-size: 10px; color: var(--text-sub); margin-left: 4px;">${rev.date}</span></div>
+            </div>
+            <div style="font-size: 12px; color: var(--text-main); line-height: 1.4;">${rev.text}</div>
+          </div>`;
+      }
     }
 
     function renderAdminPanelRequests() {
@@ -1107,6 +1181,8 @@
 
       if (targetIndex !== -1) {
         var approvedDoc = pendingDoctorsData.splice(targetIndex, 1)[0];
+        approvedDoc.rating = 5.0;
+        approvedDoc.reviewsCount = 1;
         allDoctorsData.unshift(approvedDoc);
         
         localStorage.setItem('shifo_doctors', JSON.stringify(allDoctorsData));
@@ -1205,6 +1281,7 @@
         fee: Number(fee),
         cashback: 10,
         rating: 5.0,
+        reviewsCount: 1,
         status: currentDoctorStatus,
         img: uploadedDoctorImageTemp || "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150"
       };
@@ -1238,11 +1315,13 @@
     function renderDoctorsList(doctorsArray) {
       var container = document.getElementById('doctors-container');
       var select = document.getElementById('doctorSelect');
+      var reviewSelect = document.getElementById('reviewDocSelect');
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
       if (!container) return;
       container.innerHTML = '';
       select.innerHTML = '';
+      if (reviewSelect) reviewSelect.innerHTML = '';
 
       var sortedDocs = [...doctorsArray].sort(function(a, b) {
         return b.rating - a.rating;
@@ -1267,7 +1346,7 @@
             <div class="doc-details">
               <div class="doc-header-row">
                 <span class="doc-name">${doc.full_name} ${topBadge}</span>
-                <span style="color:#facc15; font-size:12px; font-weight:800;"><i class="fa-solid fa-star"></i> ${doc.rating.toFixed(1)}</span>
+                <span style="color:#facc15; font-size:12px; font-weight:800;"><i class="fa-solid fa-star"></i> ${doc.rating.toFixed(1)} <span style="color:var(--text-sub); font-size:10px;">(${doc.reviewsCount || 1})</span></span>
               </div>
               <div class="doc-spec">${specText} • ${doc.clinic_name}</div>
               <div class="doc-meta">
@@ -1278,6 +1357,7 @@
           </div>`;
 
         select.innerHTML += `<option value="${doc.id}">${doc.full_name} (${specText} - ${doc.rating})</option>`;
+        if (reviewSelect) reviewSelect.innerHTML += `<option value="${doc.id}">${doc.full_name} (${specText})</option>`;
       }
     }
 
@@ -1302,9 +1382,9 @@
       document.getElementById('lbl-tag-book').innerText = langObj.tagBook;
       document.getElementById('lbl-bento-book-title').innerText = langObj.bentoBookTitle;
       document.getElementById('lbl-bento-book-desc').innerText = langObj.bentoBookDesc;
-      document.getElementById('lbl-tag-status').innerText = langObj.tagStatus;
-      document.getElementById('lbl-bento-status-title').innerText = langObj.bentoStatusTitle;
-      document.getElementById('lbl-bento-status-desc').innerText = langObj.bentoStatusDesc;
+      document.getElementById('lbl-tag-review').innerText = langObj.tagBook;
+      document.getElementById('lbl-bento-review-title').innerText = langObj.bentoReviewTitle;
+      document.getElementById('lbl-bento-review-desc').innerText = langObj.bentoReviewDesc;
       document.getElementById('lbl-docs-title').innerText = langObj.docsTitle;
 
       document.getElementById('lbl-nav-home').innerText = langObj.navHome;
@@ -1363,6 +1443,66 @@
       hasImage = false;
     }
 
+    // Yulduzchani tanlash logikasi (1 dan 5 gacha)
+    function setStarRating(val) {
+      document.getElementById('selectedStarValue').value = val;
+      var stars = document.querySelectorAll('#starRatingContainer i');
+      for (var i = 0; i < stars.length; i++) {
+        if (i < val) {
+          stars[i].className = "fa-solid fa-star";
+          stars[i].style.color = "#f59e0b";
+        } else {
+          stars[i].className = "fa-regular fa-star";
+          stars[i].style.color = "#a7f3d0";
+        }
+      }
+    }
+
+    // Bemorning doktorni baholashi va izoh/shikoyat yuborishi
+    function submitPatientReview() {
+      var docId = document.getElementById('reviewDocSelect').value;
+      var ratingVal = Number(document.getElementById('selectedStarValue').value);
+      var reviewText = document.getElementById('patientReviewText').value.trim();
+
+      if (!reviewText) {
+        alert("Iltimos, izoh, maqtov yoki shikoyatingizni qisqacha yozing!");
+        return;
+      }
+
+      // Doktor reytingini o'rtacha hisobda yangilash
+      for (var i = 0; i < allDoctorsData.length; i++) {
+        if (allDoctorsData[i].id === docId) {
+          var doc = allDoctorsData[i];
+          var oldCount = doc.reviewsCount || 1;
+          var oldRating = doc.rating || 5.0;
+          
+          doc.rating = Number(((oldRating * oldCount + ratingVal) / (oldCount + 1)).toFixed(2));
+          doc.reviewsCount = oldCount + 1;
+        }
+      }
+
+      localStorage.setItem('shifo_doctors', JSON.stringify(allDoctorsData));
+
+      // Izohlar ro'yxatiga qo'shish
+      var patientNameUser = "Siz (Bemor)";
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        patientNameUser = tg.initDataUnsafe.user.first_name;
+      }
+
+      doctorReviewsList.unshift({
+        docId: docId,
+        patient: patientNameUser,
+        rating: ratingVal,
+        text: reviewText,
+        date: "Bugun"
+      });
+      localStorage.setItem('shifo_reviews', JSON.stringify(doctorReviewsList));
+
+      alert("Fikringiz va bahongiz muvaffaqiyatli qabul qilindi! Shifokor reytingi yangilandi.");
+      closeModal();
+      renderDoctorsList(allDoctorsData);
+    }
+
     function openBookingModal(doctorId) {
       currentMode = "booking";
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
@@ -1374,6 +1514,7 @@
       document.getElementById('cashbackModalContent').style.display = "none";
       document.getElementById('medicalBookContent').style.display = "none";
       document.getElementById('notificationsContent').style.display = "none";
+      document.getElementById('reviewModalContent').style.display = "none";
       document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "block";
       document.getElementById('dateTimeGroup').style.display = "block";
@@ -1388,6 +1529,26 @@
       document.getElementById('mainModal').style.display = 'flex';
     }
 
+    function openReviewModal() {
+      currentMode = "review";
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
+      document.getElementById('modalTitle').innerText = langObj.bentoReviewTitle;
+
+      document.getElementById('queueModalContent').style.display = "none";
+      document.getElementById('cashbackModalContent').style.display = "none";
+      document.getElementById('medicalBookContent').style.display = "none";
+      document.getElementById('notificationsContent').style.display = "none";
+      document.getElementById('reviewModalContent').style.display = "block";
+      document.getElementById('uploadGroup').style.display = "none";
+      document.getElementById('docSelectGroup').style.display = "none";
+      document.getElementById('dateTimeGroup').style.display = "none";
+      document.getElementById('symptomsGroupContainer').style.display = "none";
+      document.getElementById('modalSubmitBtn').style.display = "none";
+      document.getElementById('aiResultBox').style.display = "none";
+
+      document.getElementById('mainModal').style.display = 'flex';
+    }
+
     function openQueueModal() {
       currentMode = "queue";
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
@@ -1397,6 +1558,7 @@
       document.getElementById('cashbackModalContent').style.display = "none";
       document.getElementById('medicalBookContent').style.display = "none";
       document.getElementById('notificationsContent').style.display = "none";
+      document.getElementById('reviewModalContent').style.display = "none";
       document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
@@ -1417,6 +1579,7 @@
       document.getElementById('cashbackModalContent').style.display = "block";
       document.getElementById('medicalBookContent').style.display = "none";
       document.getElementById('notificationsContent').style.display = "none";
+      document.getElementById('reviewModalContent').style.display = "none";
       document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
@@ -1435,6 +1598,7 @@
       document.getElementById('cashbackModalContent').style.display = "none";
       document.getElementById('medicalBookContent').style.display = "block";
       document.getElementById('notificationsContent').style.display = "none";
+      document.getElementById('reviewModalContent').style.display = "none";
       document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
@@ -1453,6 +1617,7 @@
       document.getElementById('cashbackModalContent').style.display = "none";
       document.getElementById('medicalBookContent').style.display = "none";
       document.getElementById('notificationsContent').style.display = "block";
+      document.getElementById('reviewModalContent').style.display = "none";
       document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
@@ -1473,6 +1638,7 @@
       document.getElementById('cashbackModalContent').style.display = "none";
       document.getElementById('medicalBookContent').style.display = "none";
       document.getElementById('notificationsContent').style.display = "none";
+      document.getElementById('reviewModalContent').style.display = "none";
       document.getElementById('uploadGroup').style.display = "block";
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
@@ -1579,6 +1745,12 @@
         var okMsg = langObj.successBooking + "\n\n🔢 Sizning navbatingiz: № " + nextQueueNum + "\n📍 Hudud: " + selectedRegion + "\n👨‍⚕️ Shifokor: " + (selDoc ? selDoc.full_name : '') + "\n🕒 Vaqti: " + formattedTime;
         if (tg && tg.showAlert) tg.showAlert(okMsg); else alert(okMsg);
       }
+    }
+
+    function switchTab(tabName) {
+      var items = document.querySelectorAll('.nav-item');
+      items.forEach(function(el) { el.classList.remove('active'); });
+      event.currentTarget.classList.add('active');
     }
   </script>
 </body>
