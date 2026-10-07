@@ -430,8 +430,8 @@
       <div class="hero-card" style="background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);">
         <div class="hero-badge" id="lbl-doc-hero-badge">Shifokor Kabineti</div>
         <div class="hero-val">
-          <span id="docActiveQueueCount">3 ta navbat</span>
-          <button class="cashback-action-btn" id="lbl-doc-refresh" onclick="hapticTrigger(); refreshDoctorQueue()">Yangilash</button>
+          <span id="docActiveQueueCount">0 ta navbat</span>
+          <button class="cashback-action-btn" id="lbl-doc-refresh" onclick="hapticTrigger(); renderDoctorQueue()">Yangilash</button>
         </div>
         <div class="hero-sub" id="lbl-doc-hero-sub">Sizning qabulingizdagi bemorlar va keshbekni yechish paneli</div>
       </div>
@@ -634,7 +634,7 @@
     var hasImage = false;
     var userBalance = 45000;
     var uploadedDoctorImageTemp = "";
-    var currentDoctorStatus = "online"; // Joriy shifokor statusi
+    var currentDoctorStatus = "online";
 
     function hapticTrigger() {
       if (tg && tg.HapticFeedback) {
@@ -650,19 +650,23 @@
       alert("Tibbiy daftar va tahlillar tarixi Google Drive'ga hujjat sifatida muvaffaqiyatli yuklandi!");
     }
 
-    var activeAppointmentsQueue = [
+    // Navbatlarni localStorage'dan o'qish
+    var activeAppointmentsQueue = JSON.parse(localStorage.getItem('shifo_queue')) || [
       { id: 1, queue_number: 5, patient_name: "Alisher V.", time: "10:45", complaint: "Tish og'rig'i (Karies)", status: "Faol" },
       { id: 2, queue_number: 6, patient_name: "Malika T.", time: "11:00", complaint: "Plombalash va tozalash", status: "Kutilmoqda" },
       { id: 3, queue_number: 7, patient_name: "Jasur K.", time: "11:20", complaint: "Profilaktik ko'rik", status: "Kutilmoqda" }
     ];
 
-    var allDoctorsData = [
+    // Shifokorlar bazasini localStorage'dan o'qish (agar bo'lmasa standart ro'yxat)
+    var defaultDoctors = [
       { id: "1", full_name: "Sarvar Abdullayevich", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
       { id: "2", full_name: "Dr. Malika Zokirova", spec_key: "neurology", clinic_name: "Shifo Med", fee: 120000, cashback: 15, rating: 4.9, status: "online", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" },
       { id: "3", full_name: "Dr. Dilshodbek Rahimov", spec_key: "dentistry", clinic_name: "Stoma Dent Plus", fee: 130000, cashback: 10, rating: 4.95, status: "online", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" },
       { id: "4", full_name: "Dr. Gulnora Saidova", spec_key: "pediatrics", clinic_name: "Darmon Clinic", fee: 110000, cashback: 10, rating: 4.8, status: "online", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150" },
       { id: "5", full_name: "Dr. Jasur Karimov", spec_key: "therapy", clinic_name: "Mediclub Tashkent", fee: 95000, cashback: 10, rating: 4.6, status: "break", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" }
     ];
+
+    var allDoctorsData = JSON.parse(localStorage.getItem('shifo_doctors')) || defaultDoctors;
 
     var uzbekistanData = {
       uz_lat: [
@@ -1049,13 +1053,19 @@
       container.innerHTML = "";
       document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
 
+      if (activeAppointmentsQueue.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--text-sub); font-size: 13px; padding: 10px;">Hozircha navbatda bemorlar yo'q.</div>`;
+        return;
+      }
+
       for (var i = 0; i < activeAppointmentsQueue.length; i++) {
         var item = activeAppointmentsQueue[i];
         container.innerHTML += `
           <div class="queue-item">
             <div>
               <div style="font-weight: 800; font-size: 15px;">№ ${item.queue_number} | Bemor: ${item.patient_name}</div>
-              <div style="font-size: 12px; color: var(--text-sub); margin-top: 2px;">Vaqt: ${item.time} • Shikoyat: ${item.complaint}</div>
+              <div style="font-size: 12px; color: var(--text-sub); margin-top: 2px;">Shifokor: ${item.doctor_name || 'Umumiy'} • Vaqti: ${item.time}</div>
+              <div style="font-size: 12px; color: var(--neon-green); margin-top: 2px;">Shikoyat: ${item.complaint}</div>
             </div>
             <div>
               <span class="badge-status-text text-online">${item.status}</span>
@@ -1067,22 +1077,16 @@
     function changeDoctorStatus(status) {
       currentDoctorStatus = status;
       
-      // Tugmalar rangini o'zgartirish
       document.getElementById('statusBtnOnline').className = "status-toggle-btn" + (status === 'online' ? " active-online" : "");
       document.getElementById('statusBtnBreak').className = "status-toggle-btn" + (status === 'break' ? " active-break" : "");
       document.getElementById('statusBtnOffline').className = "status-toggle-btn" + (status === 'offline' ? " active-offline" : "");
 
-      // Ro'yxatdagi birinchi shifokor (yoki o'z profilimiz) statusini yangilash
       if (allDoctorsData.length > 0) {
         allDoctorsData[0].status = status;
+        localStorage.setItem('shifo_doctors', JSON.stringify(allDoctorsData));
       }
       
       alert("Sizning ish holatingiz muvaffaqiyatli yangilandi: " + (status === 'online' ? 'Ishda' : (status === 'break' ? 'Tanaffus' : 'Ishda emas')));
-    }
-
-    function refreshDoctorQueue() {
-      renderDoctorQueue();
-      alert("Navbatlar ro'yxati yangilandi!");
     }
 
     function previewDocImage(input) {
@@ -1119,7 +1123,7 @@
       }
 
       var newDocObj = {
-        id: String(allDoctorsData.length + 1),
+        id: String(Date.now()),
         full_name: name,
         spec_key: spec,
         clinic_name: clinic,
@@ -1131,7 +1135,8 @@
       };
 
       allDoctorsData.unshift(newDocObj);
-      alert("Tabriklaymiz! Shifokor profili muvaffaqiyatli yaratildi va umumiy bazaga qo'shildi.");
+      localStorage.setItem('shifo_doctors', JSON.stringify(allDoctorsData));
+      alert("Tabriklaymiz! Shifokor profili muvaffaqiyatli yaratildi va saqlandi.");
       
       document.getElementById('newDocName').value = "";
       document.getElementById('newDocClinic').value = "";
@@ -1440,7 +1445,7 @@
         }
 
         var formattedTime = formatCustomDate(rawTime);
-        var nextQueueNum = activeAppointmentsQueue.length + 5;
+        var nextQueueNum = activeAppointmentsQueue.length + 1;
 
         var selDoc = null;
         for (var j = 0; j < allDoctorsData.length; j++) {
@@ -1453,14 +1458,18 @@
           document.getElementById('lastVisitDate').innerText = specText + " • " + formattedTime;
         }
 
-        activeAppointmentsQueue.push({
-          id: activeAppointmentsQueue.length + 1,
+        var newQueueItem = {
+          id: Date.now(),
           queue_number: nextQueueNum,
           patient_name: "Siz (Bemor)",
+          doctor_name: selDoc ? selDoc.full_name : "Shifokor",
           time: formattedTime.split(',')[1] || formattedTime,
           complaint: symptoms || "Standart qabul",
           status: "Faol"
-        });
+        };
+
+        activeAppointmentsQueue.unshift(newQueueItem);
+        localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
 
         closeModal();
         var okMsg = langObj.successBooking + "\n\n🔢 Sizning navbatingiz: № " + nextQueueNum + "\n📍 Hudud: " + selectedRegion + "\n👨‍⚕️ Shifokor: " + (selDoc ? selDoc.full_name : '') + "\n🕒 Vaqti: " + formattedTime;
