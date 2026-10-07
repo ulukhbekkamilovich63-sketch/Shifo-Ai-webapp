@@ -291,22 +291,22 @@
 
   <!-- STEP 2: Role Selection Screen -->
   <div class="onboard-screen" id="roleScreen">
-    <button class="back-btn-top" onclick="backToLanguage()"><i class="fa-solid fa-arrow-left"></i> Orqaga</button>
+    <button class="back-btn-top" onclick="backToLanguage()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn">Orqaga</span></button>
     <div class="onboard-logo"><i class="fa-solid fa-user-gear"></i></div>
     <div class="onboard-title" id="lbl-role-title">Profilingiz turini tanlang</div>
     <div class="onboard-sub" id="lbl-role-sub">Ilovadan kim sifatida foydalanasiz?</div>
 
     <button class="onboard-btn" onclick="selectRole('patient')">
-      <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-hospital-user" style="color:var(--neon-green);"></i> Bemor sifatida (Qabulga yozilish)</span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
+      <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-hospital-user" style="color:var(--neon-green);"></i> <span id="lbl-role-patient">Bemor sifatida (Qabulga yozilish)</span></span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
     </button>
     <button class="onboard-btn" onclick="selectRole('doctor')">
-      <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-user-doctor" style="color:var(--accent-blue);"></i> Shifokor sifatida (Kabinet)</span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
+      <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-user-doctor" style="color:var(--accent-blue);"></i> <span id="lbl-role-doctor">Shifokor sifatida (Kabinet)</span></span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
     </button>
   </div>
 
   <!-- STEP 3: Region Selection Screen -->
   <div class="onboard-screen" id="regionScreen">
-    <button class="back-btn-top" onclick="backToRole()"><i class="fa-solid fa-arrow-left"></i> Orqaga</button>
+    <button class="back-btn-top" onclick="backToRole()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn-2">Orqaga</span></button>
     <div class="onboard-logo"><i class="fa-solid fa-map-location-dot"></i></div>
     <div class="onboard-title" id="lbl-region-title">Viloyatni tanlang</div>
     <div class="onboard-sub" id="lbl-region-sub">Oʻz hududingizni koʻrsating</div>
@@ -316,7 +316,7 @@
 
   <!-- STEP 4: District Selection Screen -->
   <div class="onboard-screen" id="districtScreen">
-    <button class="back-btn-top" onclick="backToRegions()"><i class="fa-solid fa-arrow-left"></i> Orqaga</button>
+    <button class="back-btn-top" onclick="backToRegions()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn-3">Orqaga</span></button>
     <div class="onboard-logo"><i class="fa-solid fa-city"></i></div>
     <div class="onboard-title" id="lbl-district-title">Tuman / Shaharni tanlang</div>
     <div class="onboard-sub" id="lbl-district-sub">Tumaningizni tanlang</div>
@@ -348,7 +348,7 @@
         <div class="hero-badge" id="lbl-balance-badge">Keshbek Balans</div>
         <div class="hero-val">
           <span id="u-balance">45,000 UZS</span>
-          <button class="cashback-action-btn" onclick="openCashbackModal()">Yechish / Ishlatish</button>
+          <button class="cashback-action-btn" id="lbl-cashback-btn" onclick="openCashbackModal()">Yechish / Ishlatish</button>
         </div>
         <div class="hero-sub" id="lbl-balance-sub">Har bir qabuldan 10% keshbek qaytariladi</div>
       </div>
@@ -356,7 +356,7 @@
       <div class="last-visit-card" id="lastVisitCard">
         <div class="last-visit-icon"><i class="fa-solid fa-user-doctor"></i></div>
         <div style="flex: 1;">
-          <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700;">Oxirgi tashrif</div>
+          <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700;" id="lbl-last-visit">Oxirgi tashrif</div>
           <div id="lastVisitDoc" style="font-weight: 800; font-size: 15px; margin: 2px 0;">Dr. Alisher Ahmedov</div>
           <div id="lastVisitDate" style="font-size: 12px; color: var(--neon-green);">Kardiolog • 12-Mart, 2026</div>
         </div>
@@ -371,14 +371,14 @@
         </div>
 
         <div class="bento-card" onclick="openBookingModal()">
-          <span class="bento-tag blue">QABUL</span>
+          <span class="bento-tag blue" id="lbl-tag-book">QABUL</span>
           <div class="bento-icon" style="color: #60a5fa; background: rgba(59,130,246,0.15);"><i class="fa-regular fa-calendar-check"></i></div>
           <div class="bento-title" id="lbl-bento-book-title">Qabulga Yozilish</div>
           <div class="bento-desc" id="lbl-bento-book-desc">Shifokor va qulay vaqtni tanlang</div>
         </div>
 
         <div class="bento-card" onclick="openNotifications()">
-          <span class="bento-tag" style="background: #f59e0b;">STATUS</span>
+          <span class="bento-tag" style="background: #f59e0b;" id="lbl-tag-status">STATUS</span>
           <div class="bento-icon" style="color: #f59e0b; background: rgba(245,158,11,0.15);"><i class="fa-solid fa-file-medical"></i></div>
           <div class="bento-title" id="lbl-bento-status-title">Tibbiy Daftar</div>
           <div class="bento-desc" id="lbl-bento-status-desc">Tahlillar va retseptlar tarixi</div>
@@ -399,16 +399,16 @@
     <!-- DOCTOR DASHBOARD -->
     <div id="doctorDashboard" style="display: none;">
       <div class="hero-card" style="background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);">
-        <div class="hero-badge">Shifokor Kabineti</div>
+        <div class="hero-badge" id="lbl-doc-hero-badge">Shifokor Kabineti</div>
         <div class="hero-val">
           <span id="docActiveQueueCount">3 ta navbat</span>
-          <button class="cashback-action-btn" onclick="refreshDoctorQueue()">Yangilash</button>
+          <button class="cashback-action-btn" id="lbl-doc-refresh" onclick="refreshDoctorQueue()">Yangilash</button>
         </div>
-        <div class="hero-sub">Bugungi faol bemorlar va qabullar ro'yxati</div>
+        <div class="hero-sub" id="lbl-doc-hero-sub">Bugungi faol bemorlar va qabullar ro'yxati</div>
       </div>
 
       <div class="section-header">
-        <div class="section-title">Bugungi Bemorlar Navbati</div>
+        <div class="section-title" id="lbl-doc-queue-title">Bugungi Bemorlar Navbati</div>
       </div>
       
       <div class="doctor-queue-container" id="doctorQueueList"></div>
@@ -442,10 +442,10 @@
 
       <!-- Cashback Info Content -->
       <div id="cashbackModalContent" style="display: none;">
-        <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 16px; line-height: 1.5;">
+        <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 16px; line-height: 1.5;" id="cashbackModalText">
           Sizda <strong style="color:var(--neon-green)">45,000 UZS</strong> keshbek mavjud. Bu mablag'ni shifokor ko'rigi uchun to'lov qilishda chegirma sifatida yechib olishingiz mumkin.
         </p>
-        <button class="btn-submit" onclick="withdrawCashback()"><i class="fa-solid fa-wallet"></i> Balansga o'tkazish / Chegirma qilish</button>
+        <button class="btn-submit" id="lbl-cashback-submit" onclick="withdrawCashback()"><i class="fa-solid fa-wallet"></i> Balansga o'tkazish / Chegirma qilish</button>
       </div>
 
       <!-- Image Upload Block -->
@@ -511,7 +511,6 @@
       { id: "5", full_name: "Dr. Jasur Karimov", spec_key: "therapy", clinic_name: "Mediclub Tashkent", fee: 95000, cashback: 10, rating: 4.6, status: "break", img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150" }
     ];
 
-    // O'zbekistonning barcha viloyat, shahar va tumanlari bazasi
     var uzbekistanData = {
       uz_lat: [
         { name: "Toshkent shahri", districts: ["Bektemir", "Chilonzor", "Mirobod", "Mirzo Ulugʻbek", "Olmazor", "Sergeli", "Shayxontohur", "Uchtepa", "Yashnobod", "Yakkasaroy", "Yunusobod", "Yangihayot"] },
@@ -528,6 +527,12 @@
         { name: "Surxondaryo viloyati", districts: ["Termiz sh.", "Angor", "Boysun", "Denov", "Jarqoʻrgʻon", "Qiziriq", "Qumqoʻrgʻon", "Muzrabot", "Sariosiyo", "Termiz t.", "Uzun", "Sherobod", "Shoʻrchi"] },
         { name: "Xorazm viloyati", districts: ["Urganch sh.", "Xiva sh.", "Bogʻot", "Gurlan", "Qoʻshkoʻpir", "Urganch t.", "Xazorasp", "Xiva t.", "Xonqa", "Shovot", "Yangiariq", "Yangibozor"] },
         { name: "Qoraqalpogʻiston Respublikasi", districts: ["Nukus sh.", "Amudaryo", "Beruniy", "Kegeyli", "Qonlikoʻl", "Qoraoʻzak", "Qoʻngʻirot", "Moʻynoq", "Nukus t.", "Taxtakoʻpir", "Toʻrtkoʻl", "Xoʻjayli", "Chimboy", "Shumanay", "Ellikqal’a"] }
+      ],
+      uz_cyr: [
+        { name: "Тошкент шаҳри", districts: ["Бектемир", "Чилонзор", "Миробод", "Мирзо Улуғбек", "Олмазор", "Сергели", "Шайхонтоҳур", "Учтепа", "Яшнобод", "Яккасарой", "Юнусобод", "Янгиҳаёт"] },
+        { name: "Тошкент вилояти", districts: ["Нурафшон ш.", "Ангрен ш.", "Олмалиқ ш.", "Чирчиқ ш.", "Бекобод ш.", "Янги‐йўл ш.", "Оҳангарон ш.", "Бўка", "Бўстонлиқ", "Чиноз", "Қибрай", "Оҳангарон", "Оққўрғон", "Паркент", "Пискент", "Зангиота"] },
+        { name: "Андижон вилояти", districts: ["Андижон ш.", "Хонобод ш.", "Асака", "Балиқчи", "Булоқбоши", "Бўз", "Жалақудуқ", "Избоскан", "Марҳамат", "Олтинкўл", "Пахтаобод", "Қўрғонтепа", "Улуғнор", "Хўжаобод", "Шаҳрихон"] },
+        { name: "Самарқанд вилояти", districts: ["Самарқанд ш.", "Каттақўрғон ш.", "Булунғур", "Жомбой", "Иштихон", "Каттақўрғон т.", "Қўшработ", "Нарпай", "Нуробод", "Паяриқ", "Пастдарғом", "Пахтачи", "Самарқанд т.", "Тойлоқ", "Ургут"] }
       ],
       ru: [
         { name: "Город Ташкент", districts: ["Бектемирский", "Чиланзарский", "Мирабадский", "Мирзо-Улугбекский", "Алмазарский", "Сергелийский", "Шайхантахурский", "Учтепинский", "Яшнабадский", "Яккасарайский", "Юнусабадский", "Янгихаётский"] },
@@ -554,6 +559,8 @@
         navRegion: "Hudud",
         roleTitle: "Profilingiz turini tanlang",
         roleSub: "Ilovadan kim sifatida foydalanasiz?",
+        rolePatient: "Bemor sifatida (Qabulga yozilish)",
+        roleDoctor: "Shifokor sifatida (Kabinet)",
         regionTitle: "Viloyatni tanlang",
         regionSub: "Oʻz hududingizni koʻrsating",
         districtTitle: "Tuman / Shaharni tanlang",
@@ -573,12 +580,74 @@
         aiAnalyzing: "AI rasmni va tish/og'iz bo'shlig'i holatini tahlil qilmoqda...",
         aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Vizual Tahlil Natijasi:",
         successBooking: "Qabulga muvaffaqiyatli yozildingiz!",
+        backText: "Orqaga",
+        cashbackBtn: "Yechish / Ishlatish",
+        lastVisit: "Oxirgi tashrif",
+        tagBook: "QABUL",
+        tagStatus: "STATUS",
+        docHeroBadge: "Shifokor Kabineti",
+        docRefresh: "Yangilash",
+        docHeroSub: "Bugungi faol bemorlar va qabullar ro'yxati",
+        docQueueTitle: "Bugungi Bemorlar Navbati",
         cardiology: "Kardiolog",
         neurology: "Nevrolog",
         dentistry: "Stomatolog",
         therapy: "Terapevt",
         pediatrics: "Pediatr",
         topDoctor: "🔥 Top Shifokor"
+      },
+      uz_cyr: {
+        greeting: "Ассалому алайкум, ",
+        balanceBadge: "Кэшбэк Баланс",
+        balanceSub: "Ҳар бир қабулдан 10% кэшбэк қайтарилади",
+        bentoAiTitle: "AI Шифо Маслаҳатчиси (Расм/Матн)",
+        bentoAiDesc: "Расм юкланг, AI дарҳол таҳлил қилиб, мутахассисни аниқлаб беради",
+        bentoBookTitle: "Қабулга Ёзилиш",
+        bentoBookDesc: "Шифокор ва қулай вақтни танланг",
+        bentoStatusTitle: "Тиббий Дафтар",
+        bentoStatusDesc: "Таҳлиллар ва рецептлар тарихи",
+        docsTitle: "Ҳудудингиздаги Энг Зўр Шифокорлар",
+        navHome: "Бош саҳифа",
+        navBook: "Навбат",
+        navRegion: "Ҳудуд",
+        roleTitle: "Профилингиз турини танланг",
+        roleSub: "Иловадан ким сифатида фойдаланасиз?",
+        rolePatient: "Бемор сифатида (Қабулга ёзилиш)",
+        roleDoctor: "Шифокор сифатида (Кабинет)",
+        regionTitle: "Вилоятни танланг",
+        regionSub: "Ўз ҳудудингизни кўрсатинг",
+        districtTitle: "Туман / Шаҳрни танланг",
+        districtSub: "Туманингизни танланг",
+        lblFormDoc: "Шифокорни танланг",
+        lblFormDate: "Қабул санаси ва вақти",
+        symptomsLabelBooking: "Шикоятингиз / Симптомлар",
+        symptomsLabelAi: "Симптомларингизни ёзинг ёки расм бириктиринг",
+        placeholderSymptoms: "Шикоятингизни қисқача ёзинг...",
+        btnSubmitBooking: "Қабулни Тасдиқлаш",
+        btnSubmitAi: "AI Визуал Таҳлил Қилиш",
+        notifMsg: "Кэшбэк балансингиз: 45,000 UZS.",
+        feeLabel: "Қабул",
+        statusOnline: "🟢 Ҳозир ишда",
+        statusBreak: "🟡 Танаффусда",
+        statusOffline: "🔴 Иш вақти тугаган",
+        aiAnalyzing: "AI расмни ва тиш/оғиз бўшлиғи ҳолатини таҳлил қилмоқда...",
+        aiHeaderTitle: "<i class='fa-solid fa-brain'></i> AI Визуал Таҳлил Натижаси:",
+        successBooking: "Қабулга муваффақиятли ёзилдингиз!",
+        backText: "Орқага",
+        cashbackBtn: "Ечиish / Ишлатиш",
+        lastVisit: "Охирги ташриф",
+        tagBook: "ҚАБУЛ",
+        tagStatus: "СТАТУС",
+        docHeroBadge: "Шифокор Кабинети",
+        docRefresh: "Янгилаш",
+        docHeroSub: "Бугунги фаол беморлар ва қабуллар рўйхати",
+        docQueueTitle: "Бугунги Беморлар Навбати",
+        cardiology: "Кардиолог",
+        neurology: "Невролог",
+        dentistry: "Стоматолог",
+        therapy: "Терапевт",
+        pediatrics: "Педиатр",
+        topDoctor: "🔥 Top Шифокор"
       },
       ru: {
         greeting: "Здравствуйте, ",
@@ -596,6 +665,8 @@
         navRegion: "Регион",
         roleTitle: "Выберите тип профиля",
         roleSub: "Кем вы являетесь в приложении?",
+        rolePatient: "Как пациент (Запись на прием)",
+        roleDoctor: "Как врач (Кабинет)",
         regionTitle: "Выберите регион",
         regionSub: "Укажите вашу область или город",
         districtTitle: "Выберите район / город",
@@ -615,6 +686,15 @@
         aiAnalyzing: "ИИ анализирует снимок зубов и состояние...",
         aiHeaderTitle: "<i class='fa-solid fa-brain'></i> Результат визуального анализа ИИ:",
         successBooking: "Вы успешно записались на прием!",
+        backText: "Назад",
+        cashbackBtn: "Использовать",
+        lastVisit: "Последний визит",
+        tagBook: "ПРИЕМ",
+        tagStatus: "СТАТУС",
+        docHeroBadge: "Кабинет врача",
+        docRefresh: "Обновить",
+        docHeroSub: "Список активных пациентов и приемов на сегодня",
+        docQueueTitle: "Очередь пациентов на сегодня",
         cardiology: "Кардиолог",
         neurology: "Невролог",
         dentistry: "Стоматолог",
@@ -634,6 +714,7 @@
       if (!currentLang) {
         document.getElementById('langScreen').classList.add('active');
       } else if (!currentRole) {
+        applyRoleScreenTranslations();
         document.getElementById('roleScreen').classList.add('active');
       } else if (!selectedRegion) {
         renderRegions();
@@ -647,7 +728,19 @@
       currentLang = lang;
       localStorage.setItem('shifo_lang', lang);
       document.getElementById('langScreen').classList.remove('active');
+      applyRoleScreenTranslations();
       document.getElementById('roleScreen').classList.add('active');
+    }
+
+    function applyRoleScreenTranslations() {
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
+      document.getElementById('lbl-back-btn').innerText = langObj.backText;
+      document.getElementById('lbl-back-btn-2').innerText = langObj.backText;
+      document.getElementById('lbl-back-btn-3').innerText = langObj.backText;
+      document.getElementById('lbl-role-title').innerText = langObj.roleTitle;
+      document.getElementById('lbl-role-sub').innerText = langObj.roleSub;
+      document.getElementById('lbl-role-patient').innerText = langObj.rolePatient;
+      document.getElementById('lbl-role-doctor').innerText = langObj.roleDoctor;
     }
 
     function backToLanguage() {
@@ -665,6 +758,7 @@
 
     function backToRole() {
       document.getElementById('regionScreen').classList.remove('active');
+      applyRoleScreenTranslations();
       document.getElementById('roleScreen').classList.add('active');
     }
 
@@ -746,6 +840,7 @@
       document.getElementById('appContent').classList.add('active');
       document.getElementById('floatingNav').classList.add('active');
       document.getElementById('headerRegionInfo').innerText = selectedRegion;
+      applyTranslations();
 
       if (currentRole === 'doctor') {
         document.getElementById('patientDashboard').style.display = 'none';
@@ -754,7 +849,6 @@
       } else {
         document.getElementById('patientDashboard').style.display = 'block';
         document.getElementById('doctorDashboard').style.display = 'none';
-        applyTranslations();
         renderDoctorsList(allDoctorsData);
       }
 
@@ -844,11 +938,15 @@
     function applyTranslations() {
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
       document.getElementById('lbl-balance-badge').innerText = langObj.balanceBadge;
+      document.getElementById('lbl-cashback-btn').innerText = langObj.cashbackBtn;
       document.getElementById('lbl-balance-sub').innerText = langObj.balanceSub;
+      document.getElementById('lbl-last-visit').innerText = langObj.lastVisit;
       document.getElementById('lbl-bento-ai-title').innerText = langObj.bentoAiTitle;
       document.getElementById('lbl-bento-ai-desc').innerText = langObj.bentoAiDesc;
+      document.getElementById('lbl-tag-book').innerText = langObj.tagBook;
       document.getElementById('lbl-bento-book-title').innerText = langObj.bentoBookTitle;
       document.getElementById('lbl-bento-book-desc').innerText = langObj.bentoBookDesc;
+      document.getElementById('lbl-tag-status').innerText = langObj.tagStatus;
       document.getElementById('lbl-bento-status-title').innerText = langObj.bentoStatusTitle;
       document.getElementById('lbl-bento-status-desc').innerText = langObj.bentoStatusDesc;
       document.getElementById('lbl-docs-title').innerText = langObj.docsTitle;
@@ -856,6 +954,11 @@
       document.getElementById('lbl-nav-home').innerText = langObj.navHome;
       document.getElementById('lbl-nav-book').innerText = langObj.navBook;
       document.getElementById('lbl-nav-region').innerText = langObj.navRegion;
+
+      document.getElementById('lbl-doc-hero-badge').innerText = langObj.docHeroBadge;
+      document.getElementById('lbl-doc-refresh').innerText = langObj.docRefresh;
+      document.getElementById('lbl-doc-hero-sub').innerText = langObj.docHeroSub;
+      document.getElementById('lbl-doc-queue-title').innerText = langObj.docQueueTitle;
 
       document.getElementById('lbl-form-doc').innerText = langObj.lblFormDoc;
       document.getElementById('lbl-form-date').innerText = langObj.lblFormDate;
@@ -869,7 +972,8 @@
         var u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
         if (u) {
           var name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
-          document.getElementById('u-name').innerText = langObj.greeting + name + '! (' + (currentRole === 'doctor' ? 'Shifokor' : 'Bemor') + ')';
+          var roleText = currentRole === 'doctor' ? (currentLang === 'ru' ? 'Врач' : 'Shifokor') : (currentLang === 'ru' ? 'Пациент' : 'Bemor');
+          document.getElementById('u-name').innerText = langObj.greeting + name + '! (' + roleText + ')';
 
           if (u.photo_url) {
             document.getElementById('avatarContainer').innerHTML = '<img src="' + u.photo_url + '" class="avatar-img">';
@@ -926,7 +1030,8 @@
 
     function openCashbackModal() {
       currentMode = "cashback";
-      document.getElementById('modalTitle').innerText = "Keshbekni Ishlatish";
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
+      document.getElementById('modalTitle').innerText = langObj.balanceBadge;
       document.getElementById('cashbackModalContent').style.display = "block";
       document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "none";
@@ -1060,6 +1165,6 @@
         if (tg && tg.showAlert) tg.showAlert(okMsg); else alert(okMsg);
       }
     }
-  </script> 
+  </script>
 </body>
 </html>
