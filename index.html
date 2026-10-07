@@ -285,8 +285,6 @@
     }
     .btn-submit:active { transform: scale(0.97); }
 
-    .star-rating-box { display: flex; gap: 8px; font-size: 24px; color: #f59e0b; cursor: pointer; margin-bottom: 10px; }
-
     /* Upload box for AI */
     .upload-box {
       border: 2px dashed rgba(52, 211, 153, 0.4); border-radius: 18px;
@@ -335,29 +333,9 @@
     </button>
   </div>
 
-  <!-- STEP 2: Region Selection Screen -->
-  <div class="onboard-screen" id="regionScreen">
-    <button class="back-btn-top" onclick="backToLanguage()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn">Orqaga</span></button>
-    <div class="onboard-logo"><i class="fa-solid fa-map-location-dot"></i></div>
-    <div class="onboard-title" id="lbl-region-title">Viloyatni tanlang</div>
-    <div class="onboard-sub" id="lbl-region-sub">Oʻz hududingizni koʻrsating</div>
-
-    <div id="regionsContainer" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px;"></div>
-  </div>
-
-  <!-- STEP 3: District Selection Screen -->
-  <div class="onboard-screen" id="districtScreen">
-    <button class="back-btn-top" onclick="backToRegions()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn-2">Orqaga</span></button>
-    <div class="onboard-logo"><i class="fa-solid fa-city"></i></div>
-    <div class="onboard-title" id="lbl-district-title">Tuman / Shaharni tanlang</div>
-    <div class="onboard-sub" id="lbl-district-sub">Tumaningizni tanlang</div>
-
-    <div id="districtsContainer" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px;"></div>
-  </div>
-
-  <!-- STEP 4: Role Selection Screen -->
+  <!-- STEP 2: Role Selection Screen (Til tanlangach chiqadi) -->
   <div class="onboard-screen" id="roleScreen">
-    <button class="back-btn-top" onclick="backToDistricts()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn-3">Orqaga</span></button>
+    <button class="back-btn-top" onclick="backToLanguage()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn">Orqaga</span></button>
     <div class="onboard-logo"><i class="fa-solid fa-user-gear"></i></div>
     <div class="onboard-title" id="lbl-role-title">Profilingiz turini tanlang</div>
     <div class="onboard-sub" id="lbl-role-sub">Ilovadan kim sifatida foydalanasiz?</div>
@@ -371,6 +349,26 @@
     <button class="onboard-btn" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1);" onclick="selectRole('admin')">
       <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i> <span>Admin sifatida (Boshqaruv)</span></span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
     </button>
+  </div>
+
+  <!-- STEP 3: Region Selection Screen (Faqat Bemor uchun) -->
+  <div class="onboard-screen" id="regionScreen">
+    <button class="back-btn-top" onclick="backToRole()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn-reg">Orqaga</span></button>
+    <div class="onboard-logo"><i class="fa-solid fa-map-location-dot"></i></div>
+    <div class="onboard-title" id="lbl-region-title">Viloyatni tanlang</div>
+    <div class="onboard-sub" id="lbl-region-sub">Oʻz hududingizni koʻrsating</div>
+
+    <div id="regionsContainer" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px;"></div>
+  </div>
+
+  <!-- STEP 4: District Selection Screen (Faqat Bemor uchun) -->
+  <div class="onboard-screen" id="districtScreen">
+    <button class="back-btn-top" onclick="backToRegions()"><i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-btn-dist">Orqaga</span></button>
+    <div class="onboard-logo"><i class="fa-solid fa-city"></i></div>
+    <div class="onboard-title" id="lbl-district-title">Tuman / Shaharni tanlang</div>
+    <div class="onboard-sub" id="lbl-district-sub">Tumaningizni tanlang</div>
+
+    <div id="districtsContainer" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px;"></div>
   </div>
 
   <!-- Main App Content -->
@@ -394,13 +392,6 @@
     <!-- TAB 1: HOME (Bosh sahifa) -->
     <div class="tab-pane active" id="tabHome">
       <div id="patientDashboard">
-        <!-- Bemor uchun yakunlangan qabulni baholab keshbek olish bloki -->
-        <div id="pendingReviewBanner" style="display: none; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 20px; padding: 18px; margin-bottom: 20px; border: 1px solid rgba(59, 130, 246, 0.5);">
-          <div style="font-weight: 800; font-size: 16px; margin-bottom: 6px;"><i class="fa-solid fa-gift"></i> +10,000 UZS Keshbekni Oling!</div>
-          <div style="font-size: 13px; opacity: 0.9; margin-bottom: 12px;">Shifokor ko'rigi yakunlandi. Keshbekni olish uchun shifokorni yulduzchalar bilan baholang va fikringizni qoldiring:</div>
-          <button class="btn-submit" style="background: rgba(255,255,255,0.25); margin-top: 0;" onclick="hapticTrigger(); openReviewModal()">Shifokorni Baholash va Keshbekni olish</button>
-        </div>
-
         <div class="hero-card">
           <div class="hero-badge" id="lbl-balance-badge">Keshbek Balans & ID</div>
           <div class="hero-val">
@@ -572,30 +563,6 @@
         <i class="fa-solid fa-xmark" style="font-size: 22px; cursor: pointer; color: var(--text-sub);" onclick="hapticTrigger(); closeModal()"></i>
       </div>
 
-      <!-- DOKTORNI BAHOLASH MODALI -->
-      <div id="reviewModalContent" style="display: none;">
-        <div class="form-group">
-          <label>Baholanayotgan Shifokor</label>
-          <select class="form-control" id="reviewDocSelect"></select>
-        </div>
-        <div class="form-group">
-          <label>Bahongiz (Yulduzcha)</label>
-          <div class="star-rating-box" id="starRatingContainer">
-            <i class="fa-solid fa-star" data-value="1" onclick="setStarRating(1)"></i>
-            <i class="fa-solid fa-star" data-value="2" onclick="setStarRating(2)"></i>
-            <i class="fa-solid fa-star" data-value="3" onclick="setStarRating(3)"></i>
-            <i class="fa-solid fa-star" data-value="4" onclick="setStarRating(4)"></i>
-            <i class="fa-solid fa-star" data-value="5" onclick="setStarRating(5)"></i>
-          </div>
-          <input type="hidden" id="selectedStarValue" value="5">
-        </div>
-        <div class="form-group">
-          <label>Izoh, Maqtov yoki Shikoyatingiz</label>
-          <textarea class="form-control" id="patientReviewText" rows="3" placeholder="Shifokor haqida fikringiz, muomala yoki shikoyatingizni yozing..."></textarea>
-        </div>
-        <button class="btn-submit" onclick="hapticTrigger(); submitPatientReview()">Bahoni va Fikrni Yuborish (+10k Keshbek)</button>
-      </div>
-
       <!-- QABULGA YOZILISH BLOKI -->
       <div id="bookingModalContentBlock" style="display: none;">
         <div class="form-group">
@@ -652,8 +619,8 @@
   <script>
     var tg = window.Telegram ? window.Telegram.WebApp : null;
     var currentLang = localStorage.getItem('shifo_lang') || null;
-    var selectedRegion = localStorage.getItem('shifo_region') || null;
     var currentRole = localStorage.getItem('shifo_role') || null;
+    var selectedRegion = localStorage.getItem('shifo_region') || null;
     var hasImage = false;
 
     var patientIdCode = localStorage.getItem('shifo_patient_id') || String(Math.floor(10000 + Math.random() * 90000));
@@ -683,8 +650,6 @@
 
     var doctorHistoryList = JSON.parse(localStorage.getItem('shifo_history')) || [];
     var patientVisitHistory = JSON.parse(localStorage.getItem('shifo_patient_visits')) || [];
-    var hasPendingReview = JSON.parse(localStorage.getItem('shifo_pending_review')) || false;
-    var lastCompletedDoctorId = localStorage.getItem('shifo_last_doc_id') || "3";
 
     var defaultDoctors = [
       { id: "1", full_name: "Sarvar Abdullayevich", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, reviewsCount: 12, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
@@ -894,12 +859,12 @@
 
       if (!currentLang) {
         document.getElementById('langScreen').classList.add('active');
-      } else if (!selectedRegion) {
-        renderRegions();
-        document.getElementById('regionScreen').classList.add('active');
       } else if (!currentRole) {
         applyRoleScreenTranslations();
         document.getElementById('roleScreen').classList.add('active');
+      } else if (currentRole === 'patient' && !selectedRegion) {
+        renderRegions();
+        document.getElementById('regionScreen').classList.add('active');
       } else {
         launchMainApp();
       }
@@ -910,14 +875,46 @@
       currentLang = lang;
       localStorage.setItem('shifo_lang', lang);
       document.getElementById('langScreen').classList.remove('active');
-      renderRegions();
-      document.getElementById('regionScreen').classList.add('active');
+      applyRoleScreenTranslations();
+      document.getElementById('roleScreen').classList.add('active');
     }
 
     function backToLanguage() {
       hapticTrigger();
-      document.getElementById('regionScreen').classList.remove('active');
+      document.getElementById('roleScreen').classList.remove('active');
       document.getElementById('langScreen').classList.add('active');
+    }
+
+    function applyRoleScreenTranslations() {
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
+      document.getElementById('lbl-back-btn').innerText = langObj.backText;
+      document.getElementById('lbl-role-title').innerText = langObj.roleTitle;
+      document.getElementById('lbl-role-sub').innerText = langObj.roleSub;
+      document.getElementById('lbl-role-patient').innerText = langObj.rolePatient;
+      document.getElementById('lbl-role-doctor').innerText = langObj.roleDoctor;
+    }
+
+    function selectRole(role) {
+      hapticTrigger();
+      currentRole = role;
+      localStorage.setItem('shifo_role', role);
+      document.getElementById('roleScreen').classList.remove('active');
+
+      if (role === 'doctor' || role === 'admin') {
+        // Shifokor yoki admin uchun viloyat shart emas, srazu kabinetga o'tadi
+        launchMainApp();
+      } else {
+        // Bemor uchun viloyatlar ro'yxatini chiqaramiz
+        renderRegions();
+        document.getElementById('regionScreen').classList.add('active');
+      }
+    }
+
+    function backToRole() {
+      hapticTrigger();
+      document.getElementById('regionScreen').classList.remove('active');
+      applyRoleScreenTranslations();
+      document.getElementById('roleScreen').classList.add('active');
     }
 
     function renderRegions() {
@@ -928,7 +925,7 @@
 
       document.getElementById('lbl-region-title').innerText = langObj.regionTitle;
       document.getElementById('lbl-region-sub').innerText = langObj.regionSub;
-      document.getElementById('lbl-back-btn').innerText = langObj.backText;
+      document.getElementById('lbl-back-btn-reg').innerText = langObj.backText;
 
       for (var i = 0; i < regions.length; i++) {
         var reg = regions[i];
@@ -961,7 +958,7 @@
 
       document.getElementById('lbl-district-title').innerText = regionName;
       document.getElementById('lbl-district-sub').innerText = langObj.districtSub;
-      document.getElementById('lbl-back-btn-2').innerText = langObj.backText;
+      document.getElementById('lbl-back-btn-dist').innerText = langObj.backText;
 
       var targetDistricts = [];
       for (var i = 0; i < regions.length; i++) {
@@ -984,42 +981,16 @@
       selectedRegion = viloyat + ", " + tuman;
       localStorage.setItem('shifo_region', selectedRegion);
       document.getElementById('districtScreen').classList.remove('active');
-      applyRoleScreenTranslations();
-      document.getElementById('roleScreen').classList.add('active');
-    }
-
-    function backToDistricts() {
-      hapticTrigger();
-      document.getElementById('roleScreen').classList.remove('active');
-      var parts = selectedRegion ? selectedRegion.split(',') : ["Toshkent shahri"];
-      renderDistricts(parts[0].trim());
-      document.getElementById('districtScreen').classList.add('active');
-    }
-
-    function applyRoleScreenTranslations() {
-      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
-      document.getElementById('lbl-back-btn-3').innerText = langObj.backText;
-      document.getElementById('lbl-role-title').innerText = langObj.roleTitle;
-      document.getElementById('lbl-role-sub').innerText = langObj.roleSub;
-      document.getElementById('lbl-role-patient').innerText = langObj.rolePatient;
-      document.getElementById('lbl-role-doctor').innerText = langObj.roleDoctor;
-    }
-
-    function selectRole(role) {
-      hapticTrigger();
-      currentRole = role;
-      localStorage.setItem('shifo_role', role);
-      document.getElementById('roleScreen').classList.remove('active');
       launchMainApp();
     }
 
     function resetAndReconfigure() {
       localStorage.removeItem('shifo_lang');
-      localStorage.removeItem('shifo_region');
       localStorage.removeItem('shifo_role');
+      localStorage.removeItem('shifo_region');
       currentLang = null;
-      selectedRegion = null;
       currentRole = null;
+      selectedRegion = null;
       document.getElementById('appContent').classList.remove('active');
       document.getElementById('floatingNav').classList.remove('active');
       document.getElementById('langScreen').classList.add('active');
@@ -1028,7 +999,7 @@
     function launchMainApp() {
       document.getElementById('appContent').classList.add('active');
       document.getElementById('floatingNav').classList.add('active');
-      document.getElementById('headerRegionInfo').innerText = selectedRegion;
+      document.getElementById('headerRegionInfo').innerText = selectedRegion || "Toshkent shahri";
       applyTranslations();
 
       document.getElementById('patientDashboard').style.display = 'none';
@@ -1052,12 +1023,6 @@
         document.getElementById('tabUserBalance').innerText = userBalance.toLocaleString('uz-UZ') + " UZS";
         document.getElementById('patientIdCode').innerText = patientIdCode;
         document.getElementById('tabPatientId').innerText = patientIdCode;
-
-        if (hasPendingReview) {
-          document.getElementById('pendingReviewBanner').style.display = 'block';
-        } else {
-          document.getElementById('pendingReviewBanner').style.display = 'none';
-        }
 
         document.getElementById('patientCashbackPane').style.display = 'block';
         document.getElementById('doctorCashbackPane').style.display = 'none';
@@ -1148,9 +1113,6 @@
         } else if (h.type === 'missed') {
           badgeColor = '#f87171';
           badgeText = 'Kelmadi';
-        } else if (h.type === 'review_left') {
-          badgeColor = '#f59e0b';
-          badgeText = 'Bemor Baholashi ⭐ ' + h.rating;
         } else if (h.type === 'cashback_deduct') {
           badgeColor = '#3b82f6';
           badgeText = 'Chegirma yechildi';
@@ -1236,14 +1198,8 @@
         finishedItem.type = 'completed';
         doctorHistoryList.unshift(finishedItem);
 
-        lastCompletedDoctorId = finishedItem.doctor_id || "3";
-        localStorage.setItem('shifo_last_doc_id', lastCompletedDoctorId);
-
         localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
         localStorage.setItem('shifo_history', JSON.stringify(doctorHistoryList));
-
-        localStorage.setItem('shifo_pending_review', JSON.stringify(true));
-        hasPendingReview = true;
 
         document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
         renderFullPageQueue();
@@ -1318,13 +1274,11 @@
     function renderDoctorsList(doctorsArray) {
       var container = document.getElementById('doctors-container');
       var select = document.getElementById('doctorSelect');
-      var reviewSelect = document.getElementById('reviewDocSelect');
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
       if (!container) return;
       container.innerHTML = '';
       select.innerHTML = '';
-      if (reviewSelect) reviewSelect.innerHTML = '';
 
       var sortedDocs = [...doctorsArray].sort(function(a, b) { return b.rating - a.rating; });
 
@@ -1357,7 +1311,6 @@
           </div>`;
 
         select.innerHTML += `<option value="${doc.id}">${doc.full_name} (${specText})</option>`;
-        if (reviewSelect) reviewSelect.innerHTML += `<option value="${doc.id}">${doc.full_name} (${specText})</option>`;
       }
     }
 
@@ -1414,79 +1367,10 @@
       }
     }
 
-    function setStarRating(val) {
-      document.getElementById('selectedStarValue').value = val;
-      var stars = document.querySelectorAll('#starRatingContainer i');
-      for (var i = 0; i < stars.length; i++) {
-        if (i < val) {
-          stars[i].className = "fa-solid fa-star";
-          stars[i].style.color = "#f59e0b";
-        } else {
-          stars[i].className = "fa-regular fa-star";
-          stars[i].style.color = "#a7f3d0";
-        }
-      }
-    }
-
-    function submitPatientReview() {
-      var docId = document.getElementById('reviewDocSelect').value;
-      var ratingVal = Number(document.getElementById('selectedStarValue').value);
-      var reviewText = document.getElementById('patientReviewText').value.trim();
-
-      if (!reviewText) {
-        showCustomAlert("Xatolik", "Iltimos, fikringizni yozing!");
-        return;
-      }
-
-      var selDocName = "Shifokor";
-      for (var i = 0; i < allDoctorsData.length; i++) {
-        if (allDoctorsData[i].id === docId) {
-          var doc = allDoctorsData[i];
-          selDocName = doc.full_name;
-          var oldCount = doc.reviewsCount || 1;
-          var oldRating = doc.rating || 5.0;
-          doc.rating = Number(((oldRating * oldCount + ratingVal) / (oldCount + 1)).toFixed(2));
-          doc.reviewsCount = oldCount + 1;
-        }
-      }
-
-      localStorage.setItem('shifo_doctors', JSON.stringify(allDoctorsData));
-
-      var patientName = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "Ulug'bek Kamilovich");
-      var nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
-      var reviewHistoryEntry = {
-        id: Date.now(),
-        patient_name: patientName + " (ID: " + patientIdCode + ")",
-        time: nowTime,
-        rating: ratingVal,
-        complaint: "Bahosi: " + ratingVal + " yulduz ⭐. Izoh: " + reviewText,
-        type: 'review_left'
-      };
-
-      doctorHistoryList.unshift(reviewHistoryEntry);
-      localStorage.setItem('shifo_history', JSON.stringify(doctorHistoryList));
-
-      userBalance += 10000;
-      localStorage.setItem('shifo_balance', userBalance);
-
-      localStorage.setItem('shifo_pending_review', JSON.stringify(false));
-      hasPendingReview = false;
-      document.getElementById('pendingReviewBanner').style.display = 'none';
-
-      document.getElementById('u-balance').innerText = userBalance.toLocaleString('uz-UZ') + " UZS";
-      document.getElementById('tabUserBalance').innerText = userBalance.toLocaleString('uz-UZ') + " UZS";
-
-      showCustomAlert("Muvaffaqiyatli", "Bahongiz va izohingiz shifokorga yetkazildi!\nSizga +10,000 UZS keshbek qo'shildi.");
-      closeModal();
-      renderDoctorsList(allDoctorsData);
-    }
-
     function openBookingModal(doctorId) {
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
       document.getElementById('modalTitle').innerText = langObj.bentoBookTitle;
       
-      document.getElementById('reviewModalContent').style.display = "none";
       document.getElementById('aiModalContentBlock').style.display = "none";
       document.getElementById('bookingModalContentBlock').style.display = "block";
       
@@ -1496,25 +1380,9 @@
       document.getElementById('mainModal').style.display = 'flex';
     }
 
-    function openReviewModal() {
-      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
-      document.getElementById('modalTitle').innerText = "Doktorni Baholash";
-
-      document.getElementById('bookingModalContentBlock').style.display = "none";
-      document.getElementById('aiModalContentBlock').style.display = "none";
-      document.getElementById('reviewModalContent').style.display = "block";
-      
-      if (lastCompletedDoctorId) {
-        document.getElementById('reviewDocSelect').value = lastCompletedDoctorId;
-      }
-
-      document.getElementById('mainModal').style.display = 'flex';
-    }
-
     function openAiModal() {
       document.getElementById('modalTitle').innerText = "AI Vizual Tahlil";
       document.getElementById('bookingModalContentBlock').style.display = "none";
-      document.getElementById('reviewModalContent').style.display = "none";
       document.getElementById('aiModalContentBlock').style.display = "block";
       document.getElementById('aiResultBox').style.display = "none";
       document.getElementById('mainModal').style.display = 'flex';
@@ -1543,7 +1411,6 @@
     }
 
     function handleAiSubmit() {
-      var symptoms = document.getElementById('aiSymptoms').value.toLowerCase();
       document.getElementById('aiResultBox').style.display = "block";
       document.getElementById('aiResultText').innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> AI rasmni tahlil qilmoqda...";
 
@@ -1597,9 +1464,6 @@
         };
         patientVisitHistory.unshift(visitRecord);
         localStorage.setItem('shifo_patient_visits', JSON.stringify(patientVisitHistory));
-        
-        lastCompletedDoctorId = docId;
-        localStorage.setItem('shifo_last_doc_id', lastCompletedDoctorId);
       }
 
       var patientNameWithId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "Ulug'bek") + " (ID: " + patientIdCode + ")";
