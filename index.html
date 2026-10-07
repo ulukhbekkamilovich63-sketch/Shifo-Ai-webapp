@@ -351,6 +351,10 @@
     <button class="onboard-btn" onclick="selectRole('doctor')">
       <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-user-doctor" style="color:var(--accent-blue);"></i> <span id="lbl-role-doctor">Shifokor sifatida (Kabinet)</span></span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
     </button>
+    <!-- Admin sifatida kirish -->
+    <button class="onboard-btn" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1);" onclick="selectRole('admin')">
+      <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i> <span>Admin sifatida (Boshqaruv)</span></span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
+    </button>
   </div>
 
   <!-- Main App Content -->
@@ -454,10 +458,10 @@
       <!-- SHIFOKORNI O'ZINI RO'YXATDAN O'TKAZISH FORMASI (SIGN-UP / PROFILE REGISTRATION) -->
       <div class="doctor-queue-container" style="border-color: rgba(52, 211, 153, 0.4); margin-bottom: 20px;">
         <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--neon-green);">
-          <i class="fa-solid fa-user-doctor"></i> Shifokor Profilini Qoʻshish (Sign-up)
+          <i class="fa-solid fa-user-doctor"></i> Shifokor Profilini Yuborish (Sign-up)
         </div>
         <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 14px;">
-          Ism-familiyangiz, mutaxassisligingiz va rasmingizni kiriting. Tizimga qoʻshilgach, bemorlar sizni qabulga tanlashlari mumkin boʻladi:
+          Ma'lumotlaringizni kiriting. Arizangiz **Admin** tomonidan tasdiqlangach, bemorlar ro'yxatida ko'rina boshlaysiz:
         </p>
 
         <div class="form-group">
@@ -501,7 +505,7 @@
           <input type="file" id="docImgInput" accept="image/*" style="display: none;" onchange="previewDocImage(this)">
         </div>
 
-        <button class="btn-submit" onclick="hapticTrigger(); registerNewDoctor()">Profilni Saqlash va E'lon Qilish</button>
+        <button class="btn-submit" onclick="hapticTrigger(); registerNewDoctor()">Admin Tasdig'iga Yuborish</button>
       </div>
 
       <div class="doctor-queue-container" style="border-color: rgba(59, 130, 246, 0.4); margin-bottom: 20px;">
@@ -517,6 +521,23 @@
         </div>
         <button class="drive-export-btn" onclick="hapticTrigger(); exportQueueToDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Navbatni Google Drive'ga saqlash (CSV)</button>
       </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="adminDashboard" style="display: none;">
+      <div class="hero-card" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); border-color: rgba(239, 68, 68, 0.5);">
+        <div class="hero-badge">Admin Panel</div>
+        <div class="hero-val">
+          <span id="pendingCountBadge">0 ta ariza</span>
+          <button class="cashback-action-btn" onclick="hapticTrigger(); renderAdminPanelRequests()">Yangilash</button>
+        </div>
+        <div class="hero-sub">Platformaga qoʻshilmoqchi boʻlgan shifokorlar soʻrovlarini tasdiqlang</div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Kutilayotgan Shifokor So'rovlari</div>
+      </div>
+      <div id="adminRequestsContainer"></div>
     </div>
   </div>
 
@@ -655,6 +676,7 @@
     ];
 
     var allDoctorsData = JSON.parse(localStorage.getItem('shifo_doctors')) || defaultDoctors;
+    var pendingDoctorsData = JSON.parse(localStorage.getItem('shifo_pending_doctors')) || [];
 
     var uzbekistanData = {
       uz_lat: [
@@ -1023,17 +1045,83 @@
       document.getElementById('headerRegionInfo').innerText = selectedRegion;
       applyTranslations();
 
+      document.getElementById('patientDashboard').style.display = 'none';
+      document.getElementById('doctorDashboard').style.display = 'none';
+      document.getElementById('adminDashboard').style.display = 'none';
+
       if (currentRole === 'doctor') {
-        document.getElementById('patientDashboard').style.display = 'none';
         document.getElementById('doctorDashboard').style.display = 'block';
         document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
+      } else if (currentRole === 'admin') {
+        document.getElementById('adminDashboard').style.display = 'block';
+        renderAdminPanelRequests();
       } else {
         document.getElementById('patientDashboard').style.display = 'block';
-        document.getElementById('doctorDashboard').style.display = 'none';
         renderDoctorsList(allDoctorsData);
       }
 
       setupUserHeader();
+    }
+
+    function renderAdminPanelRequests() {
+      var container = document.getElementById('adminRequestsContainer');
+      container.innerHTML = "";
+      document.getElementById('pendingCountBadge').innerText = pendingDoctorsData.length + " ta ariza";
+
+      if (pendingDoctorsData.length === 0) {
+        container.innerHTML = `<div class="doctor-queue-container" style="text-align: center; color: var(--text-sub);">Hozircha yangi shifokorlardan so'rovlar kelib tushmagan.</div>`;
+        return;
+      }
+
+      for (var i = 0; i < pendingDoctorsData.length; i++) {
+        var doc = pendingDoctorsData[i];
+        var langObj = dictionary[currentLang] || dictionary['uz_lat'];
+        var specText = langObj[doc.spec_key] || doc.spec_key;
+
+        container.innerHTML += `
+          <div class="doctor-queue-container" style="border-color: rgba(239, 68, 68, 0.4);">
+            <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
+              <img src="${doc.img}" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover;">
+              <div>
+                <div style="font-weight: 800; font-size: 16px;">${doc.full_name}</div>
+                <div style="font-size: 13px; color: var(--text-sub);">${specText} • ${doc.clinic_name}</div>
+                <div style="font-size: 12px; color: var(--neon-green); margin-top: 2px;">Qabul narxi: ${Number(doc.fee).toLocaleString('uz-UZ')} UZS</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn-submit" style="background: linear-gradient(135deg, #10b981, #047857); margin-top:0;" onclick="hapticTrigger(); approveDoctor('${doc.id}')"><i class="fa-solid fa-check"></i> Ruxsat berish</button>
+              <button class="btn-submit" style="background: linear-gradient(135deg, #ef4444, #b91c1c); margin-top:0;" onclick="hapticTrigger(); rejectDoctor('${doc.id}')"><i class="fa-solid fa-xmark"></i> Rad etish</button>
+            </div>
+          </div>`;
+      }
+    }
+
+    function approveDoctor(docId) {
+      var targetIndex = -1;
+      for (var i = 0; i < pendingDoctorsData.length; i++) {
+        if (pendingDoctorsData[i].id === docId) {
+          targetIndex = i;
+          break;
+        }
+      }
+
+      if (targetIndex !== -1) {
+        var approvedDoc = pendingDoctorsData.splice(targetIndex, 1)[0];
+        allDoctorsData.unshift(approvedDoc);
+        
+        localStorage.setItem('shifo_doctors', JSON.stringify(allDoctorsData));
+        localStorage.setItem('shifo_pending_doctors', JSON.stringify(pendingDoctorsData));
+
+        renderAdminPanelRequests();
+        alert("Shifokorning arizasi tasdiqlandi! Endi u bemorlar uchun umumiy ro'yxatda ko'rinadi.");
+      }
+    }
+
+    function rejectDoctor(docId) {
+      pendingDoctorsData = pendingDoctorsData.filter(function(doc) { return doc.id !== docId; });
+      localStorage.setItem('shifo_pending_doctors', JSON.stringify(pendingDoctorsData));
+      renderAdminPanelRequests();
+      alert("Shifokor arizasi rad etildi.");
     }
 
     function renderDoctorQueue() {
@@ -1121,9 +1209,9 @@
         img: uploadedDoctorImageTemp || "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150"
       };
 
-      allDoctorsData.unshift(newDocObj);
-      localStorage.setItem('shifo_doctors', JSON.stringify(allDoctorsData));
-      alert("Tabriklaymiz! Shifokor profili muvaffaqiyatli yaratildi va saqlandi.");
+      pendingDoctorsData.push(newDocObj);
+      localStorage.setItem('shifo_pending_doctors', JSON.stringify(pendingDoctorsData));
+      alert("Arizangiz muvaffaqiyatli yuborildi! Admin tasdiqlagach, u platformada faollashadi.");
       
       document.getElementById('newDocName').value = "";
       document.getElementById('newDocClinic').value = "";
@@ -1241,7 +1329,7 @@
         var u = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
         if (u) {
           var name = u.first_name + (u.last_name ? ' ' + u.last_name : '');
-          var roleText = currentRole === 'doctor' ? (currentLang === 'ru' ? 'Врач' : 'Shifokor') : (currentLang === 'ru' ? 'Пациент' : 'Bemor');
+          var roleText = currentRole === 'doctor' ? 'Shifokor' : (currentRole === 'admin' ? 'Admin' : 'Bemor');
           document.getElementById('u-name').innerText = langObj.greeting + name + '! (' + roleText + ')';
 
           if (u.photo_url) {
