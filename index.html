@@ -207,6 +207,13 @@
       border-radius: 14px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
     }
 
+    /* Finish session button inside queue */
+    .finish-session-btn {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none;
+      padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;
+    }
+    .finish-session-btn:active { transform: scale(0.95); opacity: 0.9; }
+
     /* Status Control Buttons for Doctor */
     .status-btn-group {
       display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px;
@@ -613,7 +620,7 @@
 
       <!-- BEMORLAR UCHUN DOKTORNI BAHOLASH VA SHIKOYAT/TAQRIZ QOLDIRISH MODALI -->
       <div id="reviewModalContent" style="display: none;">
-        <div class="form-group">
+        <div class="form-group" id="reviewDocSelectGroup">
           <label>Baholanayotgan Shifokor</label>
           <select class="form-control" id="reviewDocSelect"></select>
         </div>
@@ -703,10 +710,10 @@
     var activeAppointmentsQueue = JSON.parse(localStorage.getItem('shifo_queue')) || [
       { id: 1, queue_number: 5, patient_name: "Alisher V.", time: "10:45", complaint: "Tish og'rig'i (Karies)", status: "Faol" },
       { id: 2, queue_number: 6, patient_name: "Malika T.", time: "11:00", complaint: "Plombalash va tozalash", status: "Kutilmoqda" },
-      { id: 3, queue_number: 7, patient_name: "Jasur K.", time: "11:20", complaint: "Profilaktik ko'rik", status: "Kutilmoqda" }
+      { id: 3, queue_number: 7, patient_name: "Jasur K.", time: "11:20", complaint: "Profilaktik ko'rik", status: "Kutilmoqda" },
+      { id: 4, queue_number: 8, patient_name: "Zarnigor O.", time: "11:40", complaint: "Konsultatsiya", status: "Kutilmoqda" }
     ];
 
-    // Doktorlar va ularning baholari, izohlari bazasi
     var defaultDoctors = [
       { id: "1", full_name: "Sarvar Abdullayevich", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, reviewsCount: 12, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
       { id: "2", full_name: "Dr. Malika Zokirova", spec_key: "neurology", clinic_name: "Shifo Med", fee: 120000, cashback: 15, rating: 4.9, reviewsCount: 9, status: "online", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" },
@@ -747,9 +754,9 @@
         { name: "Фарғона вилояти", districts: ["Фарғона ш.", "Қўқон ш.", "Марғилон ш.", "Қува ш.", "Бағдод", "Бешариқ", "Бувайда", "Данғара", "Ёзёвон", "Риштон", "Сўх", "Тошлоқ", "Учкўприк"] },
         { name: "Жиззах вилояти", districts: ["Жиззах ш.", "Арнасой", "Бахмал", "Ғаллаорол", "Дўстлик", "Зафаробод", "Зарбдор", "Мирзачўл", "Пахтакор", "Фориш", "Янгиобод"] },
         { name: "Наманган вилояти", districts: ["Наманган ш.", "Косонсой", "Мингбулоқ", "Норин", "Поп", "Тўрақўрғон", "Уйчи", "Учқўрғон", "Чортоқ", "Чуст", "Янгиқўрғон"] },
-        { name: "Навоий вилояти", districts: ["Навоий ш.", "Зарафшон ш.", "Конимех", "Қизилтепа", "Навбаҳор", "Нурота", "Томди", "Учқудуқ", "Хатирчи"] },
+        { name: "Навоий вилояти", districts: ["Навоий ш.", "Зарафшон ш.", "Конимех", "Қизилтепа", "Навбаҳор", "Нурата", "Томди", "Учқудуқ", "Хатирчи"] },
         { name: "Қашқадарё вилояти", districts: ["Қарши ш.", "Шаҳрисабз ш.", "Ғузор", "Деҳқонобод", "Қамаши", "Касби", "Китоб", "Миришкор", "Муборак", "Нишон", "Чироқчи", "Яккабоғ"] },
-        { name: "Самарқанд вилояти", districts: ["Самарқанд ш.", "Каттақўрғон ш.", "Булунғур", "Жомбой", "Иштихон", "Қўшработ", "Нарпай", "Нуробод", "Паяриқ", "Пастдарғом", "Пахтачи", "Тойлоқ", "Ургут"] },
+        { name: "Самарқанд вилояти", districts: ["Самарқанд ш.", "Каттақўрғон ш.", "Булунғур", "Жомбой", "Иштихон", "Қўшработ", "Нарпай", "Нуробод", "Паяриқ", "Пастдарғом", "Пахтачи", "Toyлоқ", "Ургут"] },
         { name: "Сирдарё вилояти", districts: ["Гулистон ш.", "Ширин ш.", "Янгиер ш.", "Оқолтин", "Боёвут", "Мирзаобод", "Сардоба", "Сайхунобод", "Сирдарё т."] },
         { name: "Сурхондарё вилояти", districts: ["Термиз ш.", "Ангор", "Бойсун", "Денов", "Жарқўрғон", "Қизириқ", "Қумқўрғон", "Музработ", "Сариосиё", "Узун", "Шеробод", "Шўрчи"] },
         { name: "Хоразм вилояти", districts: ["Урганч ш.", "Хива ш.", "Боғот", "Гурлан", "Қўшкўпир", "Ҳазорасп", "Хонқа", "Шовот", "Янгиариқ", "Янгибозор"] },
@@ -1108,7 +1115,6 @@
       setupUserHeader();
     }
 
-    // Shifokor kabinetida bemorlar izohlari va shikoyatlarini chiqarish
     function renderDoctorReviews() {
       var container = document.getElementById('doctorReviewsContainer');
       container.innerHTML = "";
@@ -1200,6 +1206,26 @@
       alert("Shifokor arizasi rad etildi.");
     }
 
+    // Shifokor kabinetida navbatdagi bemor uchun "Qabulni yakunlash" funksiyasi
+    function finishSession(itemId) {
+      hapticTrigger();
+      var targetIndex = -1;
+      for (var i = 0; i < activeAppointmentsQueue.length; i++) {
+        if (activeAppointmentsQueue[i].id === itemId) {
+          targetIndex = i;
+          break;
+        }
+      }
+
+      if (targetIndex !== -1) {
+        activeAppointmentsQueue.splice(targetIndex, 1);
+        localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
+        document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
+        renderDoctorQueue();
+        alert("Qabul muvaffaqiyatli yakunlandi! Navbat bittaga kamaydi.");
+      }
+    }
+
     function renderDoctorQueue() {
       var container = document.getElementById('doctorQueueModalList');
       container.innerHTML = "";
@@ -1211,15 +1237,21 @@
 
       for (var i = 0; i < activeAppointmentsQueue.length; i++) {
         var item = activeAppointmentsQueue[i];
+        
+        // Agar foydalanuvchi shifokor bo'lsa "Qabulni yakunlash" tugmasi chiqadi
+        var actionBtnHtml = currentRole === 'doctor' ? 
+          `<button class="finish-session-btn" onclick="hapticTrigger(); finishSession(${item.id})"><i class="fa-solid fa-check-double"></i> Yakunlash</button>` : 
+          `<span class="badge-status-text text-online">${item.status}</span>`;
+
         container.innerHTML += `
           <div class="queue-item">
             <div>
               <div style="font-weight: 800; font-size: 15px;">№ ${item.queue_number} | Bemor: ${item.patient_name}</div>
-              <div style="font-size: 12px; color: var(--text-sub); margin-top: 2px;">Shifokor: ${item.doctor_name || 'Umumiy'} • Vaqti: ${item.time}</div>
+              <div style="font-size: 12px; color: var(--text-sub); margin-top: 2px;">Vaqti: ${item.time}</div>
               <div style="font-size: 12px; color: var(--neon-green); margin-top: 2px;">Shikoyat: ${item.complaint}</div>
             </div>
             <div>
-              <span class="badge-status-text text-online">${item.status}</span>
+              ${actionBtnHtml}
             </div>
           </div>`;
       }
@@ -1443,7 +1475,6 @@
       hasImage = false;
     }
 
-    // Yulduzchani tanlash logikasi (1 dan 5 gacha)
     function setStarRating(val) {
       document.getElementById('selectedStarValue').value = val;
       var stars = document.querySelectorAll('#starRatingContainer i');
@@ -1458,7 +1489,6 @@
       }
     }
 
-    // Bemorning doktorni baholashi va izoh/shikoyat yuborishi
     function submitPatientReview() {
       var docId = document.getElementById('reviewDocSelect').value;
       var ratingVal = Number(document.getElementById('selectedStarValue').value);
@@ -1469,7 +1499,6 @@
         return;
       }
 
-      // Doktor reytingini o'rtacha hisobda yangilash
       for (var i = 0; i < allDoctorsData.length; i++) {
         if (allDoctorsData[i].id === docId) {
           var doc = allDoctorsData[i];
@@ -1483,7 +1512,6 @@
 
       localStorage.setItem('shifo_doctors', JSON.stringify(allDoctorsData));
 
-      // Izohlar ro'yxatiga qo'shish
       var patientNameUser = "Siz (Bemor)";
       if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
         patientNameUser = tg.initDataUnsafe.user.first_name;
@@ -1498,7 +1526,7 @@
       });
       localStorage.setItem('shifo_reviews', JSON.stringify(doctorReviewsList));
 
-      alert("Fikringiz va bahongiz muvaffaqiyatli qabul qilindi! Shifokor reytingi yangilandi.");
+      alert("Fikringiz va bahongiz muvaffaqiyatli qabul qilindi! Shifokor obro'si/reputatsiyasi yangilandi.");
       closeModal();
       renderDoctorsList(allDoctorsData);
     }
@@ -1539,6 +1567,7 @@
       document.getElementById('medicalBookContent').style.display = "none";
       document.getElementById('notificationsContent').style.display = "none";
       document.getElementById('reviewModalContent').style.display = "block";
+      document.getElementById('reviewDocSelectGroup').style.display = "block";
       document.getElementById('uploadGroup').style.display = "none";
       document.getElementById('docSelectGroup').style.display = "none";
       document.getElementById('dateTimeGroup').style.display = "none";
