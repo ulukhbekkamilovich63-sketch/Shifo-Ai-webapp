@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Shifo AI - Ultra Health Mini App</title>
+  <title>Shifo AI - Ultra Health Professional Mini App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
@@ -557,7 +557,7 @@
     <!-- TAB 4: HISTORY (Tarix - Full Page) -->
     <div class="tab-pane" id="tabHistory">
       <div class="section-header">
-        <div class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> Qabul Tarixi (History)</div>
+        <div class="section-title" id="historyPageTitle"><i class="fa-solid fa-clock-rotate-left"></i> Qabul Tarixi</div>
       </div>
       <div id="fullPageHistoryList"></div>
     </div>
@@ -698,11 +698,14 @@
     }
 
     var activeAppointmentsQueue = JSON.parse(localStorage.getItem('shifo_queue')) || [
-      { id: 1, queue_number: 5, patient_name: "Alisher V. (ID: 41289)", time: "10:30", complaint: "Tish og'rig'i (Karies)", status: "Faol", timeLeft: 600 },
-      { id: 2, queue_number: 6, patient_name: "Malika T. (ID: 90211)", time: "10:45", complaint: "Plombalash va tozalash", status: "Kutilmoqda", timeLeft: 900 }
+      { id: 1, queue_number: 5, patient_name: "Alisher V. (ID: 41289)", patient_id: "41289", time: "10:30", complaint: "Tish og'rig'i (Karies)", status: "Faol", timeLeft: 600 },
+      { id: 2, queue_number: 6, patient_name: "Malika T. (ID: 90211)", patient_id: "90211", time: "10:45", complaint: "Plombalash va tozalash", status: "Kutilmoqda", timeLeft: 900 }
     ];
 
     var doctorHistoryList = JSON.parse(localStorage.getItem('shifo_history')) || [];
+    var patientVisitHistory = JSON.parse(localStorage.getItem('shifo_patient_visits')) || [
+      { doctor_name: "Sarvar Abdullayevich", specialty: "Kardiolog", date: "12-Mart, 2026, soat 14:00" }
+    ];
 
     var defaultDoctors = [
       { id: "1", full_name: "Sarvar Abdullayevich", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, reviewsCount: 12, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
@@ -1098,6 +1101,16 @@
         return;
       }
 
+      // ID orqali balandni bog'lash va tekshirish
+      if (pId === patientIdCode) {
+        if (userBalance >= amount) {
+          userBalance -= amount;
+          localStorage.setItem('shifo_balance', userBalance);
+          document.getElementById('u-balance').innerText = userBalance.toLocaleString('uz-UZ') + " UZS";
+          document.getElementById('tabUserBalance').innerText = userBalance.toLocaleString('uz-UZ') + " UZS";
+        }
+      }
+
       var nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       var historyEntry = {
         id: Date.now(),
@@ -1119,12 +1132,29 @@
       var container = document.getElementById('fullPageHistoryList');
       container.innerHTML = "";
 
-      // Bemor uchun tarix bo'limi bo'sh ko'rsatiladi
+      // Bemor uchun tarix sahifasi: qaysi shifokorga qaysi vaqtda borgani ko'rsatiladi
       if (currentRole === 'patient') {
-        container.innerHTML = `<div style="font-size: 13px; color: var(--text-sub); text-align: center; padding: 20px;">Hozircha tarix ma'lumotlari mavjud emas.</div>`;
+        if (patientVisitHistory.length === 0) {
+          container.innerHTML = `<div style="font-size: 13px; color: var(--text-sub); text-align: center; padding: 20px;">Hozircha tashriflar tarixi mavjud emas.</div>`;
+          return;
+        }
+
+        for (var p = 0; p < patientVisitHistory.length; p++) {
+          var visit = patientVisitHistory[p];
+          container.innerHTML += `
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-bottom: 12px; backdrop-filter: blur(12px);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-weight: 800; font-size: 15px; color: var(--neon-green);"><i class="fa-solid fa-user-doctor"></i> ${visit.doctor_name}</span>
+                <span style="font-size: 11px; padding: 3px 8px; border-radius: 6px; background: rgba(52,211,153,0.15); color: var(--neon-green); font-weight: 700;">Tashrif</span>
+              </div>
+              <div style="font-size: 13px; color: var(--text-sub); margin-bottom: 4px;">Mutaxassislik: <b>${visit.specialty}</b></div>
+              <div style="font-size: 12px; color: var(--text-sub); opacity: 0.8;">Sana va vaqt: ${visit.date}</div>
+            </div>`;
+        }
         return;
       }
 
+      // Shifokor uchun tarix sahifasi
       if (doctorHistoryList.length === 0) {
         container.innerHTML = `<div style="font-size: 13px; color: var(--text-sub); text-align: center; padding: 20px;">Hozircha tarix yozuvlari yo'q.</div>`;
         return;
@@ -1318,11 +1348,23 @@
     }
 
     function changeDoctorStatus(status) {
+      document.getElementById('statusBtnOnline').className = "status-toggle-btn";
+      document.getElementById('statusBtnBreak').className = "status-toggle-btn";
+      document.getElementById('statusBtnOffline').className = "status-toggle-btn";
+
+      if (status === 'online') {
+        document.getElementById('statusBtnOnline').className = "status-toggle-btn active-online";
+      } else if (status === 'break') {
+        document.getElementById('statusBtnBreak').className = "status-toggle-btn active-break";
+      } else if (status === 'offline') {
+        document.getElementById('statusBtnOffline').className = "status-toggle-btn active-offline";
+      }
+
       if (allDoctorsData.length > 0) {
         allDoctorsData[0].status = status;
         localStorage.setItem('shifo_doctors', JSON.stringify(allDoctorsData));
       }
-      showCustomAlert("Status", "Ish holatingiz yangilandi: " + status);
+      showCustomAlert("Status", "Ish holatingiz muvaffaqiyatli yangilandi: " + status);
     }
 
     function renderDoctorsList(doctorsArray) {
@@ -1568,6 +1610,15 @@
         document.getElementById('lastVisitDoc').innerText = selDoc.full_name;
         var specText = langObj[selDoc.spec_key] || selDoc.spec_key;
         document.getElementById('lastVisitDate').innerText = specText + " • " + formattedTime;
+
+        // Bemorning shaxsiy tashriflar tarixiga qo'shish
+        var visitRecord = {
+          doctor_name: selDoc.full_name,
+          specialty: specText,
+          date: formattedTime
+        };
+        patientVisitHistory.unshift(visitRecord);
+        localStorage.setItem('shifo_patient_visits', JSON.stringify(patientVisitHistory));
       }
 
       var patientNameWithId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "Ulug'bek") + " (ID: " + patientIdCode + ")";
@@ -1576,6 +1627,7 @@
         id: Date.now(),
         queue_number: nextQueueNum,
         patient_name: patientNameWithId,
+        patient_id: patientIdCode,
         doctor_name: selDoc ? selDoc.full_name : "Shifokor",
         time: formattedTime.split(',')[1] || formattedTime,
         complaint: symptoms || "Standart qabul",
