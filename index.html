@@ -207,6 +207,19 @@
       border-radius: 14px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
     }
 
+    /* Status Control Buttons for Doctor */
+    .status-btn-group {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px;
+    }
+    .status-toggle-btn {
+      padding: 10px 8px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer;
+      border: 1px solid rgba(52, 211, 153, 0.25); background: rgba(255, 255, 255, 0.04); color: white;
+      display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.15s;
+    }
+    .status-toggle-btn.active-online { background: rgba(52, 211, 153, 0.25); border-color: #34d399; color: #34d399; }
+    .status-toggle-btn.active-break { background: rgba(251, 191, 36, 0.25); border-color: #fbbf24; color: #fbbf24; }
+    .status-toggle-btn.active-offline { background: rgba(248, 113, 113, 0.25); border-color: #f87171; color: #f87171; }
+
     /* Floating Navigation Bar */
     .floating-nav {
       position: fixed; bottom: 20px; left: 16px; right: 16px;
@@ -423,6 +436,21 @@
         <div class="hero-sub" id="lbl-doc-hero-sub">Sizning qabulingizdagi bemorlar va keshbekni yechish paneli</div>
       </div>
 
+      <!-- Shifokorning Ish Holatini (Status) O'zgartirish Paneli -->
+      <div class="doctor-queue-container" style="border-color: rgba(52, 211, 153, 0.4); margin-bottom: 20px;">
+        <div style="font-weight: 800; font-size: 15px; margin-bottom: 8px; color: var(--neon-green);">
+          <i class="fa-solid fa-toggle-on"></i> Mening Ishdagi Holatim (Status)
+        </div>
+        <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 12px;">
+          Bemorlar sizning hozirda ishda ekanligingizni ko'rishlari uchun statusni belgilang:
+        </p>
+        <div class="status-btn-group">
+          <button class="status-toggle-btn active-online" id="statusBtnOnline" onclick="hapticTrigger(); changeDoctorStatus('online')"><i class="fa-solid fa-circle" style="font-size:8px;"></i> Ishda</button>
+          <button class="status-toggle-btn" id="statusBtnBreak" onclick="hapticTrigger(); changeDoctorStatus('break')"><i class="fa-solid fa-circle" style="font-size:8px;"></i> Tanaffus</button>
+          <button class="status-toggle-btn" id="statusBtnOffline" onclick="hapticTrigger(); changeDoctorStatus('offline')"><i class="fa-solid fa-circle" style="font-size:8px;"></i> Ishda emas</button>
+        </div>
+      </div>
+
       <!-- SHIFOKORNI O'ZINI RO'YXATDAN O'TKAZISH FORMASI (SIGN-UP / PROFILE REGISTRATION) -->
       <div class="doctor-queue-container" style="border-color: rgba(52, 211, 153, 0.4); margin-bottom: 20px;">
         <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--neon-green);">
@@ -606,6 +634,7 @@
     var hasImage = false;
     var userBalance = 45000;
     var uploadedDoctorImageTemp = "";
+    var currentDoctorStatus = "online"; // Joriy shifokor statusi
 
     function hapticTrigger() {
       if (tg && tg.HapticFeedback) {
@@ -1035,6 +1064,22 @@
       }
     }
 
+    function changeDoctorStatus(status) {
+      currentDoctorStatus = status;
+      
+      // Tugmalar rangini o'zgartirish
+      document.getElementById('statusBtnOnline').className = "status-toggle-btn" + (status === 'online' ? " active-online" : "");
+      document.getElementById('statusBtnBreak').className = "status-toggle-btn" + (status === 'break' ? " active-break" : "");
+      document.getElementById('statusBtnOffline').className = "status-toggle-btn" + (status === 'offline' ? " active-offline" : "");
+
+      // Ro'yxatdagi birinchi shifokor (yoki o'z profilimiz) statusini yangilash
+      if (allDoctorsData.length > 0) {
+        allDoctorsData[0].status = status;
+      }
+      
+      alert("Sizning ish holatingiz muvaffaqiyatli yangilandi: " + (status === 'online' ? 'Ishda' : (status === 'break' ? 'Tanaffus' : 'Ishda emas')));
+    }
+
     function refreshDoctorQueue() {
       renderDoctorQueue();
       alert("Navbatlar ro'yxati yangilandi!");
@@ -1081,7 +1126,7 @@
         fee: Number(fee),
         cashback: 10,
         rating: 5.0,
-        status: "online",
+        status: currentDoctorStatus,
         img: uploadedDoctorImageTemp || "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150"
       };
 
