@@ -406,7 +406,7 @@
     <!-- TAB 1: HOME (Bosh sahifa) -->
     <div class="tab-pane active" id="tabHome">
       <div id="patientDashboard">
-        <!-- Bemor uchun yakunlangan qabulni baholab keshbek olish bloki (Agar mavjud bo'lsa) -->
+        <!-- Bemor uchun yakunlangan qabulni baholab keshbek olish bloki -->
         <div id="pendingReviewBanner" style="display: none; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 20px; padding: 18px; margin-bottom: 20px; border: 1px solid rgba(59, 130, 246, 0.5);">
           <div style="font-weight: 800; font-size: 16px; margin-bottom: 6px;"><i class="fa-solid fa-gift"></i> +10,000 UZS Keshbekni Oling!</div>
           <div style="font-size: 13px; opacity: 0.9; margin-bottom: 12px;">Shifokor ko'rigi yakunlandi. Keshbekni olish uchun shifokorni yulduzchalar bilan baholang va fikringizni qoldiring:</div>
@@ -705,7 +705,7 @@
     }
 
     var activeAppointmentsQueue = JSON.parse(localStorage.getItem('shifo_queue')) || [
-      { id: 1, queue_number: 1, patient_name: "Ulug'bek Kamilovich (ID: 48495)", patient_id: "48495", time: "10:30", complaint: "boshim ogriyapti", status: "Faol" }
+      { id: 1, queue_number: 1, patient_name: "Ulug'bek Kamilovich (ID: 48495)", patient_id: "48495", time: "10:30", complaint: "tish juda ogriyapti", status: "Faol" }
     ];
 
     var doctorHistoryList = JSON.parse(localStorage.getItem('shifo_history')) || [];
@@ -1082,7 +1082,6 @@
         document.getElementById('patientIdCode').innerText = patientIdCode;
         document.getElementById('tabPatientId').innerText = patientIdCode;
 
-        // Bemor uchun yakunlangan qabul bo'lsa banner chiqadi
         if (hasPendingReview) {
           document.getElementById('pendingReviewBanner').style.display = 'block';
         } else {
@@ -1255,7 +1254,6 @@
       showCustomAlert("Admin Panel", "Shifokor arizasi rad etildi.");
     }
 
-    // Shifokor uchun "Yakunlash" tugmasi
     function finishSession(itemId) {
       hapticTrigger();
       var targetIndex = -1;
@@ -1270,7 +1268,6 @@
         localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
         localStorage.setItem('shifo_history', JSON.stringify(doctorHistoryList));
 
-        // Bemor uchun sahifada baholash bannerini yoqish
         localStorage.setItem('shifo_pending_review', JSON.stringify(true));
         hasPendingReview = true;
 
@@ -1281,7 +1278,6 @@
       }
     }
 
-    // Bemor kelmaganda o'chirish (X bosish orqali)
     function removeQueueItem(itemId) {
       hapticTrigger();
       activeAppointmentsQueue = activeAppointmentsQueue.filter(function(item) { return item.id !== itemId; });
@@ -1458,7 +1454,6 @@
       }
     }
 
-    // Bemor baholaganda shifokor tarixiga yuborish va keshbek qo'shish
     function submitPatientReview() {
       var docId = document.getElementById('reviewDocSelect').value;
       var ratingVal = Number(document.getElementById('selectedStarValue').value);
@@ -1483,7 +1478,6 @@
 
       localStorage.setItem('shifo_doctors', JSON.stringify(allDoctorsData));
 
-      // Shifokor tarixiga bemorning bahosi va izohini yuborish
       var patientName = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "Ulug'bek Kamilovich");
       var nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       
@@ -1499,11 +1493,9 @@
       doctorHistoryList.unshift(reviewHistoryEntry);
       localStorage.setItem('shifo_history', JSON.stringify(doctorHistoryList));
 
-      // Bemorga 10,000 UZS keshbek qo'shish
       userBalance += 10000;
       localStorage.setItem('shifo_balance', userBalance);
 
-      // Baholash bannerini yo'qotish
       localStorage.setItem('shifo_pending_review', JSON.stringify(false));
       hasPendingReview = false;
       document.getElementById('pendingReviewBanner').style.display = 'none';
