@@ -237,12 +237,17 @@
       border-radius: 14px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
     }
 
-    /* Finish session button inside queue */
     .finish-session-btn {
       background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none;
       padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;
     }
     .finish-session-btn:active { transform: scale(0.95); opacity: 0.9; }
+
+    .missed-session-btn {
+      background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none;
+      padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; margin-left: 6px;
+    }
+    .missed-session-btn:active { transform: scale(0.95); opacity: 0.9; }
 
     /* Status Control Buttons for Doctor */
     .status-btn-group {
@@ -403,7 +408,6 @@
     <button class="onboard-btn" onclick="selectRole('doctor')">
       <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-user-doctor" style="color:var(--accent-blue);"></i> <span id="lbl-role-doctor">Shifokor sifatida (Kabinet)</span></span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
     </button>
-    <!-- Admin sifatida kirish -->
     <button class="onboard-btn" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1);" onclick="selectRole('admin')">
       <span style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i> <span>Admin sifatida (Boshqaruv)</span></span> <i class="fa-solid fa-chevron-right" style="opacity:0.6;"></i>
     </button>
@@ -429,7 +433,6 @@
 
     <!-- PATIENT DASHBOARD -->
     <div id="patientDashboard">
-      <!-- Keshbek Balans va Shaxsiy ID kartasi -->
       <div class="hero-card">
         <div class="hero-badge" id="lbl-balance-badge">Keshbek Balans & ID</div>
         <div class="hero-val">
@@ -490,7 +493,33 @@
           <span id="docActiveQueueCount">0 ta navbat</span>
           <button class="cashback-action-btn" id="lbl-doc-refresh" onclick="hapticTrigger(); openQueueModal()">Navbatni ko'rish</button>
         </div>
-        <div class="hero-sub" id="lbl-doc-hero-sub">Sizning qabulingizdagi bemorlar ro'yxati</div>
+        <div class="hero-sub" id="lbl-doc-hero-sub">Sizning qabulingizdagi bemorlar ro'yxati va taymerlar</div>
+      </div>
+
+      <!-- Keshbeklar va Chegirmalarni Boshqarish Paneli (AI o'rniga kiritildi) -->
+      <div class="doctor-queue-container" style="border-color: rgba(59, 130, 246, 0.4); margin-bottom: 20px;">
+        <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--accent-blue);">
+          <i class="fa-solid fa-ticket"></i> Keshbeklar va Chegirmalarni Yechish
+        </div>
+        <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 12px;">
+          Bemorning 5 xonali ID raqamini yoki ismini kiriting, to'plangan keshbekni (masalan, 40,000 UZS) joriy qabul uchun chegirma sifatida hisobdan yeching:
+        </p>
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+          <input type="text" class="form-control" id="doctorPatientIdInput" placeholder="Bemor ID (masalan: 78237)" style="flex: 1; padding: 10px; font-size: 13px;">
+          <input type="number" class="form-control" id="doctorDeductionAmount" placeholder="Summa (UZS)" style="width: 130px; padding: 10px; font-size: 13px;" value="10000">
+        </div>
+        <button class="btn-submit" style="margin-top: 0; background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="hapticTrigger(); doctorApplyCashbackDiscount()">Keshbekni Chegirma sifatida Yechish</button>
+        <button class="drive-export-btn" onclick="hapticTrigger(); exportQueueToDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Navbatni Google Drive'ga saqlash (CSV)</button>
+      </div>
+
+      <!-- Qabul Tarixi (History) Bo'limi -->
+      <div class="doctor-queue-container" style="border-color: rgba(52, 211, 153, 0.4); margin-bottom: 20px;">
+        <div style="font-weight: 800; font-size: 16px; margin-bottom: 10px; color: var(--neon-green);">
+          <i class="fa-solid fa-clock-rotate-left"></i> Bugungi Qabul Tarixi (History)
+        </div>
+        <div id="doctorHistoryContainer" style="max-height: 200px; overflow-y: auto;">
+          <div style="font-size: 13px; color: var(--text-sub); text-align: center; padding: 10px;">Hozircha yakunlangan yoki o'tkazib yuborilgan qabullar tarixi yo'q.</div>
+        </div>
       </div>
 
       <!-- Bemorlar tomonidan qoldirilgan izohlar va shikoyatlar bo'limi -->
@@ -498,9 +527,7 @@
         <div style="font-weight: 800; font-size: 16px; margin-bottom: 10px; color: var(--accent-blue);">
           <i class="fa-solid fa-comments"></i> Bemorlarning Fikr va Shikoyatlari
         </div>
-        <div id="doctorReviewsContainer" style="max-height: 200px; overflow-y: auto;">
-          <!-- Dinamik izohlar -->
-        </div>
+        <div id="doctorReviewsContainer" style="max-height: 200px; overflow-y: auto;"></div>
       </div>
 
       <!-- Shifokorning Ish Holatini (Status) O'zgartirish Paneli -->
@@ -508,9 +535,6 @@
         <div style="font-weight: 800; font-size: 15px; margin-bottom: 8px; color: var(--neon-green);">
           <i class="fa-solid fa-toggle-on"></i> Mening Ishdagi Holatim (Status)
         </div>
-        <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 12px;">
-          Bemorlar sizning hozirda ishda ekanligingizni ko'rishlari uchun statusni belgilang:
-        </p>
         <div class="status-btn-group">
           <button class="status-toggle-btn active-online" id="statusBtnOnline" onclick="hapticTrigger(); changeDoctorStatus('online')"><i class="fa-solid fa-circle" style="font-size:8px;"></i> Ishda</button>
           <button class="status-toggle-btn" id="statusBtnBreak" onclick="hapticTrigger(); changeDoctorStatus('break')"><i class="fa-solid fa-circle" style="font-size:8px;"></i> Tanaffus</button>
@@ -523,15 +547,10 @@
         <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--neon-green);">
           <i class="fa-solid fa-user-doctor"></i> Shifokor Profilini Yuborish (Sign-up)
         </div>
-        <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 14px;">
-          Ma'lumotlaringizni kiriting. Arizangiz **Admin** tomonidan tasdiqlangach, bemorlar ro'yxatida ko'rina boshlaysiz:
-        </p>
-
         <div class="form-group">
           <label>F.I.O. (Ism va Familiya)</label>
           <input type="text" class="form-control" id="newDocName" placeholder="Masalan: Dr. Alisher Umarov">
         </div>
-
         <div class="form-group">
           <label>Mutaxassislik yo'nalishi</label>
           <select class="form-control" id="newDocSpec">
@@ -542,17 +561,14 @@
             <option value="therapy">Terapevt</option>
           </select>
         </div>
-
         <div class="form-group">
           <label>Klinika nomi</label>
           <input type="text" class="form-control" id="newDocClinic" placeholder="Masalan: Shifo Med Center">
         </div>
-
         <div class="form-group">
           <label>Qabul narxi (UZS)</label>
           <input type="number" class="form-control" id="newDocFee" placeholder="150000">
         </div>
-
         <div class="form-group">
           <label>Shaxsiy rasm yuklash (Avatar)</label>
           <div class="upload-box" onclick="hapticTrigger(); document.getElementById('docImgInput').click()">
@@ -567,7 +583,6 @@
           </div>
           <input type="file" id="docImgInput" accept="image/*" style="display: none;" onchange="previewDocImage(this)">
         </div>
-
         <button class="btn-submit" onclick="hapticTrigger(); registerNewDoctor()">Admin Tasdig'iga Yuborish</button>
       </div>
     </div>
@@ -615,8 +630,11 @@
         <i class="fa-solid fa-xmark" style="font-size: 22px; cursor: pointer; color: var(--text-sub);" onclick="hapticTrigger(); closeModal()"></i>
       </div>
 
-      <!-- Queue List Content -->
+      <!-- Queue List Content (With Timer & Missed buttons) -->
       <div id="queueModalContent" style="display: none;">
+        <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 12px; background: rgba(59,130,246,0.1); padding: 8px; border-radius: 8px; border: 1px solid rgba(59,130,246,0.3);">
+          <i class="fa-solid fa-triangle-exclamation" style="color: #60a5fa;"></i> Har bir bemor uchun 10 daqiqalik taymer (time-frame) ishlaydi. Agar bemor vaqtida kelmasa, "Kelmadi" tugmasini bosing!
+        </div>
         <div id="doctorQueueModalList"></div>
       </div>
 
@@ -644,7 +662,7 @@
         <button class="btn-submit" onclick="hapticTrigger(); submitPatientReview()">Bahoni va Fikrni Yuborish</button>
       </div>
 
-      <!-- QABULGA YOZILISH BLOKI (TO'G'RILANGAN TARTIB) -->
+      <!-- QABULGA YOZILISH BLOKI -->
       <div id="bookingModalContentBlock" style="display: none;">
         <div class="form-group" id="symptomsGroupContainer">
           <label id="symptomsLabelBooking">Shikoyatingiz / Simptomlar</label>
@@ -664,24 +682,8 @@
         <button class="btn-submit" id="bookingSubmitBtn" onclick="hapticTrigger(); handleBookingSubmit()"><i class="fa-solid fa-check"></i> Qabulga yozilish</button>
       </div>
 
-      <!-- AI MASLAHAT VA KESHBEKNI YECHISH (SHIFOKOR UCHUN) PANELI -->
+      <!-- AI MASLAHAT BLOKI -->
       <div id="aiModalContentBlock" style="display: none;">
-        <!-- Shifokor uchun Keshbekni yechish bloki -->
-        <div id="doctorCashbackPanelInAi" style="display: none; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 16px; padding: 14px; margin-bottom: 16px;">
-          <div style="font-weight: 800; font-size: 15px; margin-bottom: 6px; color: var(--accent-blue);">
-            <i class="fa-solid fa-ticket"></i> Bemor Keshbekini Chegirma sifatida Yechish
-          </div>
-          <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 10px;">
-            Bemor taqdim etgan 5 xonali ID raqamini kiriting va keshbekni ushbu qabul uchun chegirma sifatida tasdiqlang:
-          </p>
-          <div style="display: flex; gap: 8px;">
-            <input type="text" class="form-control" id="patientCodeInput" placeholder="Bemor ID (masalan: 78237)" style="flex: 1; padding: 10px; font-size: 13px;">
-            <button class="btn-submit" style="margin-top: 0; width: auto; padding: 0 16px; font-size: 13px;" onclick="hapticTrigger(); doctorApproveCashback()">Tasdiqlash</button>
-          </div>
-          <button class="drive-export-btn" onclick="hapticTrigger(); exportQueueToDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Navbatni Google Drive'ga saqlash (CSV)</button>
-        </div>
-
-        <!-- Image Upload Block (AI Maslahat uchun) -->
         <div class="form-group" id="uploadGroup">
           <label id="lbl-upload-title">Rasm yuklash</label>
           <div class="upload-box" onclick="hapticTrigger(); document.getElementById('imgInput').click()">
@@ -723,7 +725,6 @@
     var uploadedDoctorImageTemp = "";
     var currentDoctorStatus = "online";
 
-    // Bemorning 5 xonali unikal ID raqami va keshbek balansi
     var patientIdCode = localStorage.getItem('shifo_patient_id') || String(Math.floor(10000 + Math.random() * 90000));
     localStorage.setItem('shifo_patient_id', patientIdCode);
     
@@ -746,13 +747,15 @@
     }
 
     function exportQueueToDrive() {
-      showCustomAlert("Google Drive", "Shifokor navbatlari va hisoboti muvaffaqiyatli Google Drive'ga CSV formatida saqlandi!");
+      showCustomAlert("Google Drive", "Shifokor navbatlari va qabul tarixi muvaffaqiyatli Google Drive'ga CSV formatida saqlandi!");
     }
 
     var activeAppointmentsQueue = JSON.parse(localStorage.getItem('shifo_queue')) || [
-      { id: 1, queue_number: 5, patient_name: "Alisher V. (ID: 41289)", time: "10:45", complaint: "Tish og'rig'i (Karies)", status: "Faol" },
-      { id: 2, queue_number: 6, patient_name: "Malika T. (ID: 90211)", time: "11:00", complaint: "Plombalash va tozalash", status: "Kutilmoqda" }
+      { id: 1, queue_number: 5, patient_name: "Alisher V. (ID: 41289)", time: "10:30", complaint: "Tish og'rig'i (Karies)", status: "Faol", timeLeft: 600 },
+      { id: 2, queue_number: 6, patient_name: "Malika T. (ID: 90211)", time: "10:45", complaint: "Plombalash va tozalash", status: "Kutilmoqda", timeLeft: 900 }
     ];
+
+    var doctorHistoryList = JSON.parse(localStorage.getItem('shifo_history')) || [];
 
     var defaultDoctors = [
       { id: "1", full_name: "Sarvar Abdullayevich", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, reviewsCount: 12, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
@@ -862,8 +865,7 @@
         tagBook: "QABUL",
         docHeroBadge: "Shifokor Kabineti",
         docRefresh: "Navbatni ko'rish",
-        docHeroSub: "Sizning qabulingizdagi bemorlar ro'yxati",
-        docQueueTitle: "Sizning Qabulingizdagi Bemorlar",
+        docHeroSub: "Sizning qabulingizdagi bemorlar va taymerlar",
         cardiology: "Kardiolog",
         neurology: "Nevrolog",
         dentistry: "Stomatolog",
@@ -912,8 +914,7 @@
         tagBook: "ҚАБУЛ",
         docHeroBadge: "Шифокор Кабинети",
         docRefresh: "Навбатni кўриш",
-        docHeroSub: "Сизнинг қабулингиздаги беморлар рўйхати",
-        docQueueTitle: "Сизнинг Қабулингиздаги Беморлар",
+        docHeroSub: "Сизнинг қабулингиздаги беморлар",
         cardiology: "Кардиолог",
         neurology: "Невролог",
         dentistry: "Стоматолог",
@@ -962,8 +963,7 @@
         tagBook: "ПРИЕМ",
         docHeroBadge: "Кабинет врача",
         docRefresh: "Посмотреть очередь",
-        docHeroSub: "Панель пациентов на вашем приеме",
-        docQueueTitle: "Пациенты на вашем приеме",
+        docHeroSub: "Панель пациентов и таймеры",
         cardiology: "Кардиолог",
         neurology: "Невролог",
         dentistry: "Стоматолог",
@@ -990,6 +990,9 @@
       } else {
         launchMainApp();
       }
+
+      // Taymerni har sekundda yangilab borish
+      setInterval(updateQueueTimers, 1000);
     };
 
     function selectLanguage(lang) {
@@ -1126,6 +1129,7 @@
         document.getElementById('doctorDashboard').style.display = 'block';
         document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
         renderDoctorReviews();
+        renderDoctorHistory();
       } else if (currentRole === 'admin') {
         document.getElementById('adminDashboard').style.display = 'block';
         renderAdminPanelRequests();
@@ -1163,6 +1167,31 @@
               <div>${starsHtml} <span style="font-size: 10px; color: var(--text-sub); margin-left: 4px;">${rev.date}</span></div>
             </div>
             <div style="font-size: 12px; color: var(--text-main); line-height: 1.4;">${rev.text}</div>
+          </div>`;
+      }
+    }
+
+    function renderDoctorHistory() {
+      var container = document.getElementById('doctorHistoryContainer');
+      container.innerHTML = "";
+
+      if (doctorHistoryList.length === 0) {
+        container.innerHTML = `<div style="font-size: 13px; color: var(--text-sub); text-align: center; padding: 10px;">Hozircha yakunlangan yoki kelmagan qabullar tarixi yo'q.</div>`;
+        return;
+      }
+
+      for (var i = 0; i < doctorHistoryList.length; i++) {
+        var h = doctorHistoryList[i];
+        var badgeColor = h.type === 'completed' ? '#34d399' : '#f87171';
+        var badgeText = h.type === 'completed' ? 'Yakunlandi (+10k keshbek)' : 'Kelmadi (Oʻtkazib yuborildi)';
+
+        container.innerHTML += `
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(52,211,153,0.15); border-radius: 12px; padding: 10px; margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-weight: 700; font-size: 13px;">Bemor: ${h.patient_name}</span>
+              <span style="font-size: 11px; padding: 2px 6px; border-radius: 6px; background: rgba(52,211,153,0.15); color: ${badgeColor}; font-weight: 700;">${badgeText}</span>
+            </div>
+            <div style="font-size: 12px; color: var(--text-sub);">Vaqti: ${h.time} • Shikoyat: ${h.complaint}</div>
           </div>`;
       }
     }
@@ -1230,7 +1259,7 @@
       showCustomAlert("Admin Panel", "Shifokor arizasi rad etildi.");
     }
 
-    // Shifokor "Yakunlash"ni bosganda bemor keshbekiga 10,000 UZS qo'shiladi
+    // Shifokor "Yakunlash"ni bosganda
     function finishSession(itemId) {
       hapticTrigger();
       var targetIndex = -1;
@@ -1242,16 +1271,72 @@
       }
 
       if (targetIndex !== -1) {
-        activeAppointmentsQueue.splice(targetIndex, 1);
+        var finishedItem = activeAppointmentsQueue.splice(targetIndex, 1)[0];
+        finishedItem.type = 'completed';
+        doctorHistoryList.unshift(finishedItem);
+
         localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
+        localStorage.setItem('shifo_history', JSON.stringify(doctorHistoryList));
         
         userBalance += 10000;
         localStorage.setItem('shifo_balance', userBalance);
 
         document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
         renderDoctorQueue();
-        showCustomAlert("Qabul Yakunlandi", "Qabul muvaffaqiyatli yakunlandi!\nBemor balansiga 10,000 UZS keshbek avtomatik qo'shildi.");
+        renderDoctorHistory();
+        showCustomAlert("Qabul Yakunlandi", "Qabul muvaffaqiyatli yakunlandi!\nBemor balansiga 10,000 UZS keshbek qo'shildi va tarixga yozildi.");
       }
+    }
+
+    // Shifokor "Kelmadi" (Missed) bosganda bemor navbatdan o'chiriladi va tarixga tushadi
+    function markAsMissed(itemId) {
+      hapticTrigger();
+      var targetIndex = -1;
+      for (var i = 0; i < activeAppointmentsQueue.length; i++) {
+        if (activeAppointmentsQueue[i].id === itemId) {
+          targetIndex = i;
+          break;
+        }
+      }
+
+      if (targetIndex !== -1) {
+        var missedItem = activeAppointmentsQueue.splice(targetIndex, 1)[0];
+        missedItem.type = 'missed';
+        doctorHistoryList.unshift(missedItem);
+
+        // Qolgan bemorlarning navbat raqamlarini tartibga solish
+        for (var k = 0; k < activeAppointmentsQueue.length; k++) {
+          activeAppointmentsQueue[k].queue_number = k + 1;
+        }
+
+        localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
+        localStorage.setItem('shifo_history', JSON.stringify(doctorHistoryList));
+
+        document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
+        renderDoctorQueue();
+        renderDoctorHistory();
+        showCustomAlert("O'tkazib yuborildi", "Bemor belgilangan vaqtda kelmadi deb belgilandi. Keyingi mijoz navbati tepaga surildi.");
+      }
+    }
+
+    function updateQueueTimers() {
+      if (activeAppointmentsQueue.length === 0) return;
+      var updated = false;
+      for (var i = 0; i < activeAppointmentsQueue.length; i++) {
+        if (activeAppointmentsQueue[i].timeLeft > 0) {
+          activeAppointmentsQueue[i].timeLeft--;
+          updated = true;
+        }
+      }
+      if (updated && document.getElementById('doctorQueueModalList').style.display !== 'none') {
+        renderDoctorQueue();
+      }
+    }
+
+    function formatTimeLeft(seconds) {
+      var m = Math.floor(seconds / 60);
+      var s = seconds % 60;
+      return m + ":" + (s < 10 ? "0" : "") + s;
     }
 
     function renderDoctorQueue() {
@@ -1265,19 +1350,25 @@
 
       for (var i = 0; i < activeAppointmentsQueue.length; i++) {
         var item = activeAppointmentsQueue[i];
-        var actionBtnHtml = currentRole === 'doctor' ? 
-          `<button class="finish-session-btn" onclick="hapticTrigger(); finishSession(${item.id})"><i class="fa-solid fa-check-double"></i> Yakunlash</button>` : 
+        var timerStr = item.timeLeft > 0 ? formatTimeLeft(item.timeLeft) : "Vaqt tugadi!";
+        var timerColor = item.timeLeft > 120 ? "#34d399" : "#f87171";
+
+        var actionButtons = currentRole === 'doctor' ? 
+          `<div style="display:flex; gap:4px;">
+             <button class="finish-session-btn" onclick="hapticTrigger(); finishSession(${item.id})"><i class="fa-solid fa-check"></i> Keldi</button>
+             <button class="missed-session-btn" onclick="hapticTrigger(); markAsMissed(${item.id})"><i class="fa-solid fa-xmark"></i> Kelmadi</button>
+           </div>` : 
           `<span class="badge-status-text text-online">${item.status}</span>`;
 
         container.innerHTML += `
           <div class="queue-item">
             <div>
               <div style="font-weight: 800; font-size: 15px;">№ ${item.queue_number} | Bemor: ${item.patient_name}</div>
-              <div style="font-size: 12px; color: var(--text-sub); margin-top: 2px;">Vaqti: ${item.time}</div>
+              <div style="font-size: 12px; color: var(--text-sub); margin-top: 2px;">Vaqti: ${item.time} | Kutish vaqti: <span style="color: ${timerColor}; font-weight:700;">${timerStr}</span></div>
               <div style="font-size: 12px; color: var(--neon-green); margin-top: 2px;">Shikoyat: ${item.complaint}</div>
             </div>
             <div>
-              ${actionBtnHtml}
+              ${actionButtons}
             </div>
           </div>`;
       }
@@ -1352,14 +1443,21 @@
       removeDocImage({ stopPropagation: function(){} });
     }
 
-    function doctorApproveCashback() {
-      var code = document.getElementById('patientCodeInput').value.trim();
-      if (!code) {
-        showCustomAlert("Xatolik", "Iltimos, bemorning 5 xonali ID raqamini kiriting!");
+    // Shifokor keshbekni chegirma sifatida yechishi va bemorga xabar yuborishi
+    function doctorApplyCashbackDiscount() {
+      var patientId = document.getElementById('doctorPatientIdInput').value.trim();
+      var amount = document.getElementById('doctorDeductionAmount').value.trim();
+
+      if (!patientId || !amount) {
+        showCustomAlert("Xatolik", "Iltimos, bemor ID raqami va summani kiriting!");
         return;
       }
-      document.getElementById('patientCodeInput').value = "";
-      showCustomAlert("Chegirma Tasdiqlandi", "Bemor (ID: " + code + ") keshbek balansi tekshirildi va joriy qabul uchun chegirma sifatida muvaffaqiyatli yechildi!");
+
+      userBalance = Math.max(0, userBalance - Number(amount));
+      localStorage.setItem('shifo_balance', userBalance);
+      document.getElementById('doctorPatientIdInput').value = "";
+
+      showCustomAlert("Keshbek Yechildi ✅", "Bemor (ID: " + patientId + ") balansidan " + Number(amount).toLocaleString('uz-UZ') + " UZS keshbek yechildi va ushbu qabul uchun chegirma sifatida qo'llanildi.\n\n🔔 Bemorga Telegram orqali xabarnoma yuborildi: 'Hurmatli bemor, sizning keshbekingizdan " + Number(amount).toLocaleString('uz-UZ') + " UZS chegirma sifatida yechildi.'");
     }
 
     function renderDoctorsList(doctorsArray) {
@@ -1558,7 +1656,7 @@
     function openQueueModal() {
       currentMode = "queue";
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
-      document.getElementById('modalTitle').innerText = currentRole === 'doctor' ? "Sizning Qabulingizdagi Bemorlar" : langObj.navBook;
+      document.getElementById('modalTitle').innerText = currentRole === 'doctor' ? "Sizning Qabulingizdagi Bemorlar (Taymer bilan)" : langObj.navBook;
       
       document.getElementById('queueModalContent').style.display = "block";
       document.getElementById('reviewModalContent').style.display = "none";
@@ -1579,12 +1677,6 @@
       document.getElementById('reviewModalContent').style.display = "none";
       document.getElementById('bookingModalContentBlock').style.display = "none";
       document.getElementById('aiModalContentBlock').style.display = "block";
-      
-      if (currentRole === 'doctor') {
-        document.getElementById('doctorCashbackPanelInAi').style.display = "block";
-      } else {
-        document.getElementById('doctorCashbackPanelInAi').style.display = "none";
-      }
 
       document.getElementById('aiResultBox').style.display = "none";
       document.getElementById('mainModal').style.display = 'flex';
@@ -1676,7 +1768,8 @@
         doctor_name: selDoc ? selDoc.full_name : "Shifokor",
         time: formattedTime.split(',')[1] || formattedTime,
         complaint: symptoms || "Standart qabul",
-        status: "Faol"
+        status: "Faol",
+        timeLeft: 600 // 10 daqiqalik taymer (time-frame)
       };
 
       activeAppointmentsQueue.unshift(newQueueItem);
