@@ -1062,7 +1062,6 @@
         document.getElementById('doctorDashboard').style.display = 'block';
         document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
         
-        // Shifokor uchun keshbek bo'limida faqat keshbek yechish paneli ko'rinadi
         document.getElementById('patientCashbackPane').style.display = 'none';
         document.getElementById('doctorCashbackPane').style.display = 'block';
       } else if (currentRole === 'admin') {
@@ -1077,7 +1076,6 @@
         document.getElementById('patientIdCode').innerText = patientIdCode;
         document.getElementById('tabPatientId').innerText = patientIdCode;
 
-        // Bemor uchun keshbek bo'limida uning balansi ko'rinadi
         document.getElementById('patientCashbackPane').style.display = 'block';
         document.getElementById('doctorCashbackPane').style.display = 'none';
       }
@@ -1100,7 +1098,20 @@
         return;
       }
 
-      showCustomAlert("Keshbek Yechildi", "Bemor (ID: " + pId + ") hisobidan " + amount.toLocaleString('uz-UZ') + " UZS keshbek chegirma sifatida muvaffaqiyatli yechildi!");
+      var nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var historyEntry = {
+        id: Date.now(),
+        patient_name: "Bemor ID: " + pId,
+        time: nowTime,
+        complaint: "Keshbekdan chegirma yechildi: " + amount.toLocaleString('uz-UZ') + " UZS",
+        type: 'cashback_deduct'
+      };
+
+      doctorHistoryList.unshift(historyEntry);
+      localStorage.setItem('shifo_history', JSON.stringify(doctorHistoryList));
+      renderFullPageHistory();
+
+      showCustomAlert("Keshbek Yechildi", "Bemor (ID: " + pId + ") hisobidan " + amount.toLocaleString('uz-UZ') + " UZS keshbek chegirma sifatida muvaffaqiyatli yechildi va tarixga yozildi!");
       document.getElementById('doctorPatientIdInput').value = "";
     }
 
@@ -1108,23 +1119,40 @@
       var container = document.getElementById('fullPageHistoryList');
       container.innerHTML = "";
 
+      // Bemor uchun tarix bo'limi bo'sh ko'rsatiladi
+      if (currentRole === 'patient') {
+        container.innerHTML = `<div style="font-size: 13px; color: var(--text-sub); text-align: center; padding: 20px;">Hozircha tarix ma'lumotlari mavjud emas.</div>`;
+        return;
+      }
+
       if (doctorHistoryList.length === 0) {
-        container.innerHTML = `<div style="font-size: 13px; color: var(--text-sub); text-align: center; padding: 20px;">Hozircha yakunlangan yoki o'tkazib yuborilgan qabullar tarixi yo'q.</div>`;
+        container.innerHTML = `<div style="font-size: 13px; color: var(--text-sub); text-align: center; padding: 20px;">Hozircha tarix yozuvlari yo'q.</div>`;
         return;
       }
 
       for (var i = 0; i < doctorHistoryList.length; i++) {
         var h = doctorHistoryList[i];
-        var badgeColor = h.type === 'completed' ? '#34d399' : '#f87171';
-        var badgeText = h.type === 'completed' ? 'Yakunlandi (+10k keshbek)' : 'Kelmadi (Oʻtkazib yuborildi)';
+        var badgeColor = '#34d399';
+        var badgeText = 'Amaliyot';
+
+        if (h.type === 'completed') {
+          badgeColor = '#34d399';
+          badgeText = 'Yakunlandi (+10k keshbek)';
+        } else if (h.type === 'missed') {
+          badgeColor = '#f87171';
+          badgeText = 'Kelmadi';
+        } else if (h.type === 'cashback_deduct') {
+          badgeColor = '#3b82f6';
+          badgeText = 'Chegirma yechildi';
+        }
 
         container.innerHTML += `
           <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; margin-bottom: 10px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-              <span style="font-weight: 700; font-size: 14px;">Bemor: ${h.patient_name}</span>
+              <span style="font-weight: 700; font-size: 14px;">${h.patient_name}</span>
               <span style="font-size: 11px; padding: 2px 8px; border-radius: 6px; background: rgba(52,211,153,0.15); color: ${badgeColor}; font-weight: 700;">${badgeText}</span>
             </div>
-            <div style="font-size: 12px; color: var(--text-sub);">Vaqti: ${h.time} • Shikoyat: ${h.complaint}</div>
+            <div style="font-size: 12px; color: var(--text-sub);">Vaqti: ${h.time} • Ma'lumot: ${h.complaint}</div>
           </div>`;
       }
     }
