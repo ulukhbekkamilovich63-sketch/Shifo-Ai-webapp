@@ -523,7 +523,7 @@
         <div class="section-title"><i class="fa-solid fa-wallet"></i> Keshbek va Chegirma Boshqaruvi</div>
       </div>
       
-      <!-- Bemor uchun keshbek ko'rinishi -->
+      <!-- Bemor uchun keshbek ko'rinishi (Faqat balans va ID, shifokor paneli olib tashlandi) -->
       <div id="patientCashbackPane">
         <div class="hero-card">
           <div class="hero-badge">Joriy Balansim</div>
@@ -705,12 +705,13 @@
     }
 
     var activeAppointmentsQueue = JSON.parse(localStorage.getItem('shifo_queue')) || [
-      { id: 1, queue_number: 1, patient_name: "Ulug'bek Kamilovich (ID: 48495)", patient_id: "48495", time: "10:30", complaint: "tish juda ogriyapti", status: "Faol" }
+      { id: 1, queue_number: 1, patient_name: "Ulug'bek Kamilovich (ID: 48495)", patient_id: "48495", time: "10:30", complaint: "tish juda ogriyapti", status: "Faol", doctor_id: "3", doctor_name: "Dr. Dilshodbek Rahimov" }
     ];
 
     var doctorHistoryList = JSON.parse(localStorage.getItem('shifo_history')) || [];
     var patientVisitHistory = JSON.parse(localStorage.getItem('shifo_patient_visits')) || [];
     var hasPendingReview = JSON.parse(localStorage.getItem('shifo_pending_review')) || false;
+    var lastCompletedDoctorId = localStorage.getItem('shifo_last_doc_id') || "3";
 
     var defaultDoctors = [
       { id: "1", full_name: "Sarvar Abdullayevich", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, reviewsCount: 12, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
@@ -1265,6 +1266,10 @@
         finishedItem.type = 'completed';
         doctorHistoryList.unshift(finishedItem);
 
+        // Qaysi shifokorga yozilgan bo'lsa, o'sha doktorning ID sini eslab qolamiz
+        lastCompletedDoctorId = finishedItem.doctor_id || "3";
+        localStorage.setItem('shifo_last_doc_id', lastCompletedDoctorId);
+
         localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
         localStorage.setItem('shifo_history', JSON.stringify(doctorHistoryList));
 
@@ -1529,6 +1534,12 @@
       document.getElementById('bookingModalContentBlock').style.display = "none";
       document.getElementById('aiModalContentBlock').style.display = "none";
       document.getElementById('reviewModalContent').style.display = "block";
+      
+      // Bemor qaysi shifokorga yozilgan bo'lsa, o'sha doktor avtomatik tanlanadi
+      if (lastCompletedDoctorId) {
+        document.getElementById('reviewDocSelect').value = lastCompletedDoctorId;
+      }
+
       document.getElementById('mainModal').style.display = 'flex';
     }
 
@@ -1620,6 +1631,10 @@
         };
         patientVisitHistory.unshift(visitRecord);
         localStorage.setItem('shifo_patient_visits', JSON.stringify(patientVisitHistory));
+        
+        // Hozirgi tanlangan shifokor ID sini eslab qolamiz
+        lastCompletedDoctorId = docId;
+        localStorage.setItem('shifo_last_doc_id', lastCompletedDoctorId);
       }
 
       var patientNameWithId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "Ulug'bek") + " (ID: " + patientIdCode + ")";
@@ -1629,6 +1644,7 @@
         queue_number: nextQueueNum,
         patient_name: patientNameWithId,
         patient_id: patientIdCode,
+        doctor_id: docId,
         doctor_name: selDoc ? selDoc.full_name : "Shifokor",
         time: formattedTime.split(',')[1] || formattedTime,
         complaint: symptoms || "Standart qabul",
