@@ -431,7 +431,7 @@
         <div class="hero-badge" id="lbl-doc-hero-badge">Shifokor Kabineti</div>
         <div class="hero-val">
           <span id="docActiveQueueCount">0 ta navbat</span>
-          <button class="cashback-action-btn" id="lbl-doc-refresh" onclick="hapticTrigger(); renderDoctorQueue()">Yangilash</button>
+          <button class="cashback-action-btn" id="lbl-doc-refresh" onclick="hapticTrigger(); openQueueModal()">Navbatni ko'rish</button>
         </div>
         <div class="hero-sub" id="lbl-doc-hero-sub">Sizning qabulingizdagi bemorlar va keshbekni yechish paneli</div>
       </div>
@@ -517,12 +517,6 @@
         </div>
         <button class="drive-export-btn" onclick="hapticTrigger(); exportQueueToDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Navbatni Google Drive'ga saqlash (CSV)</button>
       </div>
-
-      <div class="section-header">
-        <div class="section-title" id="lbl-doc-queue-title">Sizning Qabulingizdagi Bemorlar</div>
-      </div>
-      
-      <div class="doctor-queue-container" id="doctorQueueList"></div>
     </div>
   </div>
 
@@ -532,7 +526,7 @@
       <i class="fa-solid fa-house"></i>
       <span id="lbl-nav-home">Bosh sahifa</span>
     </div>
-    <div class="nav-item" onclick="hapticTrigger(); openBookingModal()">
+    <div class="nav-item" onclick="hapticTrigger(); openQueueModal()">
       <i class="fa-regular fa-calendar-days"></i>
       <span id="lbl-nav-book">Navbat</span>
     </div>
@@ -551,10 +545,15 @@
         <i class="fa-solid fa-xmark" style="font-size: 22px; cursor: pointer; color: var(--text-sub);" onclick="hapticTrigger(); closeModal()"></i>
       </div>
 
+      <!-- Queue List Content (for Doctors) -->
+      <div id="queueModalContent" style="display: none;">
+        <div id="doctorQueueModalList"></div>
+      </div>
+
       <!-- Cashback Info Content -->
       <div id="cashbackModalContent" style="display: none;">
         <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 16px; line-height: 1.5;" id="cashbackModalText">
-          Sizda <strong style="color:var(--neon-green)">45,000 UZS</strong> keshbek mavjud. Bu mablag'ni istalgan mutaxassis (jumladan, Stomatologiya yoki boshqa yo'nalishlar) qabulida chegirma sifatida ishlatishingiz mumkin. Buning uchun shifokor qabuliga borganingizda shaxsiy keshbek kodingizni shifokorga ko'rsating va uning kabineti orqali balansdan yechdirib, to'lovni kamaytiring.
+          Sizda <strong style="color:var(--neon-green)">45,000 UZS</strong> keshbek mavjud. Bu mablag'ni istalgan mutaxassis qabulida chegirma sifatida ishlatishingiz mumkin.
         </p>
       </div>
 
@@ -565,11 +564,6 @@
           <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Sana: 10-Mart, 2026 • Laboratoriya: Shifo Lab</div>
           <div style="font-size: 12px; margin-top: 6px;">Holati: Normal (Gemoglobin: 135 g/l)</div>
         </div>
-        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(52,211,153,0.2); border-radius: 14px; padding: 14px; margin-bottom: 10px;">
-          <div style="font-weight: 800; font-size: 14px; color: var(--accent-blue);">💊 Shifokor Retsepti</div>
-          <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Shifokor: Sarvar Abdullayevich (Kardiolog)</div>
-          <div style="font-size: 12px; margin-top: 6px;">Tavsiya: Vitamin C, D3 kompleks, kuniga 1 mahal.</div>
-        </div>
         <button class="drive-export-btn" onclick="hapticTrigger(); exportMedicalBookToDrive()"><i class="fa-solid fa-cloud-arrow-up"></i> Tibbiy daftar nusxasini Google Drive'ga saqlash</button>
       </div>
 
@@ -579,15 +573,11 @@
           <div style="font-weight: 800; font-size: 14px; color: var(--accent-blue);">🔔 Xushxabar!</div>
           <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Sizning keshbek balansingizga 10% qo'shildi. Umumiy miqdor: 45,000 UZS.</div>
         </div>
-        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(52,211,153,0.2); border-radius: 14px; padding: 14px; margin-bottom: 10px;">
-          <div style="font-weight: 800; font-size: 14px; color: var(--neon-green);">🏥 Yangi filial ochildi</div>
-          <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Hudodingizda yangi zamonaviy stomatologiya markazi ish boshladi.</div>
-        </div>
       </div>
 
       <!-- Image Upload Block -->
       <div class="form-group" id="uploadGroup" style="display: none;">
-        <label id="lbl-upload-title">Rasm yuklash (Jarohat / Analiz varaqasi / Tish holati)</label>
+        <label id="lbl-upload-title">Rasm yuklash</label>
         <div class="upload-box" onclick="hapticTrigger(); document.getElementById('imgInput').click()">
           <div id="uploadPromptArea">
             <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--neon-green); margin-bottom: 6px;"></i>
@@ -650,14 +640,12 @@
       alert("Tibbiy daftar va tahlillar tarixi Google Drive'ga hujjat sifatida muvaffaqiyatli yuklandi!");
     }
 
-    // Navbatlarni localStorage'dan o'qish
     var activeAppointmentsQueue = JSON.parse(localStorage.getItem('shifo_queue')) || [
       { id: 1, queue_number: 5, patient_name: "Alisher V.", time: "10:45", complaint: "Tish og'rig'i (Karies)", status: "Faol" },
       { id: 2, queue_number: 6, patient_name: "Malika T.", time: "11:00", complaint: "Plombalash va tozalash", status: "Kutilmoqda" },
       { id: 3, queue_number: 7, patient_name: "Jasur K.", time: "11:20", complaint: "Profilaktik ko'rik", status: "Kutilmoqda" }
     ];
 
-    // Shifokorlar bazasini localStorage'dan o'qish (agar bo'lmasa standart ro'yxat)
     var defaultDoctors = [
       { id: "1", full_name: "Sarvar Abdullayevich", spec_key: "cardiology", clinic_name: "Akfa Medline", fee: 150000, cashback: 10, rating: 5.0, status: "online", img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150" },
       { id: "2", full_name: "Dr. Malika Zokirova", spec_key: "neurology", clinic_name: "Shifo Med", fee: 120000, cashback: 15, rating: 4.9, status: "online", img: "https://images.unsplash.com/photo-1594824813566-78a9c39115b0?w=150" },
@@ -764,7 +752,7 @@
         tagBook: "QABUL",
         tagStatus: "STATUS",
         docHeroBadge: "Shifokor Kabineti",
-        docRefresh: "Yangilash",
+        docRefresh: "Navbatni ko'rish",
         docHeroSub: "Sizning qabulingizdagi bemorlar va keshbekni yechish paneli",
         docQueueTitle: "Sizning Qabulingizdagi Bemorlar",
         docCashbackTitle: "Bemor Keshbekini Chegirma sifatida Yechish",
@@ -820,7 +808,7 @@
         tagBook: "ҚАБУЛ",
         tagStatus: "СТАТУС",
         docHeroBadge: "Шифокор Кабинети",
-        docRefresh: "Янгилаш",
+        docRefresh: "Навбатni кўриш",
         docHeroSub: "Сизнинг қабулингиздаги беморлар ва кэшбэкни ечиш панели",
         docQueueTitle: "Сизнинг Қабулингиздаги Беморлар",
         docCashbackTitle: "Бемор Кэшбэкини Чегирма сифатида Ечиш",
@@ -876,7 +864,7 @@
         tagBook: "ПРИЕМ",
         tagStatus: "СТАТУС",
         docHeroBadge: "Кабинет врача",
-        docRefresh: "Обновить",
+        docRefresh: "Посмотреть очередь",
         docHeroSub: "Пациенты на приеме и панель списания кэшбэка",
         docQueueTitle: "Пациенты на вашем приеме",
         docCashbackTitle: "Списание кэшбэка пациету в качестве скидки",
@@ -1038,7 +1026,7 @@
       if (currentRole === 'doctor') {
         document.getElementById('patientDashboard').style.display = 'none';
         document.getElementById('doctorDashboard').style.display = 'block';
-        renderDoctorQueue();
+        document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
       } else {
         document.getElementById('patientDashboard').style.display = 'block';
         document.getElementById('doctorDashboard').style.display = 'none';
@@ -1049,12 +1037,11 @@
     }
 
     function renderDoctorQueue() {
-      var container = document.getElementById('doctorQueueList');
+      var container = document.getElementById('doctorQueueModalList');
       container.innerHTML = "";
-      document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
 
       if (activeAppointmentsQueue.length === 0) {
-        container.innerHTML = `<div style="text-align: center; color: var(--text-sub); font-size: 13px; padding: 10px;">Hozircha navbatda bemorlar yo'q.</div>`;
+        container.innerHTML = `<div style="text-align: center; color: var(--text-sub); font-size: 14px; padding: 20px;">Hozircha navbatda bemorlar yo'q.</div>`;
         return;
       }
 
@@ -1165,6 +1152,7 @@
       var select = document.getElementById('doctorSelect');
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
 
+      if (!container) return;
       container.innerHTML = '';
       select.innerHTML = '';
 
@@ -1238,7 +1226,6 @@
       document.getElementById('lbl-doc-hero-badge').innerText = langObj.docHeroBadge;
       document.getElementById('lbl-doc-refresh').innerText = langObj.docRefresh;
       document.getElementById('lbl-doc-hero-sub').innerText = langObj.docHeroSub;
-      document.getElementById('lbl-doc-queue-title').innerText = langObj.docQueueTitle;
       document.getElementById('lbl-doc-cashback-title').innerHTML = `<i class="fa-solid fa-ticket"></i> ` + langObj.docCashbackTitle;
       document.getElementById('lbl-doc-cashback-sub').innerText = langObj.docCashbackSub;
 
@@ -1295,6 +1282,7 @@
       document.getElementById('modalTitle').innerText = langObj.bentoBookTitle;
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelBooking;
       
+      document.getElementById('queueModalContent').style.display = "none";
       document.getElementById('cashbackModalContent').style.display = "none";
       document.getElementById('medicalBookContent').style.display = "none";
       document.getElementById('notificationsContent').style.display = "none";
@@ -1312,11 +1300,32 @@
       document.getElementById('mainModal').style.display = 'flex';
     }
 
+    function openQueueModal() {
+      currentMode = "queue";
+      var langObj = dictionary[currentLang] || dictionary['uz_lat'];
+      document.getElementById('modalTitle').innerText = currentRole === 'doctor' ? "Sizning Qabulingizdagi Bemorlar" : langObj.navBook;
+      
+      document.getElementById('queueModalContent').style.display = "block";
+      document.getElementById('cashbackModalContent').style.display = "none";
+      document.getElementById('medicalBookContent').style.display = "none";
+      document.getElementById('notificationsContent').style.display = "none";
+      document.getElementById('uploadGroup').style.display = "none";
+      document.getElementById('docSelectGroup').style.display = "none";
+      document.getElementById('dateTimeGroup').style.display = "none";
+      document.getElementById('symptomsGroupContainer').style.display = "none";
+      document.getElementById('modalSubmitBtn').style.display = "none";
+      document.getElementById('aiResultBox').style.display = "none";
+      
+      renderDoctorQueue();
+      document.getElementById('mainModal').style.display = 'flex';
+    }
+
     function openCashbackModal() {
       currentMode = "cashback";
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
       document.getElementById('modalTitle').innerText = langObj.balanceBadge;
       
+      document.getElementById('queueModalContent').style.display = "none";
       document.getElementById('cashbackModalContent').style.display = "block";
       document.getElementById('medicalBookContent').style.display = "none";
       document.getElementById('notificationsContent').style.display = "none";
@@ -1334,6 +1343,7 @@
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
       document.getElementById('modalTitle').innerText = langObj.medicalBookTitle;
       
+      document.getElementById('queueModalContent').style.display = "none";
       document.getElementById('cashbackModalContent').style.display = "none";
       document.getElementById('medicalBookContent').style.display = "block";
       document.getElementById('notificationsContent').style.display = "none";
@@ -1351,6 +1361,7 @@
       var langObj = dictionary[currentLang] || dictionary['uz_lat'];
       document.getElementById('modalTitle').innerText = langObj.notifTitle;
       
+      document.getElementById('queueModalContent').style.display = "none";
       document.getElementById('cashbackModalContent').style.display = "none";
       document.getElementById('medicalBookContent').style.display = "none";
       document.getElementById('notificationsContent').style.display = "block";
@@ -1370,6 +1381,7 @@
       document.getElementById('modalTitle').innerText = langObj.bentoAiTitle;
       document.getElementById('symptomsLabel').innerText = langObj.symptomsLabelAi;
       
+      document.getElementById('queueModalContent').style.display = "none";
       document.getElementById('cashbackModalContent').style.display = "none";
       document.getElementById('medicalBookContent').style.display = "none";
       document.getElementById('notificationsContent').style.display = "none";
@@ -1452,7 +1464,7 @@
           if (allDoctorsData[j].id === docId) selDoc = allDoctorsData[j];
         }
 
-        if (selDoc) {
+        if (selDoc && currentRole !== 'doctor') {
           document.getElementById('lastVisitDoc').innerText = selDoc.full_name;
           var specText = langObj[selDoc.spec_key] || selDoc.spec_key;
           document.getElementById('lastVisitDate').innerText = specText + " • " + formattedTime;
@@ -1470,6 +1482,10 @@
 
         activeAppointmentsQueue.unshift(newQueueItem);
         localStorage.setItem('shifo_queue', JSON.stringify(activeAppointmentsQueue));
+
+        if (currentRole === 'doctor') {
+          document.getElementById('docActiveQueueCount').innerText = activeAppointmentsQueue.length + " ta navbat";
+        }
 
         closeModal();
         var okMsg = langObj.successBooking + "\n\n🔢 Sizning navbatingiz: № " + nextQueueNum + "\n📍 Hudud: " + selectedRegion + "\n👨‍⚕️ Shifokor: " + (selDoc ? selDoc.full_name : '') + "\n🕒 Vaqti: " + formattedTime;
